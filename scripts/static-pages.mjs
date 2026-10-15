@@ -1,7 +1,4 @@
 import {readFileSync} from 'node:fs';
-import React from 'react';
-import {renderToStaticMarkup} from 'react-dom/server';
-import {Compass} from '@phosphor-icons/react/dist/csr/Compass';
 import {publicContent} from '../src/content-model.mjs';
 
 const siteUrl='https://devikuomidorikawa.github.io/makelog/';
@@ -27,7 +24,7 @@ export function staticPages(){return {
     const index=bundle['index.html'];if(!index||typeof index.source!=='string')throw Error('Static HTML entry is missing');
     const data=JSON.parse(readFileSync(new URL('../src/content/site.json',import.meta.url),'utf8'));
     const rows=pageEntries(data),original=index.source;
-    this.emitFile({type:'asset',fileName:'assets/favicon.svg',source:renderToStaticMarkup(React.createElement(Compass,{size:64,color:'#25113b',weight:'regular',xmlns:'http://www.w3.org/2000/svg'}))});
+    this.emitFile({type:'asset',fileName:'assets/favicon.svg',source:readFileSync(new URL('../public/assets/favicon.svg',import.meta.url))});
     for(const page of rows){
       const html=renderPageHtml(original,page,data.site.brand);
       if(page.path)this.emitFile({type:'asset',fileName:`${page.path}/index.html`,source:html});else index.source=html;
