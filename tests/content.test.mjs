@@ -4,15 +4,39 @@ import {readFile,writeFile,mkdtemp,rm,symlink} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import {pathToFileURL} from 'node:url';
 import path from 'node:path';
-import {validateContent,publicContent,contrast} from '../src/content-model.mjs';
+import {validateContent,validateTags,publicContent,contrast} from '../src/content-model.mjs';
+import {collectTags,tagMatches,renameContentTag} from '../src/tag-utils.mjs';
 import {allowedLocalRequest,atomicSave,revision} from '../scripts/content-plugin.mjs';
 import {readRoute,routeHash} from '../src/site-utils.mjs';
 const original=JSON.parse(await readFile(new URL('../src/content/site.json',import.meta.url),'utf8'));
 const copy=()=>structuredClone(original);
 
 test('publishing never embeds draft titles or bodies in the public content',()=>{
-  const data=copy();data.articles.push({...data.articles[0],id:'draft-only',status:'draft',bodyJa:'PRIVATE-DRAFT-SENTINEL',titleJa:'DRAFT-TITLE-SENTINEL'});
+  const data=copy();data.articles.push({...data.articles[0],id:'draft-only',status:'draft',bodyJa:'PRIVATE-DRAFT-SENTINEL',titleJa:'DRAFT-TITLE-SENTINEL',tags:['DRAFT-TAG-SENTINEL']});
   const result=publicContent(data);assert.ok(!JSON.stringify(result).includes('SENTINEL'));assert.equal(data.articles.at(-1).status,'draft');
+});
+
+test('old content with no tags stays valid and normalizes tags without mutating its source',()=>{
+  const data=copy();for(const p of Object.values(data.site.projects))delete p.tags;for(const a of data.articles)delete a.tags;
+  const result=validateContent(data);assert.deepEqual(result.site.projects.atlas.tags,[]);assert.deepEqual(result.articles[0].tags,[]);assert.equal(data.articles[0].tags,undefined);
+  assert.deepEqual(validateTags([' UI/UX ','日本語']),['UI/UX','日本語']);
+});
+
+test('tags reject invalid types, controls, duplicate names and oversized lists or names',()=>{
+  for(const tags of [null,'React',[1],[''],['a',' a '],['line\nwrap'],['tab\tname'],['bidi\u202ename'],['x'.repeat(33)],Array.from({length:9},(_,n)=>String(n))])assert.throws(()=>validateTags(tags));
+  const data=copy();data.site.projects.form.tags=['Automation',' Automation'];assert.throws(()=>validateContent(data));
+  data.site.projects.form.tags=[];data.articles[0].tags={name:'React'};assert.throws(()=>validateContent(data));
+});
+
+test('tag filters match exact assignments, including untagged items and empty filters',()=>{
+  const items=[{tags:['React','UI/UX']},{tags:['Automation']},{tags:['React']},{}];
+  assert.deepEqual(collectTags(items),['Automation','React','UI/UX']);
+  assert.equal(items.filter(item=>tagMatches(item,'React')).length,2);assert.equal(items.filter(item=>tagMatches(item,'react')).length,0);assert.equal(items.filter(item=>tagMatches(item,'')).length,4);
+});
+
+test('renaming a tag updates projects and drafts while merging existing assignments',()=>{
+  const data=copy();data.site.projects.atlas.tags=['React','UI/UX'];data.articles[0].tags=['React'];data.articles[1].status='draft';data.articles[1].tags=['React','UI/UX'];
+  const result=renameContentTag(data,'React','UI/UX');assert.deepEqual(result.site.projects.atlas.tags,['UI/UX']);assert.deepEqual(result.articles[0].tags,['UI/UX']);assert.deepEqual(result.articles[1].tags,['UI/UX']);assert.equal(result.articles[1].status,'draft');assert.deepEqual(data.site.projects.atlas.tags,['React','UI/UX']);assert.throws(()=>renameContentTag(data,'React','bad\nname'));
 });
 test('content rejects duplicate IDs, invalid dates, excess fields and CSS injection',()=>{
   let data=copy();data.articles.push({...data.articles[0]});assert.throws(()=>validateContent(data));
@@ -54,5 +78,7 @@ test('Pages CMS edits the same fixed file and bilingual schema as the local stud
   const config=JSON.parse(await readFile(new URL('../.pages.yml',import.meta.url),'utf8'));
   assert.equal(config.content.length,1);assert.equal(config.content[0].path,'src/content/site.json');
   const fields=config.content[0].fields;assert.ok(fields.find(f=>f.name==='articles').fields.find(f=>f.name==='bodyEn'));
+  const tags=fields.find(f=>f.name==='articles').fields.find(f=>f.name==='tags');assert.equal(tags.type,'string');assert.equal(tags.list.max,8);assert.equal(tags.options.maxlength,32);
+  for(const project of fields.find(f=>f.name==='site').fields.find(f=>f.name==='projects').fields){const tag=project.fields.find(f=>f.name==='tags');assert.equal(tag.type,'string');assert.equal(tag.list.max,8);}
   assert.deepEqual(fields.find(f=>f.name==='site').fields.find(f=>f.name==='colors').fields.map(f=>f.name),Object.keys(original.site.colors));
 });

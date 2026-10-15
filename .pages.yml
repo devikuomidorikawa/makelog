@@ -171,6 +171,19 @@
                       }
                     },
                     {
+                      "name": "tags",
+                      "label": "タグ",
+                      "type": "string",
+                      "list": {
+                        "min": 0,
+                        "max": 8
+                      },
+                      "options": {
+                        "maxlength": 32
+                      },
+                      "description": "作品・記事に最大8件。1〜32文字。既存と同じ名前で関連づけます。名前の前後の空白は保存時に除きます。"
+                    },
+                    {
                       "name": "category",
                       "label": "カテゴリ（1:日本語 / 2:英語）",
                       "type": "text",
@@ -259,6 +272,19 @@
                       }
                     },
                     {
+                      "name": "tags",
+                      "label": "タグ",
+                      "type": "string",
+                      "list": {
+                        "min": 0,
+                        "max": 8
+                      },
+                      "options": {
+                        "maxlength": 32
+                      },
+                      "description": "作品・記事に最大8件。1〜32文字。既存と同じ名前で関連づけます。名前の前後の空白は保存時に除きます。"
+                    },
+                    {
                       "name": "category",
                       "label": "カテゴリ（1:日本語 / 2:英語）",
                       "type": "text",
@@ -345,6 +371,19 @@
                       "options": {
                         "maxlength": 60
                       }
+                    },
+                    {
+                      "name": "tags",
+                      "label": "タグ",
+                      "type": "string",
+                      "list": {
+                        "min": 0,
+                        "max": 8
+                      },
+                      "options": {
+                        "maxlength": 32
+                      },
+                      "description": "作品・記事に最大8件。1〜32文字。既存と同じ名前で関連づけます。名前の前後の空白は保存時に除きます。"
                     },
                     {
                       "name": "category",
@@ -485,6 +524,19 @@
                   "flow"
                 ]
               }
+            },
+            {
+              "name": "tags",
+              "label": "タグ",
+              "type": "string",
+              "list": {
+                "min": 0,
+                "max": 8
+              },
+              "options": {
+                "maxlength": 32
+              },
+              "description": "作品・記事に最大8件。1〜32文字。既存と同じ名前で関連づけます。名前の前後の空白は保存時に除きます。"
             },
             {
               "name": "titleJa",
