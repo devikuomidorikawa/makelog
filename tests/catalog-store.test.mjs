@@ -77,6 +77,7 @@ test('catalog reads reject hard-linked rows and linked collection directories',a
   assert.throws(()=>readContentSource(file,directory));
   await unlink(url);await writeFile(url,entry.raw);
   const linked=new URL('../linked-tags/',directory);
-  try{await symlink(directory,linked,process.platform==='win32'?'junction':'dir');}catch(error){if(['EPERM','ENOTSUP'].includes(error.code)){t.diagnostic('OS does not permit directory links; hard-link check passed');return;}throw error;}
+  // POSIX symlink creation requires a destination without a trailing slash.
+  try{await symlink(directory,new URL('../linked-tags',directory),process.platform==='win32'?'junction':'dir');}catch(error){if(['EPERM','ENOTSUP'].includes(error.code)){t.diagnostic('OS does not permit directory links; hard-link check passed');return;}throw error;}
   assert.throws(()=>readContentSource(file,linked));
 }));
