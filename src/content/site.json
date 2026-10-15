@@ -7,8 +7,7 @@
     },
     {
       "id": "Data",
-      "name": "Data",
-      "mergeInto": "React"
+      "name": "Data"
     },
     {
       "id": "Forms",
@@ -20,7 +19,7 @@
     },
     {
       "id": "React",
-      "name": "React・確認用"
+      "name": "React"
     },
     {
       "id": "UI/UX",
