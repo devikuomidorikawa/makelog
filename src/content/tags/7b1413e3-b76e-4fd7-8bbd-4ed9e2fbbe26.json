@@ -1,6 +1,6 @@
 {
   "id": "7b1413e3-b76e-4fd7-8bbd-4ed9e2fbbe26",
-  "name": "React",
-  "mergeInto": "",
-  "legacyId": "React"
+  "legacyId": "React",
+  "name": "React（確認用）",
+  "mergeInto": "67a884c9-9368-41cf-b63f-3d48ba937057"
 }
