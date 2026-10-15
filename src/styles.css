@@ -29,4 +29,62 @@ body:before{background-image:repeating-linear-gradient(to bottom,transparent 0,t
 
 .atlas-top>.demo-tag{display:inline-flex}
 
+/* Keep the adopted palette; separate the site, work previews and reading surface. */
+.more-work{background:var(--surface);padding:0 18px;margin-inline:-18px;border-bottom:1px solid var(--line)}
+.modal-header{background:var(--stone)}.modal-content{background:var(--surface)}
+.editorial-dialog .modal-content{padding-inline:clamp(24px,5vw,64px)}
+.preview-criteria{display:flex;flex-wrap:wrap;gap:12px;margin-top:20px;font-size:11px}
+.preview-criteria span{display:inline-flex;align-items:center;gap:5px}
+.mobile-preview-schools{display:none}.atlas-headline>p{max-width:32ch}
+.atlas-aside{letter-spacing:2px;font-size:9px}
+.overview-copy>h3,.technology-section>h3{font-size:20px;margin-bottom:14px}
+.overview-copy>p{max-width:62ch;font-size:15px}
+.technology-section{margin-top:30px;padding:24px;background:var(--stone)}
+.technology-section>h3{display:flex;align-items:center;gap:10px}
+.technology-section .tech-flow{padding:8px 0 20px;align-items:flex-start}
+.technology-section .tech-flow>span{font-size:14px;overflow-wrap:anywhere}
+.technology-section .tech-flow small{font-size:11px}
+.source-note{display:flex;align-items:flex-start;gap:9px;margin:16px 0 26px;font-size:12px;line-height:1.8}
+.community-disclosure{border-block:1px solid var(--line);padding:15px 0;margin-top:24px}
+.community-disclosure summary{display:flex;align-items:center;gap:10px;cursor:pointer;list-style:none;font-size:14px}
+.community-disclosure summary:after{content:'+';margin-left:auto;font-size:20px}.community-disclosure[open] summary:after{content:'−'}
+.community-disclosure summary small{font-size:11px;color:var(--muted)}
+.community-disclosure summary:focus-visible{outline:2px solid var(--accent);outline-offset:5px}
+.article-next{display:flex;align-items:center;justify-content:space-between;gap:22px;flex-wrap:wrap;padding:24px;background:var(--stone);margin-top:34px}
+.article-next .eyebrow{font-size:11px;margin-bottom:13px}
+.share-control{display:flex;flex-direction:column;align-items:flex-start;gap:8px;max-width:100%;min-width:0}
+.share-control>span{font-size:12px;line-height:1.6}.share-control>span:empty{display:none}
+.share-control>input{width:100%;font-size:12px}.about-source{display:flex;flex-wrap:wrap;gap:12px;align-items:center;border-top:1px solid var(--line);padding-top:20px;margin-top:24px}
+.about-source small{font-size:11px;width:100%}.editorial-lead{white-space:pre-line}
+.comparison-hint{display:flex;align-items:center;gap:7px;font-size:11px;margin:9px 0;color:var(--muted)}
+.comparison-scroll{isolation:isolate}.comparison-table th:first-child{position:sticky;left:0;z-index:1;background:var(--stone);box-shadow:1px 0 var(--line)}
+.comparison-table thead th:first-child{z-index:2}
+.tabs{gap:26px;overflow:visible}.tabs button{min-height:48px}
+@media(max-width:640px){
+ .intro{padding-block:20px}.intro-main{padding-left:13px}.intro-main>p{font-size:12px;margin-top:12px}
+ .case-layout{display:flex;flex-direction:column;gap:0}.case-story{display:contents}
+ .story-top{order:1;padding-top:6px}.case-story h2{order:2;font-size:30px;margin:12px 0 14px}
+ .case-description{order:3;font-size:13px;line-height:1.85}.case-actions{order:4;margin:18px 0 24px;gap:16px}
+ .atlas-preview{order:5}.project-links{order:6;padding-top:20px;padding-bottom:2px;flex-wrap:wrap}
+ .atlas-top{padding:14px 16px}.atlas-top>span{font-size:10px}.atlas-top>.demo-tag{font-size:9px}
+ .atlas-hero{min-height:0;display:grid;grid-template-columns:1.15fr 1fr;padding:0 16px 16px;gap:12px}
+ .atlas-headline{padding-top:4px}.atlas-headline h3{font-size:19px;line-height:1.5;white-space:normal}
+ .atlas-headline>p{font-size:11px;line-height:1.7;margin-top:9px}
+ .campus-photo{min-height:150px;height:100%;align-self:stretch}.preview-criteria{gap:8px;margin-top:13px;font-size:10px}
+ .preview-criteria svg{width:13px;height:13px}.preview-table-wrap{display:none}
+ .mobile-preview-schools{display:flex;flex-wrap:wrap;gap:14px;border-top:1px solid rgba(37,17,59,.12);padding:13px 16px;font-size:12px}
+ .mobile-preview-schools>span{display:flex;align-items:center;gap:7px}.demo-disclaimer{font-size:10px;margin:0 16px 14px;text-align:left;line-height:1.8}
+ .more-work{padding-inline:12px;margin-inline:-12px}.work-summary>span{display:none}
+ .tabs{gap:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));overflow:visible}
+ .tabs button{justify-content:center;gap:7px;font-size:12px;white-space:normal}
+ .technology-section{padding:18px;margin-top:24px}.technology-section .tech-flow{gap:9px}
+ .technology-section .tech-flow>span{font-size:12px}.technology-section .tech-flow>svg{width:14px}
+ .article-next{padding:20px;gap:22px}.overview-copy>p{font-size:14px}.source-note{font-size:11px}
+ .community-disclosure summary small{margin-left:auto}.community-disclosure summary{flex-wrap:wrap}
+ .comparison-hint{font-size:10px;line-height:1.7}.modal-content .case-actions{margin-block:22px}
+ html[lang=en] .case-story h2{font-size:29px}html[lang=en] .atlas-headline h3{font-size:19px}
+ html[lang=en] .atlas-top>span{display:none}
+}
+@media(max-width:380px){.atlas-hero{grid-template-columns:1fr}.campus-photo{height:130px;min-height:130px}.atlas-headline h3,html[lang=en] .atlas-headline h3{font-size:19px}.tabs button{font-size:11px;gap:5px}.case-story h2{font-size:28px}html[lang=en] .intro h1{font-size:29px}}
+
 .external-link{display:inline-flex;align-items:center;gap:10px;text-decoration:none}.github-details a{display:inline-flex;gap:6px;align-items:center;color:inherit}.github-panel .primary{margin:16px 0}.giscus-host{min-height:200px;margin:24px 0}.community>.support-note{max-width:66ch}

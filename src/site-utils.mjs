@@ -1,5 +1,5 @@
 const projects = new Set(['atlas', 'form', 'flow']);
-const tabs = new Set(['demo', 'process', 'tech', 'github', 'comments']);
+const tabs = new Set(['overview', 'demo', 'process', 'tech', 'github', 'comments']);
 
 export function repositoryUrl(value) {
   if (typeof value !== 'string' || !/^[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,38})\/[a-zA-Z0-9][a-zA-Z0-9._-]{0,99}$/.test(value)) return null;
