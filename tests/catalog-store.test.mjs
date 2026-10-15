@@ -19,11 +19,11 @@ async function fixture(run){
   }finally{await rm(root,{recursive:true,force:true});}
 }
 test('external tags resolve migrated references to the same public labels, never UUID labels',()=>{
-  assert.equal(source.files.length,6);
+  for(const name of ['React','UI/UX','Data','JavaScript','Automation','Forms'])assert.ok(source.files.some(entry=>entry.row.legacyId===name));
   const content=publicContent(source.content);
   assert.deepEqual(content.site.projects.atlas.tags,['React','UI/UX','Data']);
   assert.ok(!JSON.stringify(content).includes('legacyId'));
-  assert.ok(!JSON.stringify(content).includes(source.files[0].row.id));
+  for(const entry of source.files)assert.ok(!JSON.stringify(content).includes(entry.row.id));
   assert.throws(()=>validateTags([source.files[0].row.id]));
   assert.doesNotThrow(()=>validateTagIds([source.files[0].row.id]));
 });

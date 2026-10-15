@@ -12,8 +12,8 @@ import {readContentSnapshot} from '../scripts/content-store.mjs';
 const original=JSON.parse(await readFile(new URL('../src/content/site.json',import.meta.url),'utf8'));
 // Keep these pure-model regression cases on legacy IDs; the catalog-store
 // suite exercises the real UUID-backed files and their migration separately.
-const snapshot=readContentSnapshot(),legacyIds=new Map(snapshot.files.map(entry=>[entry.row.id,entry.row.legacyId||entry.row.id]));
-for(const item of [...Object.values(original.site.projects),...original.articles])item.tags=item.tags.map(id=>legacyIds.get(id)||id);
+const snapshot=readContentSnapshot(),legacyIds=new Map(snapshot.files.map(entry=>[entry.row.id,entry.row.legacyId||entry.row.name]));
+for(const item of [...Object.values(original.site.projects),...(original.site.additionalProjects||[]),...original.articles])item.tags=item.tags.map(id=>legacyIds.get(id)||id);
 const copy=()=>structuredClone(original);
 
 test('publishing never embeds draft titles or bodies in the public content',()=>{

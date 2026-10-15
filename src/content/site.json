@@ -136,7 +136,48 @@
         "updatedAt": "2026-10-12"
       }
     },
-    "additionalProjects": []
+    "additionalProjects": [
+      {
+        "id": "nest",
+        "name": "Nest",
+        "category": [
+          "デスクトップ整理 × 作業環境",
+          "DESKTOP ORGANIZATION × WORKSPACES"
+        ],
+        "title": [
+          "必要なものが、\nすぐそばに。",
+          "Keep what you need\nclose at hand."
+        ],
+        "short": [
+          "ファイルとリンクをまとめるデスクトップツール",
+          "A desktop organizer for files and links"
+        ],
+        "description": [
+          "よく使うファイル・フォルダー・Webリンクを、パネルとタブにまとめるWindowsアプリ。Folder Portalやメモ、横断検索、作業ごとの配置切り替えに対応し、元ファイルを動かさずに整理できます。",
+          "A Windows app that organizes frequently used files, folders and web links into panels and tabs. Folder Portal views, notes, cross-panel search and workspaces keep essential items close at hand without moving the original files."
+        ],
+        "tech": [
+          "C#",
+          ".NET Framework 4.8",
+          "WPF",
+          "Windows Shell",
+          "JSON"
+        ],
+        "flow": [
+          "ファイルやリンクを登録 / Add files and links",
+          "パネルとタブで整理 / Organize panels and tabs",
+          "検索して開く / Search and open",
+          "用途別に配置を切り替える / Switch workspaces"
+        ],
+        "tags": [
+          "356782af-c36c-4e7d-bc8a-74947edf8d25",
+          "0b258eed-eec3-491e-af69-2c92ddeded7a",
+          "67a884c9-9368-41cf-b63f-3d48ba937057"
+        ],
+        "updatedAt": "2026-10-16",
+        "status": "published"
+      }
+    ]
   },
   "articles": [
     {
