@@ -14,6 +14,51 @@
           "readonly": true
         },
         {
+          "name": "tagCatalog",
+          "label": "タグ管理（一括改名・統合）",
+          "type": "object",
+          "list": {
+            "min": 0,
+            "max": 100,
+            "collapsible": {
+              "collapsed": true,
+              "summary": "{name} / ID: {id}"
+            }
+          },
+          "description": "改名は「表示名」だけ変更。統合は変更元の「統合先ID」にまとめたいタグのIDを入力。保存・公開後、全作品・全記事へ反映。利用中のIDは変更・削除せず、統合後も変更元を残してください。",
+          "fields": [
+            {
+              "name": "id",
+              "label": "タグID（登録後は変更しない）",
+              "type": "string",
+              "required": true,
+              "options": {
+                "maxlength": 32
+              },
+              "description": "新規登録時に重複しない1〜32文字のIDを指定。記事・作品のタグ欄にはこのIDを入力します。"
+            },
+            {
+              "name": "name",
+              "label": "表示名（一括改名）",
+              "type": "string",
+              "required": true,
+              "options": {
+                "maxlength": 32
+              },
+              "description": "この名前を変更すると、同じIDを使う全作品・全記事の表示名が変わります。"
+            },
+            {
+              "name": "mergeInto",
+              "label": "統合先ID（空欄なら統合しない）",
+              "type": "string",
+              "options": {
+                "maxlength": 32
+              },
+              "description": "例：ReactをDataにまとめるならReact側にDataのIDを入力。自分自身・存在しないID・循環する統合は公開検査で拒否します。統合元の行は残してください。"
+            }
+          ]
+        },
+        {
           "name": "site",
           "label": "サイトの文章・作品・配色",
           "type": "object",
@@ -172,7 +217,7 @@
                     },
                     {
                       "name": "tags",
-                      "label": "タグ",
+                      "label": "タグ（タグ管理のID）",
                       "type": "string",
                       "list": {
                         "min": 0,
@@ -181,7 +226,7 @@
                       "options": {
                         "maxlength": 32
                       },
-                      "description": "作品・記事に最大8件。1〜32文字。既存と同じ名前で関連づけます。名前の前後の空白は保存時に除きます。"
+                      "description": "最大8件。「タグ管理」のIDを入力します（例：React、UI/UX）。表示名の改名・統合はタグ管理で一括設定。未登録の文字列も従来どおり表示できます。"
                     },
                     {
                       "name": "category",
@@ -273,7 +318,7 @@
                     },
                     {
                       "name": "tags",
-                      "label": "タグ",
+                      "label": "タグ（タグ管理のID）",
                       "type": "string",
                       "list": {
                         "min": 0,
@@ -282,7 +327,7 @@
                       "options": {
                         "maxlength": 32
                       },
-                      "description": "作品・記事に最大8件。1〜32文字。既存と同じ名前で関連づけます。名前の前後の空白は保存時に除きます。"
+                      "description": "最大8件。「タグ管理」のIDを入力します（例：React、UI/UX）。表示名の改名・統合はタグ管理で一括設定。未登録の文字列も従来どおり表示できます。"
                     },
                     {
                       "name": "category",
@@ -374,7 +419,7 @@
                     },
                     {
                       "name": "tags",
-                      "label": "タグ",
+                      "label": "タグ（タグ管理のID）",
                       "type": "string",
                       "list": {
                         "min": 0,
@@ -383,7 +428,7 @@
                       "options": {
                         "maxlength": 32
                       },
-                      "description": "作品・記事に最大8件。1〜32文字。既存と同じ名前で関連づけます。名前の前後の空白は保存時に除きます。"
+                      "description": "最大8件。「タグ管理」のIDを入力します（例：React、UI/UX）。表示名の改名・統合はタグ管理で一括設定。未登録の文字列も従来どおり表示できます。"
                     },
                     {
                       "name": "category",
@@ -527,7 +572,7 @@
             },
             {
               "name": "tags",
-              "label": "タグ",
+              "label": "タグ（タグ管理のID）",
               "type": "string",
               "list": {
                 "min": 0,
@@ -536,7 +581,7 @@
               "options": {
                 "maxlength": 32
               },
-              "description": "作品・記事に最大8件。1〜32文字。既存と同じ名前で関連づけます。名前の前後の空白は保存時に除きます。"
+              "description": "最大8件。「タグ管理」のIDを入力します（例：React、UI/UX）。表示名の改名・統合はタグ管理で一括設定。未登録の文字列も従来どおり表示できます。"
             },
             {
               "name": "titleJa",
@@ -588,6 +633,78 @@
             }
           ],
           "description": "下書きはサイトに表示されません。ただし公開GitHubリポジトリ内のファイルは閲覧可能です。機密情報を保存しないでください。"
+        },
+        {
+          "name": "pages",
+          "label": "サイトの案内ページ",
+          "type": "object",
+          "list": {
+            "min": 0,
+            "max": 3,
+            "collapsible": {
+              "collapsed": true,
+              "summary": "{titleJa} / {id}"
+            }
+          },
+          "description": "プライバシー、サイトの使い方、お問い合わせの案内。本文は見出し・太字・箇条書きに対応します。",
+          "fields": [
+            {
+              "name": "id",
+              "label": "ページの種類（登録後は変更しない）",
+              "type": "select",
+              "required": true,
+              "options": {
+                "values": [
+                  {
+                    "name": "privacy",
+                    "label": "プライバシー"
+                  },
+                  {
+                    "name": "guide",
+                    "label": "サイトの使い方"
+                  },
+                  {
+                    "name": "contact",
+                    "label": "お問い合わせ"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "titleJa",
+              "label": "タイトル（日本語）",
+              "type": "string",
+              "required": true,
+              "options": {
+                "maxlength": 200
+              }
+            },
+            {
+              "name": "titleEn",
+              "label": "タイトル（英語）",
+              "type": "string",
+              "options": {
+                "maxlength": 200
+              }
+            },
+            {
+              "name": "bodyJa",
+              "label": "本文（日本語）",
+              "type": "text",
+              "required": true,
+              "options": {
+                "maxlength": 10000
+              }
+            },
+            {
+              "name": "bodyEn",
+              "label": "本文（英語）",
+              "type": "text",
+              "options": {
+                "maxlength": 10000
+              }
+            }
+          ]
         }
       ]
     }

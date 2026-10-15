@@ -1,6 +1,7 @@
 import React,{createContext,useContext,useEffect,useState} from 'react';
 import initial from 'virtual:makelog-content';
 import {validateContent} from './content-model.mjs';
+import {resolveContentTags} from './tag-utils.mjs';
 
 const ContentContext=createContext(null);
 export const useContent=()=>useContext(ContentContext);
@@ -16,7 +17,7 @@ export function ContentProvider({children}){
   const apply=value=>{setContent(validateContent(value));setPreview(true);};
   const commit=value=>{const next=validateContent(value);setContent(next);setSaved(next);setPreview(false);};
   const reset=()=>{setContent(saved);setPreview(false);};
-  return <ContentContext.Provider value={{content,saved,preview,apply,commit,reset}}>{children}</ContentContext.Provider>;
+  return <ContentContext.Provider value={{content:resolveContentTags(content),source:content,saved,preview,apply,commit,reset}}>{children}</ContentContext.Provider>;
 }
 
 // Plain Markdown subset. Everything remains React text; HTML and links never execute.

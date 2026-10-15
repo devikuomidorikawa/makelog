@@ -189,5 +189,54 @@
         "Forms"
       ]
     }
+  ],
+  "tagCatalog": [
+    {
+      "id": "Automation",
+      "name": "Automation"
+    },
+    {
+      "id": "Data",
+      "name": "Data"
+    },
+    {
+      "id": "Forms",
+      "name": "Forms"
+    },
+    {
+      "id": "JavaScript",
+      "name": "JavaScript"
+    },
+    {
+      "id": "React",
+      "name": "React"
+    },
+    {
+      "id": "UI/UX",
+      "name": "UI/UX"
+    }
+  ],
+  "pages": [
+    {
+      "id": "privacy",
+      "titleJa": "プライバシー",
+      "titleEn": "Privacy",
+      "bodyJa": "## このサイトで扱う情報\n\n作品デモの検索・選択・入力はブラウザー内で処理します。実際の予約やファイル送信は行いません。アクセス解析・広告配信・訪問者用のログイン機能は導入していません。\n\n## ブラウザーに保存するもの\n\n通常のデモ入力は、ページを開いている間だけ保持します。編集スタジオを使った場合は、その端末のブラウザーに下書きを保存します。共有端末には非公開情報を入力しないでください。\n\n## 外部サービス\n\nサイト配信にはGitHub Pages、運営者の編集にはPages CMSとGitHubを利用します。外部リンク先での情報の取り扱いは、それぞれのサービスの方針に従います。公開コメントは現在無効です。\n\n## ご連絡\n\nお問い合わせページのGitHub窓口をご利用ください。投稿は公開されますので、個人情報や機密情報は記載しないでください。\n\n最終更新：2026年10月15日",
+      "bodyEn": "## Information used here\n\nDemo searches, selections, and inputs run in your browser. No real booking or file upload is sent. We have not added visitor analytics, advertising, or visitor accounts.\n\n## Browser storage\n\nOrdinary demo input stays in page memory while the page is open. The editing studio stores drafts in that browser. Do not enter private information on shared devices.\n\n## External services\n\nGitHub Pages hosts the site. Owners edit through Pages CMS and GitHub. Their privacy policies apply when using those services or external links. Public comments are currently disabled.\n\n## Contact\n\nUse the GitHub link on the contact page. Posts are public: do not include personal or confidential information.\n\nUpdated: October 15, 2026"
+    },
+    {
+      "id": "guide",
+      "titleJa": "このサイトについて",
+      "titleEn": "Site guide",
+      "bodyJa": "## 運営と目的\n\nMAKELOGは、AIとコードを使った制作物・制作過程を紹介するポートフォリオです。運営：MAKELOG。ブランド名は仮称です。\n\n## サンプルとデモ\n\n現在の作品・学校情報・記事は、構成を確かめるための公開用サンプルです。実在する学校の案内や実績を示すものではありません。デモは実際の予約、ファイル解析、ファイル変更、AIへの送信を行いません。\n\n## 作品の利用\n\n公開されているコードや素材の利用条件は、各作品やリポジトリのライセンス表記をご確認ください。利用条件の記載がない文章・画像の転載や再配布については、お問い合わせください。\n\n## 情報の更新\n\n内容・機能は随時見直します。実際の判断には、公式の情報や作品ごとの説明をご確認ください。\n\n最終更新：2026年10月15日",
+      "bodyEn": "## Operator and purpose\n\nMAKELOG is a portfolio of things made with AI and code, including the decisions behind them. Operated by MAKELOG, a provisional brand name.\n\n## Samples and demos\n\nCurrent projects, school data, and articles are illustrative samples. They do not represent real school advice or completed client work. Demos do not make bookings, parse or alter files, or send data to an AI service.\n\n## Reuse\n\nCheck each project or repository for its code and asset licenses. Contact us about copying or redistributing text or images that have no stated reuse terms.\n\n## Updates\n\nWe may update content and functionality. Consult official information and each project description before making real decisions.\n\nUpdated: October 15, 2026"
+    },
+    {
+      "id": "contact",
+      "titleJa": "お問い合わせ",
+      "titleEn": "Contact",
+      "bodyJa": "不具合の報告や改善のご提案は、GitHubの窓口からお知らせください。GitHubアカウントが必要です。\n\n投稿内容は公開されます。個人情報・機密情報・未公開の制作物は記載しないでください。\n\n現在は公開ポートフォリオの準備用サンプルです。個別の制作依頼を受け付ける窓口は、運用開始時に追加します。",
+      "bodyEn": "Report a problem or suggest an improvement through GitHub. A GitHub account is required.\n\nPosts are public. Do not include personal data, confidential information, or unpublished work.\n\nThis is currently a sample portfolio. A dedicated project enquiry channel will be added when the studio is ready."
+    }
   ]
 }
