@@ -1,0 +1,14 @@
+{
+  "repositories": {
+    "atlas": "",
+    "form": "",
+    "flow": ""
+  },
+  "giscus": {
+    "enabled": false,
+    "repo": "",
+    "repoId": "",
+    "category": "",
+    "categoryId": ""
+  }
+}

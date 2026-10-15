@@ -1,0 +1,165 @@
+{
+  "version": 1,
+  "site": {
+    "brand": "MAKELOG",
+    "tagline": "AI & SOFTWARE STUDIO",
+    "heroTitle": [
+      "つくる。その先まで、\nひらく。",
+      "Make. And open up\nwhat comes next."
+    ],
+    "heroDescription": [
+      "AIとコードでつくったもの。その仕組みと、試行錯誤の記録。",
+      "Things made with AI and code. The thinking and experiments behind them."
+    ],
+    "studioBody": [
+      "よい道具は、だれかの可能性をひらく。\nつくる・書く・共有することで、\n技術と社会のあいだに、やさしい接点をつくる。",
+      "Good tools open up possibilities.\nThrough making, documenting, and sharing,\nwe connect technology with everyday life."
+    ],
+    "studioNote": [
+      "小さくつくって、遠くまで。",
+      "Start small. Reach further."
+    ],
+    "footer": [
+      "AIでつくり、コードでひらき、みんなで育てていく。",
+      "Made with AI. Opened through code. Grown together."
+    ],
+    "about": [
+      "MAKELOGは、AIとプログラミングで生まれた道具と、その試行錯誤をひらく独立した制作スタジオです。",
+      "MAKELOG is an independent studio sharing practical tools made with AI and programming, together with the thinking behind them."
+    ],
+    "colors": {
+      "canvas": "#f7f4ee",
+      "surface": "#faf8f3",
+      "stone": "#f0eee7",
+      "ink": "#25113b",
+      "accent": "#432459"
+    },
+    "projects": {
+      "atlas": {
+        "name": "ATLAS",
+        "category": [
+          "データ × 体験設計",
+          "DATA × EXPERIENCE"
+        ],
+        "title": [
+          "複雑な選択を、\nわかる体験に。",
+          "Complex choices.\nClear possibilities."
+        ],
+        "short": [
+          "学びの選択を、もっと豊かに。",
+          "Find a place to grow."
+        ],
+        "description": [
+          "散らばった情報を構造化し、比較を通して自分に合った選択ができるように。AIとデータ処理で、大学選びの情報を見やすく整理し、迷いを減らす体験をデザインしました。",
+          "A clearer way to navigate scattered information. Structured data and thoughtful comparisons turn the search for a university into a more confident decision."
+        ],
+        "tech": [
+          "React",
+          "データ設計 / Data modeling",
+          "検索・比較 / Search & compare"
+        ],
+        "flow": [
+          "問いを立てる",
+          "情報を揃える",
+          "比較して選ぶ"
+        ]
+      },
+      "form": {
+        "name": "FORM",
+        "category": [
+          "自動化 × 道具の設計",
+          "AUTOMATION × CRAFT"
+        ],
+        "title": [
+          "書類の整理を、\n自動化する。",
+          "Less sorting.\nMore doing."
+        ],
+        "short": [
+          "書類の整理を、自動化する。",
+          "Make document sorting effortless."
+        ],
+        "description": [
+          "バラバラなPDFファイルを、ルールに沿って一括リネーム。小さな手作業を減らしながら、確認とやり直しができる業務の道具をつくりました。",
+          "Rename documents with a consistent rule. A practical tool for previewing changes and making repetitive work easier."
+        ],
+        "tech": [
+          "Python",
+          "PDF・バーコード / PDF & barcodes",
+          "ローカル処理 / Local processing"
+        ],
+        "flow": [
+          "書類を読み込む",
+          "候補を確認する",
+          "名前を揃える"
+        ]
+      },
+      "flow": {
+        "name": "FLOW",
+        "category": [
+          "業務設計 × オートメーション",
+          "WORKFLOW × AUTOMATION"
+        ],
+        "title": [
+          "受付から承認までを、\nひとつに。",
+          "From first request\nto a clear next step."
+        ],
+        "short": [
+          "受付から承認までを、ひとつに。",
+          "Connect requests with clear next steps."
+        ],
+        "description": [
+          "見学・面談の予約管理を、わかりやすい一連の流れに。入力から内容確認、受付まで、迷わず進める業務体験を設計しました。",
+          "Bring requests, review, and reception into a single, understandable flow."
+        ],
+        "tech": [
+          "フォーム設計 / Form design",
+          "API",
+          "承認フロー / Approval workflows"
+        ],
+        "flow": [
+          "希望を入力する",
+          "内容を確認する",
+          "受付へつなぐ"
+        ]
+      }
+    }
+  },
+  "articles": [
+    {
+      "id": "atlas-build-note",
+      "project": "atlas",
+      "date": "2026-10-14",
+      "status": "published",
+      "titleJa": "学びの選択を、もっと豊かに。",
+      "titleEn": "Find a place to grow.",
+      "summaryJa": "散らばった情報を構造化し、比較を通して自分に合った選択ができるように。AIとデータ処理で、大学選びの情報を見やすく整理し、迷いを減らす体験をデザインしました。",
+      "summaryEn": "A clearer way to navigate scattered information. Structured data and thoughtful comparisons turn the search for a university into a more confident decision.",
+      "bodyJa": "## 比較の前に、情報を揃える\n学校ごとに項目や表現が異なると、比較が難しくなります。「学び・通学・入試」を同じ形式で扱うことから始めました。\n\n## 選ぶことを、わかりやすく\n検索条件と比較対象を分け、選んだ大学を見失わないようにしています。\n\n## 次の一歩を残す\n検索結果がない場合にも、検索のやり直しや選び直しへ進める設計です。",
+      "bodyEn": "## Start with comparable information\nGive courses, transport, and admissions a shared structure.\n\n## Keep choices manageable\nSeparate search results from the comparison list.\n\n## Make the next step clear\nAn empty result should explain how to start again."
+    },
+    {
+      "id": "form-build-note",
+      "project": "form",
+      "date": "2026-10-13",
+      "status": "published",
+      "titleJa": "書類の整理を、自動化する。",
+      "titleEn": "Make document sorting effortless.",
+      "summaryJa": "バラバラなPDFファイルを、ルールに沿って一括リネーム。小さな手作業を減らしながら、確認とやり直しができる業務の道具をつくりました。",
+      "summaryEn": "Rename documents with a consistent rule. A practical tool for previewing changes and making repetitive work easier.",
+      "bodyJa": "## 繰り返す作業を見つける\nファイルを開き、確認し、名前を変える。その繰り返しを、まとめて確認できる流れへ。\n\n## 変更前に結果を見せる\n速さだけでなく、名前がどう変わるかを事前に確認できることを重視しました。\n\n## やり直せる道具にする\n元の資料を守り、設定を変えて試せる設計です。",
+      "bodyEn": "## Find the repetitive work\nTurn repeated open-check-rename tasks into a reviewable batch.\n\n## Preview before changing\nShow proposed filenames before committing changes.\n\n## Keep it reversible\nProtect originals and make it easy to try different settings."
+    },
+    {
+      "id": "flow-build-note",
+      "project": "flow",
+      "date": "2026-10-12",
+      "status": "published",
+      "titleJa": "受付から承認までを、ひとつに。",
+      "titleEn": "Connect requests with clear next steps.",
+      "summaryJa": "見学・面談の予約管理を、わかりやすい一連の流れに。入力から内容確認、受付まで、迷わず進める業務体験を設計しました。",
+      "summaryEn": "Bring requests, review, and reception into a single, understandable flow.",
+      "bodyJa": "## 受付の前後をつなぐ\n依頼する側と受ける側の両方が、次の動きを理解できるように考えました。\n\n## 入力・確認・完了を分ける\n一度に求める判断を減らし、確認画面から戻っても内容が残るようにしています。\n\n## 境界を明確にする\nデモの完了と実際の予約を、わかりやすく区別します。",
+      "bodyEn": "## Look beyond the form\nHelp both the requester and coordinator understand the next step.\n\n## Separate the three steps\nPreserve details when returning from review.\n\n## Make the outcome clear\nKeep a demo confirmation distinct from a real booking."
+    }
+  ]
+}

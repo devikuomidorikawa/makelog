@@ -1,0 +1,543 @@
+{
+  "content": [
+    {
+      "name": "makelog",
+      "label": "記事とサイトを編集",
+      "type": "file",
+      "path": "src/content/site.json",
+      "format": "json",
+      "fields": [
+        {
+          "name": "version",
+          "label": "データの版",
+          "type": "number",
+          "readonly": true
+        },
+        {
+          "name": "site",
+          "label": "サイトの文章・作品・配色",
+          "type": "object",
+          "fields": [
+            {
+              "name": "brand",
+              "label": "ブランド名",
+              "type": "string",
+              "required": true,
+              "options": {
+                "maxlength": 60
+              }
+            },
+            {
+              "name": "tagline",
+              "label": "ブランドの肩書き",
+              "type": "string",
+              "required": true,
+              "options": {
+                "maxlength": 100
+              }
+            },
+            {
+              "name": "heroTitle",
+              "label": "トップページの見出し（1:日本語 / 2:英語）",
+              "type": "text",
+              "list": {
+                "min": 2,
+                "max": 2
+              },
+              "options": {
+                "maxlength": 200
+              }
+            },
+            {
+              "name": "heroDescription",
+              "label": "トップページの説明（1:日本語 / 2:英語）",
+              "type": "text",
+              "list": {
+                "min": 2,
+                "max": 2
+              },
+              "options": {
+                "maxlength": 3000
+              }
+            },
+            {
+              "name": "studioBody",
+              "label": "スタジオのメッセージ（1:日本語 / 2:英語）",
+              "type": "text",
+              "list": {
+                "min": 2,
+                "max": 2
+              },
+              "options": {
+                "maxlength": 3000
+              }
+            },
+            {
+              "name": "studioNote",
+              "label": "短いメッセージ（1:日本語 / 2:英語）",
+              "type": "text",
+              "list": {
+                "min": 2,
+                "max": 2
+              },
+              "options": {
+                "maxlength": 3000
+              }
+            },
+            {
+              "name": "footer",
+              "label": "フッターの文章（1:日本語 / 2:英語）",
+              "type": "text",
+              "list": {
+                "min": 2,
+                "max": 2
+              },
+              "options": {
+                "maxlength": 3000
+              }
+            },
+            {
+              "name": "about",
+              "label": "ブランドについて（1:日本語 / 2:英語）",
+              "type": "text",
+              "list": {
+                "min": 2,
+                "max": 2
+              },
+              "options": {
+                "maxlength": 3000
+              }
+            },
+            {
+              "name": "colors",
+              "label": "配色",
+              "type": "object",
+              "fields": [
+                {
+                  "name": "canvas",
+                  "label": "ページの背景",
+                  "type": "string",
+                  "required": true,
+                  "pattern": "^#[a-fA-F0-9]{6}$"
+                },
+                {
+                  "name": "surface",
+                  "label": "入力欄の背景",
+                  "type": "string",
+                  "required": true,
+                  "pattern": "^#[a-fA-F0-9]{6}$"
+                },
+                {
+                  "name": "stone",
+                  "label": "作品パネルの背景",
+                  "type": "string",
+                  "required": true,
+                  "pattern": "^#[a-fA-F0-9]{6}$"
+                },
+                {
+                  "name": "ink",
+                  "label": "文字の色",
+                  "type": "string",
+                  "required": true,
+                  "pattern": "^#[a-fA-F0-9]{6}$"
+                },
+                {
+                  "name": "accent",
+                  "label": "ポイントの色",
+                  "type": "string",
+                  "required": true,
+                  "pattern": "^#[a-fA-F0-9]{6}$"
+                }
+              ],
+              "description": "文字と背景のコントラストが不足すると公開用ビルドで停止します。"
+            },
+            {
+              "name": "projects",
+              "label": "作品",
+              "type": "object",
+              "fields": [
+                {
+                  "name": "atlas",
+                  "label": "ATLAS",
+                  "type": "object",
+                  "fields": [
+                    {
+                      "name": "name",
+                      "label": "作品名",
+                      "type": "string",
+                      "required": true,
+                      "options": {
+                        "maxlength": 60
+                      }
+                    },
+                    {
+                      "name": "category",
+                      "label": "カテゴリ（1:日本語 / 2:英語）",
+                      "type": "text",
+                      "list": {
+                        "min": 2,
+                        "max": 2
+                      },
+                      "options": {
+                        "maxlength": 160
+                      }
+                    },
+                    {
+                      "name": "title",
+                      "label": "見出し（1:日本語 / 2:英語）",
+                      "type": "text",
+                      "list": {
+                        "min": 2,
+                        "max": 2
+                      },
+                      "options": {
+                        "maxlength": 200
+                      }
+                    },
+                    {
+                      "name": "short",
+                      "label": "短い紹介（1:日本語 / 2:英語）",
+                      "type": "text",
+                      "list": {
+                        "min": 2,
+                        "max": 2
+                      },
+                      "options": {
+                        "maxlength": 200
+                      }
+                    },
+                    {
+                      "name": "description",
+                      "label": "作品の説明（1:日本語 / 2:英語）",
+                      "type": "text",
+                      "list": {
+                        "min": 2,
+                        "max": 2
+                      },
+                      "options": {
+                        "maxlength": 3000
+                      }
+                    },
+                    {
+                      "name": "tech",
+                      "label": "技術構成",
+                      "type": "string",
+                      "list": {
+                        "min": 1,
+                        "max": 12
+                      },
+                      "options": {
+                        "maxlength": 160
+                      }
+                    },
+                    {
+                      "name": "flow",
+                      "label": "処理の流れ",
+                      "type": "string",
+                      "list": {
+                        "min": 1,
+                        "max": 6
+                      },
+                      "options": {
+                        "maxlength": 160
+                      }
+                    }
+                  ]
+                },
+                {
+                  "name": "form",
+                  "label": "FORM",
+                  "type": "object",
+                  "fields": [
+                    {
+                      "name": "name",
+                      "label": "作品名",
+                      "type": "string",
+                      "required": true,
+                      "options": {
+                        "maxlength": 60
+                      }
+                    },
+                    {
+                      "name": "category",
+                      "label": "カテゴリ（1:日本語 / 2:英語）",
+                      "type": "text",
+                      "list": {
+                        "min": 2,
+                        "max": 2
+                      },
+                      "options": {
+                        "maxlength": 160
+                      }
+                    },
+                    {
+                      "name": "title",
+                      "label": "見出し（1:日本語 / 2:英語）",
+                      "type": "text",
+                      "list": {
+                        "min": 2,
+                        "max": 2
+                      },
+                      "options": {
+                        "maxlength": 200
+                      }
+                    },
+                    {
+                      "name": "short",
+                      "label": "短い紹介（1:日本語 / 2:英語）",
+                      "type": "text",
+                      "list": {
+                        "min": 2,
+                        "max": 2
+                      },
+                      "options": {
+                        "maxlength": 200
+                      }
+                    },
+                    {
+                      "name": "description",
+                      "label": "作品の説明（1:日本語 / 2:英語）",
+                      "type": "text",
+                      "list": {
+                        "min": 2,
+                        "max": 2
+                      },
+                      "options": {
+                        "maxlength": 3000
+                      }
+                    },
+                    {
+                      "name": "tech",
+                      "label": "技術構成",
+                      "type": "string",
+                      "list": {
+                        "min": 1,
+                        "max": 12
+                      },
+                      "options": {
+                        "maxlength": 160
+                      }
+                    },
+                    {
+                      "name": "flow",
+                      "label": "処理の流れ",
+                      "type": "string",
+                      "list": {
+                        "min": 1,
+                        "max": 6
+                      },
+                      "options": {
+                        "maxlength": 160
+                      }
+                    }
+                  ]
+                },
+                {
+                  "name": "flow",
+                  "label": "FLOW",
+                  "type": "object",
+                  "fields": [
+                    {
+                      "name": "name",
+                      "label": "作品名",
+                      "type": "string",
+                      "required": true,
+                      "options": {
+                        "maxlength": 60
+                      }
+                    },
+                    {
+                      "name": "category",
+                      "label": "カテゴリ（1:日本語 / 2:英語）",
+                      "type": "text",
+                      "list": {
+                        "min": 2,
+                        "max": 2
+                      },
+                      "options": {
+                        "maxlength": 160
+                      }
+                    },
+                    {
+                      "name": "title",
+                      "label": "見出し（1:日本語 / 2:英語）",
+                      "type": "text",
+                      "list": {
+                        "min": 2,
+                        "max": 2
+                      },
+                      "options": {
+                        "maxlength": 200
+                      }
+                    },
+                    {
+                      "name": "short",
+                      "label": "短い紹介（1:日本語 / 2:英語）",
+                      "type": "text",
+                      "list": {
+                        "min": 2,
+                        "max": 2
+                      },
+                      "options": {
+                        "maxlength": 200
+                      }
+                    },
+                    {
+                      "name": "description",
+                      "label": "作品の説明（1:日本語 / 2:英語）",
+                      "type": "text",
+                      "list": {
+                        "min": 2,
+                        "max": 2
+                      },
+                      "options": {
+                        "maxlength": 3000
+                      }
+                    },
+                    {
+                      "name": "tech",
+                      "label": "技術構成",
+                      "type": "string",
+                      "list": {
+                        "min": 1,
+                        "max": 12
+                      },
+                      "options": {
+                        "maxlength": 160
+                      }
+                    },
+                    {
+                      "name": "flow",
+                      "label": "処理の流れ",
+                      "type": "string",
+                      "list": {
+                        "min": 1,
+                        "max": 6
+                      },
+                      "options": {
+                        "maxlength": 160
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "articles",
+          "label": "記事",
+          "type": "object",
+          "list": {
+            "max": 200,
+            "collapsible": {
+              "collapsed": true,
+              "summary": "{titleJa} / {status}"
+            }
+          },
+          "fields": [
+            {
+              "name": "id",
+              "label": "記事ID",
+              "type": "string",
+              "required": true,
+              "pattern": "^[a-z0-9][a-z0-9-]{0,63}$",
+              "description": "重複しない半角英数字・ハイフン。共有URLに使います。"
+            },
+            {
+              "name": "date",
+              "label": "日付",
+              "type": "string",
+              "required": true,
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+              "description": "YYYY-MM-DD形式"
+            },
+            {
+              "name": "status",
+              "label": "表示状態",
+              "type": "select",
+              "required": true,
+              "options": {
+                "values": [
+                  {
+                    "name": "draft",
+                    "label": "下書き"
+                  },
+                  {
+                    "name": "published",
+                    "label": "サイトに表示"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "project",
+              "label": "関連する作品",
+              "type": "select",
+              "options": {
+                "values": [
+                  {
+                    "name": "",
+                    "label": "制作ノート"
+                  },
+                  "atlas",
+                  "form",
+                  "flow"
+                ]
+              }
+            },
+            {
+              "name": "titleJa",
+              "label": "記事タイトル（日本語）",
+              "type": "string",
+              "options": {
+                "maxlength": 200
+              }
+            },
+            {
+              "name": "titleEn",
+              "label": "記事タイトル（英語）",
+              "type": "string",
+              "options": {
+                "maxlength": 200
+              }
+            },
+            {
+              "name": "summaryJa",
+              "label": "概要（日本語）",
+              "type": "text",
+              "options": {
+                "maxlength": 1000
+              }
+            },
+            {
+              "name": "summaryEn",
+              "label": "概要（英語）",
+              "type": "text",
+              "options": {
+                "maxlength": 1000
+              }
+            },
+            {
+              "name": "bodyJa",
+              "label": "本文（日本語）",
+              "type": "text",
+              "options": {
+                "maxlength": 20000
+              }
+            },
+            {
+              "name": "bodyEn",
+              "label": "本文（英語）",
+              "type": "text",
+              "options": {
+                "maxlength": 20000
+              }
+            }
+          ],
+          "description": "下書きはサイトに表示されません。ただし公開GitHubリポジトリ内のファイルは閲覧可能です。機密情報を保存しないでください。"
+        }
+      ]
+    }
+  ]
+}
