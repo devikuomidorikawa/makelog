@@ -11,7 +11,7 @@ export function tagMatches(item,selected='') {
 export function renameContentTag(content,from,to) {
   const [oldName]=validateTags([from]),[newName]=validateTags([to]);
   const next=validateContent(content);
-  const items=[...Object.values(next.site.projects),...next.articles];
+  const items=[...Object.values(next.site.projects),...(next.site.additionalProjects||[]),...next.articles];
   const catalog=next.tagCatalog||[];
   const refs=[...new Set(items.flatMap(item=>item.tags))];
   const sources=refs.filter(tag=>resolveTagName(tag,catalog)===oldName);
@@ -35,7 +35,7 @@ export function renameContentTag(content,from,to) {
 }
 
 export function collectTagOptions(content) {
-  const catalog=content.tagCatalog||[],items=[...Object.values(content.site.projects),...content.articles];
+  const catalog=content.tagCatalog||[],items=[...Object.values(content.site.projects),...(content.site.additionalProjects||[]),...content.articles];
   const refs=[...catalog.filter(entry=>!entry.mergeInto).map(entry=>entry.id),...items.flatMap(item=>item.tags||[])];
   const options=new Map();
   for(const ref of refs){const id=resolveTagId(ref,catalog),name=resolveTagName(ref,catalog);if(!options.has(name))options.set(name,{id,name});}

@@ -1,7 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { repositoryUrl, validGiscus, readRoute, routeHash, readPage, routePath, csvCell, navigationCurrent } from '../src/site-utils.mjs';
-import {renderPageHtml} from '../scripts/static-pages.mjs';
+import {renderPageHtml,pageEntries} from '../scripts/static-pages.mjs';
+import {readContentSource} from '../scripts/content-store.mjs';
 
 test('only GitHub owner/repository identifiers can become outbound links', () => {
   assert.equal(repositoryUrl('sample-user/portfolio'), 'https://github.com/sample-user/portfolio');
@@ -71,4 +72,18 @@ test('static metadata escapes HTML and treats replacement tokens as literal text
   assert.ok(!html.includes('<script>'));
   assert.ok(html.includes('src="../../assets/app.js"'));
   assert.ok(html.includes('content="../../"'));
+});
+
+test('new app routes require known validated IDs and do not synthesize sample demo pages',()=>{
+  const data=readContentSource();
+  data.site.additionalProjects=[{id:'my-app-2',...structuredClone(data.site.projects.form),status:'published'},{id:'hidden-app',...structuredClone(data.site.projects.form),status:'draft'}];
+  const entries=pageEntries(data).map(p=>p.path);
+  assert.ok(entries.includes('works/my-app-2'));assert.ok(entries.includes('works/my-app-2/process'));
+  assert.ok(!entries.some(p=>p.startsWith('works/hidden-app')));assert.ok(!entries.includes('works/my-app-2/demo'));
+  const route={type:'project',project:'my-app-2',tab:'overview'},base='/makelog/';
+  assert.equal(routePath(route,base),'/makelog/works/my-app-2/');
+  assert.deepEqual(readPage(routePath(route,base),'','',base,['atlas','form','flow','my-app-2']),route);
+  assert.deepEqual(readRoute(routeHash(route),['my-app-2']),route);
+  assert.deepEqual(readPage('/makelog/works/my-app-2/','','',base),{type:'missing'});
+  for(const id of ['../secret','constructor','x'.repeat(65)])assert.equal(routePath({...route,project:id},base),base);
 });

@@ -36,7 +36,7 @@ function combine(site,rows){
   // its old inline catalog: it must never overwrite a newer online tag rename.
   const data=structuredClone(site);
   data.tagCatalog=validateTagCatalog(rows.map(({legacyId,...row})=>row));
-  for(const item of [...Object.values(data.site?.projects||{}),...(data.articles||[])]){
+  for(const item of [...Object.values(data.site?.projects||{}),...(data.site?.additionalProjects||[]),...(data.articles||[])]){
     if(item.tags===undefined)continue;
     if(!Array.isArray(item.tags))throw Error('タグは配列で指定してください。');
     item.tags=item.tags.map(ref=>aliases.get(ref)??ref);

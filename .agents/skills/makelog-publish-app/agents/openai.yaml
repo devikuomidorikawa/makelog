@@ -1,0 +1,4 @@
+interface:
+  display_name: "MAKELOGへアプリを掲載"
+  short_description: "自作アプリを読みやすい日英の作品紹介に整え、MAKELOGへ掲載・更新する"
+  default_prompt: "$makelog-publish-app を使い、このアプリをMAKELOGに掲載してください。確認できる機能を基に日英の紹介を作成し、今の配色と無料構成を維持してください。"

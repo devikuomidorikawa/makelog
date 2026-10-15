@@ -1,5 +1,5 @@
 import {readFileSync} from 'node:fs';
-import {publicContent} from '../src/content-model.mjs';
+import {publicContent,projectEntries,PROJECT_IDS} from '../src/content-model.mjs';
 import {readContentSource} from './content-store.mjs';
 
 const siteUrl='https://devikuomidorikawa.github.io/makelog/';
@@ -15,7 +15,7 @@ export function pageEntries(content){
     ['works','作品一覧'],['notes','制作ノート'],['about','ブランドについて']
   ].map(([path,title])=>({path,title,description:data.site.heroDescription[0]}))];
   for(const page of data.pages)rows.push({path:page.id,title:page.titleJa,description:page.bodyJa.replace(/^#+ /gm,'').split('\n').filter(Boolean).join(' ').slice(0,160)});
-  for(const [id,p]of Object.entries(data.site.projects))for(const tab of ['','demo','process','tech','github','comments'])rows.push({path:`works/${id}${tab?`/${tab}`:''}`,title:`${p.name}${tab==='demo'?' — デモ':tab==='process'?' — 制作記録':''}`,description:p.description[0]});
+  for(const [id,p]of projectEntries(data.site))for(const tab of (PROJECT_IDS.includes(id)?['','demo','process','tech','github','comments']:['','process']))rows.push({path:`works/${id}${tab?`/${tab}`:''}`,title:`${p.name}${tab==='demo'?' — デモ':tab==='process'?' — 制作記録':''}`,description:p.description[0]});
   for(const a of data.articles)rows.push({path:`notes/${a.id}`,title:a.titleJa,description:a.summaryJa});
   return rows;
 }

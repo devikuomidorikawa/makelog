@@ -10,6 +10,8 @@
 | トップの見出し・説明、スタジオ、紹介、フッター | `site.heroTitle` / `heroDescription` / `studioBody` / `studioNote` / `about` / `footer` |
 | 背景・文字・アクセント | `site.colors` |
 | 作品名・紹介・技術・流れ | `site.projects.atlas` / `form` / `flow` |
+| 新しく追加するアプリ | `site.additionalProjects[]`（固定IDを維持） |
+| ホーム下部の表示順 | 各作品の `updatedAt`（掲載更新日）から公開作品の上位3件を自動選出 |
 | 記事追加・編集 | `articles` |
 | 作品・記事のタグID | `site.projects.<作品ID>.tags` / `articles[].tags` |
 | タグの表示名・一括改名・統合 | `src/content/tags/<固定UUID>.json` の `name` / `mergeInto` |
@@ -21,6 +23,8 @@
 文章の配列は必ず `[日本語, 英語]` の2項目。記事は `titleJa` / `titleEn`、`summaryJa` / `summaryEn`、`bodyJa` / `bodyEn` に分かれます。英語の空欄は日本語へフォールバックします。既存記事を編集する際は `id` を維持してください。変更すると共有URLが変わります。
 
 初期の3作品・制作ノート・スタジオ紹介は公開用サンプルです。実際の内容へ差し替えるときは、紹介と記事のサンプル表記を対応する項目だけ更新してください。記事は「課題・設計判断・確認できる結果」を具体的に書き、デモで動く範囲と将来の構想を区別します。依頼のない実績・効果数値・運営者情報を補いません。
+
+新しい自作アプリの掲載には [.agents/skills/makelog-publish-app/SKILL.md](.agents/skills/makelog-publish-app/SKILL.md) を使います。追加作品は `site.additionalProjects` の配列で管理し、既存3サンプルの項目を流用しません。作品紹介を更新した日を `updatedAt` にYYYY-MM-DDで設定します。これはアプリの開発日ではなく掲載内容の更新日です。名称だけの整形などで全作品の日付を一括更新しません。公開URL・ソースのないアプリも紹介だけで掲載できます。非公開情報は下書きの元JSONにも保存しません。
 
 新しい記事は重複しない半角小文字英数字・ハイフンの `id`（64文字以内）、`date`（YYYY-MM-DD）、`status`（`draft` / `published`）、`project`（空欄 / `atlas` / `form` / `flow`）と日英の文章項目を追加します。掲載記事には日本語のタイトルと本文が必須です。本文は `#`〜`###` の見出し、`**太字**`、`- ` の箇条書きに対応します。HTML、画像、Markdownリンク、スクリプトは実行しません。
 

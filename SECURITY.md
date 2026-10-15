@@ -14,6 +14,8 @@ This is a static portfolio with fictional demo data. The deployed package contai
 
 GitHub Pages does not provide this application with a server, private datastore or custom authentication. A future independent social network requires a separate security model and backend review. Keep the demos available while adding those features separately.
 
+Additional portfolio projects are data, not executable plugins. They use bounded unique lowercase IDs, validated calendar dates, at most 100 projects total and the same bilingual plain-text limits. Public content removes draft projects before resolving tags or generating static routes; published articles cannot point to a draft project. Only the original three sample IDs can select built-in demo implementations. Additional projects have an overview and production notes, plus optional validated HTTPS links without URL credentials and an optional GitHub owner/repository identifier. They never become arbitrary output paths or server-side requests. Existing link rendering uses React text and noopener/noreferrer. Dates select the latest three public listings; they do not grant publication or prove an app's development date. Skills and draft source are not included in the static package.
+
 ## GUI editing boundaries
 
 Public text, colors and articles live in fixed `src/content/site.json`. Validate its allowlisted schema, byte/field/item limits, IDs, dates, statuses, exact color syntax and readable contrast at import, save and build. Plain Markdown renders as React text/headings/lists; raw HTML never executes. No user-controlled path selects a write target.
