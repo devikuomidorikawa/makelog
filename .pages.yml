@@ -182,7 +182,8 @@
                         "max": 8,
                         "search": "name",
                         "value": "{fields.id}",
-                        "label": "{fields.name}"
+                        "label": "{fields.name}",
+                        "placeholder": "タグを選択"
                       }
                     },
                     {
@@ -284,7 +285,8 @@
                         "max": 8,
                         "search": "name",
                         "value": "{fields.id}",
-                        "label": "{fields.name}"
+                        "label": "{fields.name}",
+                        "placeholder": "タグを選択"
                       }
                     },
                     {
@@ -386,7 +388,8 @@
                         "max": 8,
                         "search": "name",
                         "value": "{fields.id}",
-                        "label": "{fields.name}"
+                        "label": "{fields.name}",
+                        "placeholder": "タグを選択"
                       }
                     },
                     {
@@ -469,7 +472,7 @@
         },
         {
           "name": "articles",
-          "label": "記事",
+          "label": "記事（下書きもGitHubでは閲覧可能）",
           "type": "object",
           "list": {
             "max": 200,
@@ -540,7 +543,8 @@
                 "max": 8,
                 "search": "name",
                 "value": "{fields.id}",
-                "label": "{fields.name}"
+                "label": "{fields.name}",
+                "placeholder": "タグを選択"
               }
             },
             {
@@ -591,8 +595,7 @@
                 "maxlength": 20000
               }
             }
-          ],
-          "description": "下書きはサイトに表示されません。ただし公開GitHubリポジトリ内のファイルは閲覧可能です。機密情報を保存しないでください。"
+          ]
         },
         {
           "name": "pages",
@@ -606,7 +609,6 @@
               "summary": "{titleJa} / {id}"
             }
           },
-          "description": "プライバシー、サイトの使い方、お問い合わせの案内。本文は見出し・太字・箇条書きに対応します。",
           "fields": [
             {
               "name": "id",
@@ -742,7 +744,8 @@
             "collection": "tags",
             "search": "name",
             "value": "{fields.id}",
-            "label": "{fields.name}"
+            "label": "{fields.name}",
+            "placeholder": "統合しない／タグ名で検索"
           },
           "description": "統合するときだけ選択。解除すると元のタグに戻ります。"
         }
