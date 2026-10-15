@@ -8,7 +8,7 @@ export const publicCommentsEnabled = validGiscus(config.giscus);
 export function Repository({ project, lang }) {
   const url = repositoryUrl(config.repositories[project]);
   const ja = lang === 'ja';
-  return url ? <div className="source-note"><GithubLogo size={20} aria-hidden="true"/><a className="text-link" href={url} target="_blank" rel="noopener noreferrer">{ja ? '作品のコードを見る' : 'View project source'}<ArrowUpRight size={18} aria-hidden="true"/></a></div> : <p className="source-note"><GithubLogo size={19} aria-hidden="true"/>{ja ? 'サンプル作品です。作品単体の公開コードはありません。' : 'Sample project. No separate public repository.'}</p>;
+  return url ? <div className="source-note"><GithubLogo size={20} aria-hidden="true"/><a className="text-link" href={url} target="_blank" rel="noopener noreferrer">{ja ? '作品のコードを見る' : 'View project source'}<ArrowUpRight size={18} aria-hidden="true"/></a></div> : null;
 
 }
 

@@ -19,6 +19,13 @@ test('shared project URLs survive reload with a fixed allowlist', () => {
   assert.deepEqual(readRoute('#journal'), {type:'journal'});
   for (const bad of ['#project/unknown/demo','#project/atlas/<script>','#project/atlas/demo/extra','#works']) assert.equal(readRoute(bad), null);
 });
+
+test('article-to-demo return context round-trips without accepting injected paths', () => {
+  const route={type:'project',project:'atlas',tab:'demo',from:'atlas-build-note'};
+  assert.deepEqual(readRoute(routeHash(route)),route);
+  for(const hash of ['#project/atlas/demo?from=../secret','#project/atlas/demo?from=%3Cscript%3E','#project/atlas/demo?from=a&next=editor','#project/atlas/demo?next=editor'])assert.equal(readRoute(hash),null);
+  assert.equal(routeHash({...route,from:'javascript:alert(1)'}),'#project/atlas/demo');
+});
 test('CSV filenames are quoted and formula prefixes remain text', () => {
   assert.equal(csvCell('sample-A.pdf'), '"sample-A.pdf"');
   assert.equal(csvCell('=1+1.pdf'), '"\'=1+1.pdf"');

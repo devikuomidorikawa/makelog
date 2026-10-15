@@ -88,3 +88,44 @@ body:before{background-image:repeating-linear-gradient(to bottom,transparent 0,t
 @media(max-width:380px){.atlas-hero{grid-template-columns:1fr}.campus-photo{height:130px;min-height:130px}.atlas-headline h3,html[lang=en] .atlas-headline h3{font-size:19px}.tabs button{font-size:11px;gap:5px}.case-story h2{font-size:28px}html[lang=en] .intro h1{font-size:29px}}
 
 .external-link{display:inline-flex;align-items:center;gap:10px;text-decoration:none}.github-details a{display:inline-flex;gap:6px;align-items:center;color:inherit}.github-panel .primary{margin:16px 0}.giscus-host{min-height:200px;margin:24px 0}.community>.support-note{max-width:66ch}
+
+/* Existing paper tones separate the site, the work gallery, and the reading page. */
+.portfolio-works{background:var(--stone);padding:20px 24px 0;margin-inline:-24px;border-top:1px solid var(--line)}
+.works-heading{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-bottom:20px}
+.works-heading>h2{font-size:15px;font-weight:650;letter-spacing:1px;flex-shrink:0}
+.featured{border:0}.featured .case-layout{padding-bottom:26px}
+.more-work{background:var(--surface);padding:0 20px;margin-inline:-20px}
+.case-story .tag-list{margin:14px 0 0}.overview-entry{align-self:flex-start;margin-top:4px}
+.tag-filter{display:flex;align-items:center;gap:12px;flex-wrap:wrap;font-size:12px}
+.tag-filter>label{display:flex;align-items:center;gap:10px}.tag-filter select{font-size:13px;max-width:230px;min-height:44px;padding:8px 32px 8px 12px;background:var(--surface)}
+.tag-filter>span{font-size:12px;white-space:nowrap}.tag-filter>.text-link{font-size:12px;min-height:44px}
+.tag-list{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0}.tag-chip{display:inline-flex;font-size:11px;line-height:1.5;padding:4px 9px;border:1px solid rgba(37,17,59,.16);border-radius:2px;overflow-wrap:anywhere;max-width:100%;background:transparent;font-weight:450}
+button.tag-chip{min-height:36px}button.tag-chip:hover{background:var(--stone)}
+.work-summary>.tag-list{display:flex;margin:6px 0 0}.work-summary .tag-chip{font-size:10px;padding:2px 6px}
+.project-dialog .modal-content{background:var(--stone)}.editorial-dialog .modal-content{background:var(--surface)}
+.modal-header{min-height:68px;gap:16px;padding:12px 24px}
+.breadcrumbs{min-width:0;flex:1;font-size:12px}.breadcrumbs ol{list-style:none;display:flex;flex-wrap:wrap;gap:0 8px;margin:0;padding:0}
+.breadcrumbs li{display:flex;align-items:center;gap:8px;min-width:0;max-width:100%;line-height:1.6}.breadcrumbs a{min-height:36px;display:flex;align-items:center;text-decoration:underline;text-underline-offset:4px}.breadcrumbs [aria-current=page]{font-weight:600;overflow-wrap:anywhere}
+.icon-button{width:44px;height:44px;min-width:44px}.detail-return{margin-bottom:18px}.detail-return .text-link{min-height:44px}
+.modal-content .text-link,.overview-entry,.article-back{min-height:44px}.project-heading+.tag-list{margin-top:14px;margin-bottom:5px}
+.related-notes{margin-top:25px;border-top:1px solid var(--line);padding-top:25px}.related-notes>h3{font-size:20px;margin-bottom:15px}.related-note{display:block;padding:20px 22px;background:var(--surface);margin-bottom:12px}.related-note h4{font-size:18px;line-height:1.6}.related-note>p{font-size:14px;margin:12px 0;color:var(--muted)}
+.technology-section{margin:0;background:var(--surface)}.technology-section .support-note:last-child{margin-top:10px}
+.article-detail>.tag-list{margin-block:0 18px}.article-detail .article-back{margin-top:20px}.article-next{margin-top:28px}
+.rule-presets{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}.rule-presets button{padding:10px 18px;min-height:44px;font-size:13px;border:1px solid var(--line);background:var(--surface)}.rule-presets [aria-pressed=true]{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.demo-intro p{font-size:14px}.demo-disclaimer{font-size:11px}.project-heading h2>span{font-weight:450}
+@media(max-width:960px) and (min-width:641px){.case-story>.tag-list{grid-column:1/-1}.overview-entry{grid-column:1/-1}.works-heading{align-items:flex-start}}
+@media(max-width:640px){
+ .portfolio-works{padding:14px 16px 0;margin-inline:-16px}.works-heading{display:block;margin-bottom:15px}.works-heading>h2{font-size:13px;margin-bottom:10px}
+ .tag-filter{gap:8px 12px}.tag-filter>label{gap:7px;font-size:11px;min-width:0;flex:1}.tag-filter select{flex:1;min-width:0;max-width:none;font-size:12px;padding-right:20px}
+ .case-story>.tag-list{order:4;margin-top:12px}.case-story>.case-actions{order:5;margin:16px 0 18px}.atlas-preview{order:6}.overview-entry{order:7;margin-block:12px 18px}
+ .case-story h2{font-size:29px;margin:11px 0 13px}.case-description{font-size:13px}.story-top .eyebrow{font-size:10px}.story-top .demo-tag{font-size:9px}
+ .atlas-top>.demo-tag{display:none}.atlas-hero{grid-template-columns:1.05fr 1fr;padding-inline:14px}.atlas-headline h3{font-size:19px}.campus-photo{min-height:135px}.demo-disclaimer{font-size:10px}
+ .more-work{margin-inline:-16px;padding-inline:16px}.work-row{gap:12px}.work-summary>.tag-list{display:flex}.work-summary .tag-chip{font-size:9px}.work-category{display:none}
+ .modal-header{padding:8px 14px;min-height:60px}.breadcrumbs{font-size:11px}.breadcrumbs ol{gap:0 5px}.breadcrumbs li{gap:5px}.breadcrumbs a{min-height:32px}
+ .modal-content{padding:12px 20px 28px}.detail-return{margin:0 0 12px}.project-heading h2{font-size:28px}.project-heading h2>span{font-size:13px}.project-heading+.tag-list{margin:10px 0 0}
+ .tabs{margin-top:12px}.tab-panel{padding-top:20px}.tag-chip{font-size:10px}.technology-section{padding:18px}.related-notes{padding-top:20px;margin-top:24px}.related-notes>h3{font-size:18px}.related-note{padding:18px}.related-note h4{font-size:17px}
+ .editorial-dialog .modal-content{padding:20px}.editorial-title{font-size:29px;line-height:1.5}.journal-list h3{font-size:17px}.journal-list .tag-list{margin:10px 0 0}.journal-list p{font-size:12px}
+ .article-meta{font-size:12px}.article-detail .editorial-lead{font-size:14px}.article-body{font-size:14px}.rule-presets{margin-top:18px}.rule-presets button{flex:1;padding-inline:12px;font-size:12px}
+ html[lang=en] .case-story h2{font-size:29px}html[lang=en] .case-description{font-size:13px}
+}
+@media(max-width:380px){.atlas-hero{grid-template-columns:1fr}.campus-photo{min-height:130px;height:130px}.breadcrumbs{font-size:10px}.tag-filter>label{flex-basis:100%}.case-story h2{font-size:27px}}

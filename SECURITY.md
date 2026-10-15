@@ -5,7 +5,8 @@ This is a static portfolio with fictional demo data. The deployed package contai
 ## Boundaries
 
 - Visitors control local search, sample naming rules, sample booking fields and URL fragments. React renders text; project and tab routes use fixed allowlists. No input is sent to an AI service or backend.
-- Sample comments exist in the current page only. When explicitly configured, giscus replaces them with public GitHub Discussions. Authentication, storage and moderation are delegated to GitHub/giscus. The external script runs only when the comments disclosure is expanded and only with a complete enabled configuration. Opening the overview with comments collapsed does not load it. A legacy comments URL opens the disclosure directly. Do not post private information.
+- Ephemeral sample comments are hidden on public project pages. A future complete, explicitly enabled giscus configuration can expose public GitHub Discussions; authentication, storage and moderation are delegated to GitHub/giscus. Its external script runs only when the comments disclosure is expanded. With the current disabled configuration, legacy comments routes show the overview without loading an external script. Do not post private information.
+- Demo inputs and filter choices persist only in page memory through internal navigation. A return-to-article URL accepts a bounded article ID and offers a return link only for a published article related to that project. No demo input is included in shared URLs.
 - Repository links accept only `owner/repository` identifiers and are constructed for `https://github.com/`. External tabs use `noopener noreferrer`.
 - CSV exports escape quotes and neutralize spreadsheet formula prefixes. No real document is uploaded, renamed or parsed.
 - GitHub Actions builds trusted `main` branch code. Deployment uses a short-lived GitHub token with Pages/OIDC permissions only in the deploy job. No personal token is required. Repository owners should protect `main` and the `github-pages` environment according to their collaboration needs.
@@ -16,6 +17,8 @@ GitHub Pages does not provide this application with a server, private datastore 
 ## GUI editing boundaries
 
 Public text, colors and articles live in fixed `src/content/site.json`. Validate its allowlisted schema, byte/field/item limits, IDs, dates, statuses, exact color syntax and readable contrast at import, save and build. Plain Markdown renders as React text/headings/lists; raw HTML never executes. No user-controlled path selects a write target.
+
+Project and article tags are optional plain string arrays, limited to eight unique tags of 1–32 characters each. Control and bidirectional formatting characters are rejected. Tags render as React text and filter by exact equality. Global tag rename/merge validates the entire resulting content, including drafts; public builds remove draft articles and their tags.
 
 Browser drafts are localStorage only: no authentication, shared storage, secrets or GitHub credentials. Production has no writing endpoint. The virtual content module omits draft articles, including bodies, from public JavaScript. Public GitHub source still exposes drafts; it must never contain private information.
 
