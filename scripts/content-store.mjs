@@ -1,6 +1,8 @@
 import {readFileSync,readdirSync,lstatSync} from 'node:fs';
 import {writeFile,rename,unlink} from 'node:fs/promises';
 import {createHash,randomBytes} from 'node:crypto';
+import {fileURLToPath} from 'node:url';
+import {resolve} from 'node:path';
 import {validateContent,validateTags,validateTagCatalog,TAG_UUID_PATTERN,MAX_TAG_CATALOG,MAX_CONTENT_BYTES} from '../src/content-model.mjs';
 
 export const CONTENT_FILE=new URL('../src/content/site.json',import.meta.url);
@@ -8,7 +10,9 @@ export const CATALOG_DIRECTORY=new URL('../src/content/tags/',import.meta.url);
 const MAX_TAG_FILE_BYTES=4096;
 const unsafe=()=>{throw Error('タグ管理ファイルの形式・保存先を確認してください。');};
 function safeStat(target,directory=false){
-  const stat=lstatSync(target);
+  // POSIX follows a directory symlink when lstat receives a trailing slash.
+  // Remove that separator lexically, without resolving filesystem links.
+  const stat=lstatSync(directory?resolve(fileURLToPath(target)):target);
   if(stat.isSymbolicLink()||(directory?!stat.isDirectory():!stat.isFile()||stat.nlink!==1))unsafe();
   return stat;
 }
