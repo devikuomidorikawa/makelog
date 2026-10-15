@@ -2,6 +2,7 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import { readFileSync } from "node:fs";
 import { contentPlugin } from './scripts/content-plugin.mjs';
+import {staticPages} from './scripts/static-pages.mjs';
 
 // Only the five public demo illustrations ship. Design drafts stay local.
 const frameHeaders = {'Content-Security-Policy':"frame-ancestors 'none'",'X-Frame-Options':'DENY'};
@@ -35,5 +36,5 @@ export default defineConfig(({ command }) => ({
     },
   },
   preview: { host: "127.0.0.1", headers: frameHeaders },
-  plugins: [react(), contentPlugin(), staticAssets],
+  plugins: [react(), contentPlugin(), staticAssets, staticPages()],
 }));

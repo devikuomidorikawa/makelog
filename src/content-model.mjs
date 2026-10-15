@@ -3,6 +3,8 @@ export const PROJECT_IDS = ['atlas', 'form', 'flow'];
 export const PAIR_FIELDS = ['heroTitle','heroDescription','studioBody','studioNote','footer','about'];
 export const MAX_TAGS = 8;
 export const MAX_TAG_LENGTH = 32;
+export const MAX_TAG_CATALOG = 100;
+export const PAGE_IDS = ['privacy','guide','contact'];
 
 function fail(message) { throw new Error(message); }
 function object(value, keys) {
@@ -31,6 +33,53 @@ export function validateTags(value=[]) {
   if(new Set(tags).size!==tags.length) fail('同じタグを重複して追加しないでください。');
   return tags;
 }
+export function validateTagCatalog(value=[]) {
+  if(!Array.isArray(value)||value.length>MAX_TAG_CATALOG) fail('タグ管理は100件以内にしてください。');
+  const ids=new Set();
+  const catalog=value.map(entry=>{
+    object(entry,['id','name','mergeInto']);
+    const [id]=validateTags([entry.id]),[name]=validateTags([entry.name]);
+    if(ids.has(id)) fail('タグIDが重複しています。');
+    ids.add(id);
+    const mergeInto=entry.mergeInto===''||entry.mergeInto===undefined?'':validateTags([entry.mergeInto])[0];
+    return mergeInto?{id,name,mergeInto}:{id,name};
+  });
+  const byId=new Map(catalog.map(entry=>[entry.id,entry]));
+  const names=new Set();
+  for(const entry of catalog){
+    if(!entry.mergeInto){if(names.has(entry.name)) fail('同じ表示名のタグは「統合先ID」でまとめてください。');names.add(entry.name);}
+    let current=entry,visited=new Set();
+    while(current.mergeInto){
+      if(visited.has(current.id)) fail('タグの統合先が循環しています。');
+      visited.add(current.id);current=byId.get(current.mergeInto);
+      if(!current) fail('タグの統合先IDが見つかりません。');
+    }
+  }
+  return catalog;
+}
+export function resolveTagId(tag,catalog=[]) {
+  const byId=new Map(catalog.map(entry=>[entry.id,entry]));
+  let current=byId.get(tag),visited=new Set();
+  while(current?.mergeInto){
+    if(visited.has(current.id)) fail('タグの統合先が循環しています。');
+    visited.add(current.id);current=byId.get(current.mergeInto);
+    if(!current) fail('タグの統合先IDが見つかりません。');
+  }
+  return current?.id??tag;
+}
+export function resolveTagName(tag,catalog=[]) {
+  const id=resolveTagId(tag,catalog);
+  return catalog.find(entry=>entry.id===id)?.name??tag;
+}
+export function resolveContentTags(value) {
+  const content=validateContent(value),catalog=content.tagCatalog||[];
+  const resolve=item=>({...item,tags:[...new Set(item.tags.map(tag=>resolveTagName(tag,catalog)))]});
+  content.site.projects=Object.fromEntries(Object.entries(content.site.projects).map(([id,item])=>[id,resolve(item)]));
+  content.articles=content.articles.map(resolve);
+  // The catalog is authoring metadata; unused and draft-only names never enter the public bundle.
+  delete content.tagCatalog;
+  return content;
+}
 export function contrast(a,b) {
   const light = color => {
     const values=color.slice(1).match(/../g).map(v=>parseInt(v,16)/255).map(v=>v<=.04045?v/12.92:((v+.055)/1.055)**2.4);
@@ -40,11 +89,14 @@ export function contrast(a,b) {
 }
 export function validateContent(value) {
   if (new TextEncoder().encode(JSON.stringify(value)).length>MAX_CONTENT_BYTES) fail('編集データは1MB以内にしてください。');
-  object(value,['version','site','articles']);
+  object(value,['version','site','articles','tagCatalog','pages']);
   if(value.version!==1) fail('対応していない編集データの版です。');
   const s=value.site;object(s,['brand','tagline',...PAIR_FIELDS,'colors','projects']);
   const site={brand:text(s.brand,60,true),tagline:text(s.tagline,100,true)};
-  for(const field of PAIR_FIELDS) site[field]=pair(s[field],field==='heroTitle'?200:3000);
+  for(const field of PAIR_FIELDS){
+    const value=field==='studioNote'&&(s[field]==null||(Array.isArray(s[field])&&s[field].length===0))?['','']:s[field];
+    site[field]=pair(value,field==='heroTitle'?200:3000);
+  }
   object(s.colors,['canvas','surface','stone','ink','accent']);
   site.colors={};
   for(const key of ['canvas','surface','stone','ink','accent']) {
@@ -71,12 +123,24 @@ export function validateContent(value) {
     if(!/^\d{4}-\d{2}-\d{2}$/.test(a.date||'')||Number.isNaN(Date.parse(a.date))||new Date(a.date).toISOString().slice(0,10)!==a.date) fail('記事の日付を確認してください。');
     return {id:a.id,project,date:a.date,status:a.status,titleJa:text(a.titleJa??'',200,a.status==='published'),titleEn:text(a.titleEn??'',200),summaryJa:text(a.summaryJa??'',1000),summaryEn:text(a.summaryEn??'',1000),bodyJa:text(a.bodyJa??'',20000,a.status==='published'),bodyEn:text(a.bodyEn??'',20000),tags:validateTags(a.tags)};
   });
-  return {version:1,site,articles};
+  const content={version:1,site,articles,pages:[]};
+  if(value.tagCatalog!==undefined)content.tagCatalog=validateTagCatalog(value.tagCatalog);
+  if(value.pages!==undefined){
+    if(!Array.isArray(value.pages)||value.pages.length>PAGE_IDS.length)fail('案内ページは3件以内にしてください。');
+    const pageIds=new Set();
+    content.pages=value.pages.map(page=>{
+      object(page,['id','titleJa','titleEn','bodyJa','bodyEn']);
+      if(!PAGE_IDS.includes(page.id)||pageIds.has(page.id))fail('案内ページのIDはprivacy・guide・contactから重複なく選んでください。');
+      pageIds.add(page.id);
+      return {id:page.id,titleJa:text(page.titleJa,200,true),titleEn:text(page.titleEn??'',200),bodyJa:text(page.bodyJa,10000,true),bodyEn:text(page.bodyEn??'',10000)};
+    });
+  }
+  return content;
 }
 export function publicContent(value) {
   const content=validateContent(value);
   content.articles=content.articles.filter(a=>a.status==='published');
-  return content;
+  return resolveContentTags(content);
 }
 export function localized(value,lang) { return value[lang==='en'?1:0]||value[0]||value[1]||''; }
 export function articleCopy(article,key,lang) { return article[`${key}${lang==='en'?'En':'Ja'}`]||article[`${key}Ja`]||article[`${key}En`]||''; }

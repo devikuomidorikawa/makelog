@@ -4,7 +4,7 @@ This is a static portfolio with fictional demo data. The deployed package contai
 
 ## Boundaries
 
-- Visitors control local search, sample naming rules, sample booking fields and URL fragments. React renders text; project and tab routes use fixed allowlists. No input is sent to an AI service or backend.
+- Visitors control local search, sample naming rules, sample booking fields, URL paths and legacy fragments. React renders text; project, tab and informational routes use fixed allowlists. Article and return IDs use bounded patterns; return links require a published article belonging to that project. No input is sent to an AI service or backend.
 - Ephemeral sample comments are hidden on public project pages. A future complete, explicitly enabled giscus configuration can expose public GitHub Discussions; authentication, storage and moderation are delegated to GitHub/giscus. Its external script runs only when the comments disclosure is expanded. With the current disabled configuration, legacy comments routes show the overview without loading an external script. Do not post private information.
 - Demo inputs and filter choices persist only in page memory through internal navigation. A return-to-article URL accepts a bounded article ID and offers a return link only for a published article related to that project. No demo input is included in shared URLs.
 - Repository links accept only `owner/repository` identifiers and are constructed for `https://github.com/`. External tabs use `noopener noreferrer`.
@@ -18,7 +18,9 @@ GitHub Pages does not provide this application with a server, private datastore 
 
 Public text, colors and articles live in fixed `src/content/site.json`. Validate its allowlisted schema, byte/field/item limits, IDs, dates, statuses, exact color syntax and readable contrast at import, save and build. Plain Markdown renders as React text/headings/lists; raw HTML never executes. No user-controlled path selects a write target.
 
-Project and article tags are optional plain string arrays, limited to eight unique tags of 1–32 characters each. Control and bidirectional formatting characters are rejected. Tags render as React text and filter by exact equality. Global tag rename/merge validates the entire resulting content, including drafts; public builds remove draft articles and their tags.
+Project and article tags are optional plain string ID arrays, limited to eight unique IDs of 1–32 characters each. Control and bidirectional formatting characters are rejected. The optional catalog maps fixed IDs to display names and existing merge destinations; duplicate IDs, ambiguous active names, missing destinations and cycles are rejected. Online and local rename/merge preserve raw references. Public content resolves final names and deduplicates assignments, removes drafts, and omits the catalog entirely to avoid publishing draft-only or unused metadata. React renders names as text and filters by exact equality. The editor uses validated raw source separately from resolved reader previews.
+
+Static page files are generated only from fixed routes and validated public article IDs. Metadata titles and descriptions are HTML-escaped. Generated nested asset paths resolve back to the site root, and the 404 document has noindex. Informational page text uses the same safe Markdown subset. GitHub contact links open a public issue form; the application never submits a message automatically.
 
 Browser drafts are localStorage only: no authentication, shared storage, secrets or GitHub credentials. Production has no writing endpoint. The virtual content module omits draft articles, including bodies, from public JavaScript. Public GitHub source still exposes drafts; it must never contain private information.
 

@@ -4,8 +4,8 @@ import {readFile,writeFile,mkdtemp,rm,symlink} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import {pathToFileURL} from 'node:url';
 import path from 'node:path';
-import {validateContent,validateTags,publicContent,contrast} from '../src/content-model.mjs';
-import {collectTags,tagMatches,renameContentTag} from '../src/tag-utils.mjs';
+import {validateContent,validateTags,validateTagCatalog,publicContent,contrast,resolveContentTags} from '../src/content-model.mjs';
+import {collectTags,tagMatches,renameContentTag,collectTagOptions,addTagAssignment} from '../src/tag-utils.mjs';
 import {allowedLocalRequest,atomicSave,revision} from '../scripts/content-plugin.mjs';
 import {readRoute,routeHash} from '../src/site-utils.mjs';
 const original=JSON.parse(await readFile(new URL('../src/content/site.json',import.meta.url),'utf8'));
@@ -36,7 +36,7 @@ test('tag filters match exact assignments, including untagged items and empty fi
 
 test('renaming a tag updates projects and drafts while merging existing assignments',()=>{
   const data=copy();data.site.projects.atlas.tags=['React','UI/UX'];data.articles[0].tags=['React'];data.articles[1].status='draft';data.articles[1].tags=['React','UI/UX'];
-  const result=renameContentTag(data,'React','UI/UX');assert.deepEqual(result.site.projects.atlas.tags,['UI/UX']);assert.deepEqual(result.articles[0].tags,['UI/UX']);assert.deepEqual(result.articles[1].tags,['UI/UX']);assert.equal(result.articles[1].status,'draft');assert.deepEqual(data.site.projects.atlas.tags,['React','UI/UX']);assert.throws(()=>renameContentTag(data,'React','bad\nname'));
+  const raw=renameContentTag(data,'React','UI/UX'),result=resolveContentTags(raw);assert.deepEqual(raw.site.projects.atlas.tags,['React','UI/UX']);assert.deepEqual(result.site.projects.atlas.tags,['UI/UX']);assert.deepEqual(result.articles[0].tags,['UI/UX']);assert.deepEqual(result.articles[1].tags,['UI/UX']);assert.equal(result.articles[1].status,'draft');assert.deepEqual(data.site.projects.atlas.tags,['React','UI/UX']);assert.throws(()=>renameContentTag(data,'React','bad\nname'));
 });
 test('content rejects duplicate IDs, invalid dates, excess fields and CSS injection',()=>{
   let data=copy();data.articles.push({...data.articles[0]});assert.throws(()=>validateContent(data));
@@ -81,4 +81,55 @@ test('Pages CMS edits the same fixed file and bilingual schema as the local stud
   const tags=fields.find(f=>f.name==='articles').fields.find(f=>f.name==='tags');assert.equal(tags.type,'string');assert.equal(tags.list.max,8);assert.equal(tags.options.maxlength,32);
   for(const project of fields.find(f=>f.name==='site').fields.find(f=>f.name==='projects').fields){const tag=project.fields.find(f=>f.name==='tags');assert.equal(tag.type,'string');assert.equal(tag.list.max,8);}
   assert.deepEqual(fields.find(f=>f.name==='site').fields.find(f=>f.name==='colors').fields.map(f=>f.name),Object.keys(original.site.colors));
+});
+
+test('online catalog renames every stable reference and omits unused/draft metadata from publishing',()=>{
+  const data=copy();data.tagCatalog=[{id:'React',name:'React UI'},{id:'unused',name:'UNUSED-SENTINEL'},{id:'draft-tag',name:'DRAFT-CATALOG-SENTINEL'}];
+  data.articles.push({...data.articles[0],id:'draft-catalog-only',status:'draft',tags:['draft-tag']});
+  const published=publicContent(data);assert.ok(published.site.projects.atlas.tags.includes('React UI'));assert.ok(published.articles[0].tags.includes('React UI'));assert.ok(!JSON.stringify(published).includes('SENTINEL'));assert.equal(published.tagCatalog,undefined);assert.equal(data.site.projects.atlas.tags[0],'React');
+  const raw=validateContent(data);assert.equal(raw.tagCatalog[0].id,'React');assert.equal(raw.articles.at(-1).status,'draft');
+});
+
+test('online merges resolve chains, aggregate filters, deduplicate assignments and preserve references',()=>{
+  const data=copy();data.tagCatalog=[{id:'React',name:'React',mergeInto:'UI/UX'},{id:'UI/UX',name:'UI/UX',mergeInto:'Data'},{id:'Data',name:'Research'}];
+  const published=publicContent(data);assert.deepEqual(published.site.projects.atlas.tags,['Research']);assert.deepEqual(published.site.projects.flow.tags,['Research','Forms']);assert.equal(Object.values(published.site.projects).filter(item=>tagMatches(item,'Research')).length,2);assert.deepEqual(data.site.projects.atlas.tags,['React','UI/UX','Data']);
+  assert.ok(!collectTags(published.articles).includes('React'));
+});
+
+test('catalog rejects ambiguous IDs, missing merge targets, cycles and unsafe labels',()=>{
+  for(const catalog of [null,{},[{id:'x',name:'A'},{id:'x',name:'B'}],[{id:'x',name:'A',mergeInto:'absent'}],[{id:'x',name:'A',mergeInto:'x'}],[{id:'x',name:'A',mergeInto:'y'},{id:'y',name:'B',mergeInto:'x'}],[{id:'x',name:'same'},{id:'y',name:'same'}],[{id:'x',name:'bad\nname'}],[{id:4,name:'Bad ID'}],[{id:'x',name:'A',mergeInto:null}],[{id:'x',name:'x',surprise:true}],Array.from({length:101},(_,i)=>({id:String(i),name:String(i)}))])assert.throws(()=>validateTagCatalog(catalog));
+  assert.deepEqual(validateTagCatalog([{id:' React ',name:' React UI ',mergeInto:''}]),[{id:'React',name:'React UI'}]);
+});
+
+test('local rename and merge use the same online catalog without rewriting article references',()=>{
+  const data=copy();data.tagCatalog=[{id:'React',name:'React'}];const renamed=renameContentTag(data,'React','React UI');assert.equal(renamed.tagCatalog[0].id,'React');assert.equal(renamed.tagCatalog[0].name,'React UI');assert.deepEqual(renamed.site.projects.atlas.tags,data.site.projects.atlas.tags);
+  const merged=renameContentTag(renamed,'React UI','UI/UX');assert.equal(merged.tagCatalog.find(tag=>tag.id==='React').mergeInto,'UI/UX');assert.deepEqual(resolveContentTags(merged).site.projects.atlas.tags,['UI/UX','Data']);assert.ok(collectTagOptions(merged).some(tag=>tag.id==='UI/UX'&&tag.name==='UI/UX'));assert.throws(()=>renameContentTag(merged,'missing','new'));
+});
+
+test('local assignment selects stable IDs by display name and safely handles renamed ID collisions',()=>{
+  const data=copy();data.tagCatalog=[{id:'React',name:'React UI'}];let added=addTagAssignment(data,[],'React UI');assert.deepEqual(added.tags,['React']);assert.throws(()=>addTagAssignment(data,['React'],'React UI'));
+  added=addTagAssignment(data,[],'React');assert.notEqual(added.tags[0],'React');assert.equal(added.tagCatalog.find(tag=>tag.id===added.tags[0]).name,'React');assert.deepEqual(data.tagCatalog,[{id:'React',name:'React UI'}]);
+});
+
+test('informational pages accept only fixed unique routes and bounded bilingual plain text',()=>{
+  const data=copy();data.pages=[{id:'privacy',titleJa:'プライバシー',bodyJa:'説明'}];let result=publicContent(data);assert.equal(result.pages[0].bodyEn,'');assert.equal(result.pages[0].id,'privacy');
+  for(const pages of [[{id:'other',titleJa:'説明',bodyJa:'本文'}],[...data.pages,...data.pages],[{id:'privacy',titleJa:'',bodyJa:'説明'}],[{id:'privacy',titleJa:'説明',bodyJa:'x'.repeat(10001)}]])assert.throws(()=>validateContent({...data,pages}));
+});
+
+test('CMS online management exposes catalog rename/merge and bounded informational pages',async()=>{
+  const config=JSON.parse(await readFile(new URL('../.pages.yml',import.meta.url),'utf8')),fields=config.content[0].fields;
+  const catalog=fields.find(field=>field.name==='tagCatalog');assert.equal(catalog.type,'object');assert.equal(catalog.list.max,100);assert.deepEqual(catalog.fields.map(field=>field.name),['id','name','mergeInto']);assert.equal(catalog.fields.find(field=>field.name==='mergeInto').options.maxlength,32);
+  const pages=fields.find(field=>field.name==='pages');assert.equal(pages.list.max,3);assert.equal(pages.fields.find(field=>field.name==='bodyJa').options.maxlength,10000);assert.deepEqual(pages.fields.find(field=>field.name==='id').options.values.map(option=>option.name),['privacy','guide','contact']);
+});
+
+test('CMS may omit the unused studio note without weakening other bilingual fields',async()=>{
+  for(const note of [undefined,null,[],['','']]){
+    const data=copy();if(note===undefined)delete data.site.studioNote;else data.site.studioNote=note;
+    assert.deepEqual(validateContent(data).site.studioNote,['','']);
+  }
+  for(const note of [['one'],'wrong',false,{}]){const data=copy();data.site.studioNote=note;assert.throws(()=>validateContent(data));}
+  for(const title of [undefined,null,[],['one']]){const data=copy();data.site.heroTitle=title;assert.throws(()=>validateContent(data));}
+  const config=JSON.parse(await readFile(new URL('../.pages.yml',import.meta.url),'utf8'));
+  const note=config.content[0].fields.find(field=>field.name==='site').fields.find(field=>field.name==='studioNote');
+  assert.equal(note.hidden,true);assert.equal(note.list.min,0);assert.equal(note.list.max,2);
 });
