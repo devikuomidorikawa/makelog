@@ -1,5 +1,32 @@
 {
   "version": 1,
+  "tagCatalog": [
+    {
+      "id": "Automation",
+      "name": "Automation"
+    },
+    {
+      "id": "Data",
+      "name": "Data",
+      "mergeInto": "React"
+    },
+    {
+      "id": "Forms",
+      "name": "Forms"
+    },
+    {
+      "id": "JavaScript",
+      "name": "JavaScript"
+    },
+    {
+      "id": "React",
+      "name": "React・確認用"
+    },
+    {
+      "id": "UI/UX",
+      "name": "UI/UX"
+    }
+  ],
   "site": {
     "brand": "MAKELOG",
     "tagline": "AI & SOFTWARE STUDIO",
@@ -14,10 +41,6 @@
     "studioBody": [
       "AIとコードで、日常の課題を使える道具へ。",
       "Everyday problems, useful tools. Made with AI and code."
-    ],
-    "studioNote": [
-      "",
-      ""
     ],
     "footer": [
       "AIでつくり、コードでひらき、みんなで育てていく。",
@@ -37,6 +60,11 @@
     "projects": {
       "atlas": {
         "name": "ATLAS",
+        "tags": [
+          "React",
+          "UI/UX",
+          "Data"
+        ],
         "category": [
           "データ × 体験設計",
           "DATA × EXPERIENCE"
@@ -62,15 +90,14 @@
           "学校データを揃える",
           "検索と選択を分ける",
           "選んだ学校を比較する"
-        ],
-        "tags": [
-          "React",
-          "UI/UX",
-          "Data"
         ]
       },
       "form": {
         "name": "FORM",
+        "tags": [
+          "JavaScript",
+          "Automation"
+        ],
         "category": [
           "自動化 × 道具の設計",
           "AUTOMATION × CRAFT"
@@ -96,14 +123,15 @@
           "日付と件名を使う",
           "命名ルールを適用する",
           "候補を確認・保存する"
-        ],
-        "tags": [
-          "JavaScript",
-          "Automation"
         ]
       },
       "flow": {
         "name": "FLOW",
+        "tags": [
+          "React",
+          "UI/UX",
+          "Forms"
+        ],
         "category": [
           "業務設計 × オートメーション",
           "WORKFLOW × AUTOMATION"
@@ -129,11 +157,6 @@
           "希望を入力する",
           "内容を確認する",
           "デモの完了を示す"
-        ],
-        "tags": [
-          "React",
-          "UI/UX",
-          "Forms"
         ]
       }
     }
@@ -144,76 +167,50 @@
       "date": "2026-10-14",
       "status": "published",
       "project": "atlas",
+      "tags": [
+        "React",
+        "UI/UX",
+        "Data"
+      ],
       "titleJa": "学校比較で、検索と選択を分けた理由",
       "titleEn": "Why search and selection are separate",
       "summaryJa": "条件を変えても、選んだ学校を見失わない。共通の比較項目と2つの状態を使う、架空の大学比較デモの設計例です。",
       "summaryEn": "Keep selected schools in view when filters change. An illustrative design using shared comparison fields and separate search and selection state.",
       "bodyJa": "## 課題：探し直すたび、比較をやり直す\nこれは架空の3校を使った制作記録のサンプルです。大学名や学びで検索する場面と、候補を並べて比較する場面を想定しました。検索結果だけを表にすると、条件を変えるたびに比較する学校も入れ替わってしまいます。\n\n## 判断：情報の形と、状態を分ける\n学校データはID・名前・学び・通学・入試を共通の形で持ちます。検索語と分野は結果を絞る条件、選択したIDは比較表をつくる条件として、別々に扱います。\n\n- 学校データ → 検索条件で絞る → 候補を表示\n- 学校データ → 選択IDで絞る → 比較表を表示\n\n## デモで確認できること\n最初の2校を選んだまま「データ」で検索し、分野を切り替えてみてください。検索結果が変わっても比較表の選択は残ります。学校を外すと表が更新され、選択をすべて外すと次の操作を案内します。\n\n## 次に確かめたいこと\n実データを使う段階では、情報の出典と更新日、項目の欠損をどう示すかを検討します。このサンプルには実在校の情報や、利用者調査の成果は含めていません。",
-      "bodyEn": "## Problem: a new search should not reset a comparison\nThis build note is an illustrative example using three fictional schools. Searching for a school and comparing a shortlist serve different purposes. If the table uses search results directly, changing a filter also changes the schools being compared.\n\n## Decision: share fields, separate state\nEach school has the same fields: ID, name, study, commute, and admissions. Search text and field filter define visible results. Selected IDs define the comparison, independently.\n\n- School data → search filters → result cards\n- School data → selected IDs → comparison table\n\n## What you can check in the demo\nKeep the first two schools selected, search for data, and change the field filter. The results change while the comparison retains its selection. Removing a school updates the table. Clearing every selection shows how to start again.\n\n## What comes next\nReal data would need sources, update dates, and clear treatment of missing fields. This sample contains no real institution data or claimed user-research results.",
-      "tags": [
-        "React",
-        "UI/UX",
-        "Data"
-      ]
+      "bodyEn": "## Problem: a new search should not reset a comparison\nThis build note is an illustrative example using three fictional schools. Searching for a school and comparing a shortlist serve different purposes. If the table uses search results directly, changing a filter also changes the schools being compared.\n\n## Decision: share fields, separate state\nEach school has the same fields: ID, name, study, commute, and admissions. Search text and field filter define visible results. Selected IDs define the comparison, independently.\n\n- School data → search filters → result cards\n- School data → selected IDs → comparison table\n\n## What you can check in the demo\nKeep the first two schools selected, search for data, and change the field filter. The results change while the comparison retains its selection. Removing a school updates the table. Clearing every selection shows how to start again.\n\n## What comes next\nReal data would need sources, update dates, and clear treatment of missing fields. This sample contains no real institution data or claimed user-research results."
     },
     {
       "id": "form-build-note",
       "date": "2026-10-13",
       "status": "published",
       "project": "form",
+      "tags": [
+        "JavaScript",
+        "Automation"
+      ],
       "titleJa": "ファイル名は、変更前に並べて確認する",
       "titleEn": "Preview filenames before changing anything",
       "summaryJa": "日付と件名の順番を変え、3件の候補を見比べる。元ファイルを変更しない命名ルールデモの設計例です。",
       "summaryEn": "Reorder dates and titles and compare three proposed filenames. An illustrative naming-rule demo that leaves original files untouched.",
       "bodyJa": "## 課題：一括変更ほど、結果が見えにくい\nこれは3件の架空の書類情報を使った制作記録のサンプルです。名前を揃えたい一方で、ルールを間違えると一括変更の影響が大きくなります。まず結果を確かめられることを優先しました。\n\n## 判断：入力・ルール・候補を分ける\n入力は日付と件名のサンプルデータです。{date} と {title} を指定した命名ルールに置き換え、末尾に .pdf を付けます。使えない記号や置換項目のないルールは実行前に止めます。\n\n- 日付と件名 → 命名ルールを検証 → 候補名を生成\n- 元の名前と候補名 → 並べて確認 → CSVで保存\n\n## デモで確認できること\n{date}_{title} と {title}_{date} をそれぞれ試してください。日付を先頭にした場合と、件名を先頭にした場合の違いが3件まとめて見えます。ルールを変えると前の結果は解除され、もう一度確認できます。\n\n## 動く範囲を明確にする\n保存できるのは名前の対応表です。PDFの読み取り、実ファイルのリネーム、AIによる書類解析は行いません。実運用では、同名ファイルの衝突や取り消し方法を追加で検討する必要があります。",
-      "bodyEn": "## Problem: batch changes can hide their impact\nThis illustrative build note uses three fictional document records. A wrong naming rule can affect an entire batch, so reviewing the proposed names comes first.\n\n## Decision: separate records, rules, and proposed names\nInput consists of sample dates and titles. The rule replaces {date} and {title}, then adds the .pdf extension. Rules with invalid filename characters or no replacement field are rejected before running.\n\n- Date and title → validate naming rule → generate proposed names\n- Original and proposed names → review side by side → export CSV\n\n## What you can check in the demo\nTry {date}_{title} and {title}_{date}. Compare the three results for each order. Editing the rule clears the previous result so it can be reviewed again.\n\n## Make the scope clear\nThe download is a filename mapping. This demo does not read PDFs, rename actual files, or use AI to parse documents. Real deployment would also need collision handling and a way to undo changes.",
-      "tags": [
-        "JavaScript",
-        "Automation"
-      ]
+      "bodyEn": "## Problem: batch changes can hide their impact\nThis illustrative build note uses three fictional document records. A wrong naming rule can affect an entire batch, so reviewing the proposed names comes first.\n\n## Decision: separate records, rules, and proposed names\nInput consists of sample dates and titles. The rule replaces {date} and {title}, then adds the .pdf extension. Rules with invalid filename characters or no replacement field are rejected before running.\n\n- Date and title → validate naming rule → generate proposed names\n- Original and proposed names → review side by side → export CSV\n\n## What you can check in the demo\nTry {date}_{title} and {title}_{date}. Compare the three results for each order. Editing the rule clears the previous result so it can be reviewed again.\n\n## Make the scope clear\nThe download is a filename mapping. This demo does not read PDFs, rename actual files, or use AI to parse documents. Real deployment would also need collision handling and a way to undo changes."
     },
     {
       "id": "flow-build-note",
       "date": "2026-10-12",
       "status": "published",
       "project": "flow",
+      "tags": [
+        "React",
+        "UI/UX",
+        "Forms"
+      ],
       "titleJa": "確認画面から戻っても、入力を失わない",
       "titleEn": "Keep entered details when returning from review",
       "summaryJa": "入力・確認・完了を3段階に分け、修正時のやり直しを減らす。個人情報を使わない架空の見学受付の設計例です。",
       "summaryEn": "Three distinct steps make corrections easier. An illustrative visit-request flow that needs no personal information.",
       "bodyJa": "## 課題：確認中に気づいた間違いを、直しやすく\nこれは架空の見学受付を使った制作記録のサンプルです。確認画面で日付や人数を直したくなったとき、入力を最初からやり直す必要がない流れを考えました。\n\n## 判断：段階と、入力内容を別に持つ\n画面の段階は入力・確認・完了の3つ。日付・目的・人数は段階とは別に保持します。「修正する」は入力画面に戻すだけなので、確認前に入力した値が残ります。\n\n- 入力内容 → 確認画面 → デモ完了\n- 確認画面 → 修正する → 入力内容を保持\n\n## デモで確認できること\n希望日と人数を変えて確認画面へ進み、「修正する」で戻ってください。同じ値が表示されるので、必要な項目だけ直せます。最後の画面にはデモ受付の完了と、実際の予約・通知を送信していないことを表示します。\n\n## 集める情報を必要な分だけに\n流れを体験するために氏名や連絡先は不要です。外部への予約送信、承認、通知は実装していません。実運用の受付にする段階で、本人確認や受付側の処理を改めて設計します。",
-      "bodyEn": "## Problem: corrections should be easy during review\nThis build note is an illustrative example of a fictional visit request. Changing a date or visitor count on the review screen should not require entering everything again.\n\n## Decision: keep step and input state separate\nThe screen has three steps: details, review, and completion. Date, purpose, and visitor count are stored independently of the current step. The Edit action returns to the first screen without clearing those values.\n\n- Entered details → review → sample completion\n- Review → edit → preserved details\n\n## What you can check in the demo\nChange the date and visitor count, continue to review, then choose Edit. The same values remain so you only need to correct what changed. The final screen explains both the sample completion and the absence of a real booking or notification.\n\n## Collect only what this experience needs\nNames and contact details are unnecessary for trying the flow. Submission, approval, and notifications are not implemented. A real reception service would need a separate design for identity and coordinator actions.",
-      "tags": [
-        "React",
-        "UI/UX",
-        "Forms"
-      ]
-    }
-  ],
-  "tagCatalog": [
-    {
-      "id": "Automation",
-      "name": "Automation"
-    },
-    {
-      "id": "Data",
-      "name": "Data"
-    },
-    {
-      "id": "Forms",
-      "name": "Forms"
-    },
-    {
-      "id": "JavaScript",
-      "name": "JavaScript"
-    },
-    {
-      "id": "React",
-      "name": "React"
-    },
-    {
-      "id": "UI/UX",
-      "name": "UI/UX"
+      "bodyEn": "## Problem: corrections should be easy during review\nThis build note is an illustrative example of a fictional visit request. Changing a date or visitor count on the review screen should not require entering everything again.\n\n## Decision: keep step and input state separate\nThe screen has three steps: details, review, and completion. Date, purpose, and visitor count are stored independently of the current step. The Edit action returns to the first screen without clearing those values.\n\n- Entered details → review → sample completion\n- Review → edit → preserved details\n\n## What you can check in the demo\nChange the date and visitor count, continue to review, then choose Edit. The same values remain so you only need to correct what changed. The final screen explains both the sample completion and the absence of a real booking or notification.\n\n## Collect only what this experience needs\nNames and contact details are unnecessary for trying the flow. Submission, approval, and notifications are not implemented. A real reception service would need a separate design for identity and coordinator actions."
     }
   ],
   "pages": [
