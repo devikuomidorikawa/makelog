@@ -1,6 +1,8 @@
 # MAKELOG GUI編集ガイド
 
-サイト下部の「サイトを編集」、または `#editor` から編集スタジオを開きます。
+公開サイト下部の「サイトを編集」から[Pages CMS](https://app.pagescms.org/devikuomidorikawa/makelog/main)を開き、オンラインで更新できます。この端末の開発版では同じボタンから編集スタジオを開きます。公開版の `#editor` はブラウザー内の下書き・プレビュー用です。
+
+公開サイト：[MAKELOG](https://devikuomidorikawa.github.io/makelog/)。公開元：[devikuomidorikawa/makelog](https://github.com/devikuomidorikawa/makelog)、公開ブランチは `main` です。
 
 ## この端末で編集する
 
@@ -19,15 +21,15 @@
 
 GitHub Pagesのファイル更新にはGitHubへの保存が必要です。追加の認証サーバーを設けず、無料の[Pages CMS](https://pagescms.org/)で同じデータを更新できる設定を同梱しました。
 
-1. ソースを公開先リポジトリへ配置。ルートの `.pages.yml` を含めます。
-2. [Pages CMS](https://app.pagescms.org/)にGitHubでログイン。初回は所有者が編集対象リポジトリだけへのGitHub Appのアクセスを承認します。現在は未接続です。
-3. 対象リポジトリと公開ブランチ（既定main）を選び、「記事とサイトを編集」を開きます。
+1. 公開元リポジトリにソースと `.pages.yml` を配置済みです。GitHub Pagesの初回公開も成功しています。
+2. [Pages CMS](https://app.pagescms.org/devikuomidorikawa/makelog/main)を開きます。GitHub Appは `makelog` だけへのアクセスでインストール済みで、本人によるGitHubログインも完了しています。別のブラウザー・端末ではログインが必要です。
+3. `devikuomidorikawa/makelog` と `main` を選び、「記事とサイトを編集」を開きます。
 4. 記事を追加・編集し、サイトの文章・作品・配色もフォームで変更できます。言語の配列項目は1つ目が日本語、2つ目が英語。記事は言語別の入力欄です。記事IDは重複しない半角の小文字英数字・ハイフン、日付はYYYY-MM-DD形式。
 5. 保存がGitHubの変更として記録され、付属のGitHub Actionsが検査・ビルド・公開。完了後に公開サイトへ反映されます。
 
 この端末の編集結果を先に反映する場合は、保存済みファイルまたはダウンロードした `site.json` を、GitHubのファイル更新画面から `src/content/site.json` へアップロードしてコミットできます。以後のオンライン編集はPages CMSだけで行えます。
 
-Pages CMS公式はオンライン版も無料と案内しています（2026-10-14確認）。独自ドメイン・有料API・別途データベースは不要です。公開先とCMS接続が未設定のため、実際のログイン・オンライン保存・自動公開は未検証です。
+Pages CMS公式はオンライン版も無料と案内しています（2026-10-14確認）。独自ドメイン・有料API・別途データベースは不要です。GitHub Pagesの公開、Pages CMSへのログイン・対象ブランチ表示、CMSでの実保存、保存後のGitHub Actionsによる自動公開と公開ページへの反映を確認済みです（2026-10-15）。サイトの文章変更が公開ページに反映され、追加した下書き記事が公開制作ノートに出ないことも確認しました。CMSで保存することと公開完了は別で、更新ごとにGitHub Actionsの成功と公開ページへの反映を確認します。
 
 ## データと制限
 
