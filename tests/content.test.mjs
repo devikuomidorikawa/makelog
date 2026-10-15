@@ -4,7 +4,7 @@ import {readFile,writeFile,mkdtemp,rm,symlink} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import {pathToFileURL} from 'node:url';
 import path from 'node:path';
-import {validateContent,validateTags,validateTagCatalog,publicContent,contrast,resolveContentTags} from '../src/content-model.mjs';
+import {validateContent,validateTags,validateTagCatalog,publicContent,contrast,resolveContentTags,recentProjects,projectEntries,httpsUrl} from '../src/content-model.mjs';
 import {collectTags,tagMatches,renameContentTag,collectTagOptions,addTagAssignment} from '../src/tag-utils.mjs';
 import {allowedLocalRequest,atomicSave,revision} from '../scripts/content-plugin.mjs';
 import {readRoute,routeHash} from '../src/site-utils.mjs';
@@ -127,7 +127,7 @@ test('CMS online management exposes catalog rename/merge and bounded information
   const catalog=config.content.find(entry=>entry.name==='tags');assert.equal(catalog.type,'collection');assert.equal(catalog.path,'src/content/tags');assert.equal(catalog.operations.delete,false);assert.equal(catalog.operations.rename,false);
   const id=catalog.fields.find(field=>field.name==='id');assert.equal(id.type,'uuid');assert.equal(id.readonly,true);assert.equal(id.hidden,true);assert.equal(id.options.generate,false);
   const merge=catalog.fields.find(field=>field.name==='mergeInto');assert.equal(merge.type,'reference');assert.equal(merge.options.collection,'tags');assert.equal(merge.options.value,'{fields.id}');assert.equal(merge.options.label,'{fields.name}');
-  const assignments=[];const visit=rows=>rows.forEach(field=>{if(field.name==='tags')assignments.push(field);if(field.fields)visit(field.fields);});visit(fields);assert.equal(assignments.length,4);for(const field of assignments){assert.equal(field.type,'reference');assert.equal(field.options.multiple,true);assert.equal(field.options.max,8);assert.equal(field.options.label,'{fields.name}');}
+  const assignments=[];const visit=rows=>rows.forEach(field=>{if(field.name==='tags')assignments.push(field);if(field.fields)visit(field.fields);});visit(fields);assert.equal(assignments.length,5);for(const field of assignments){assert.equal(field.type,'reference');assert.equal(field.options.multiple,true);assert.equal(field.options.max,8);assert.equal(field.options.label,'{fields.name}');}
   const pages=fields.find(field=>field.name==='pages');assert.equal(pages.list.max,3);assert.equal(pages.fields.find(field=>field.name==='bodyJa').options.maxlength,10000);assert.deepEqual(pages.fields.find(field=>field.name==='id').options.values.map(option=>option.name),['privacy','guide','contact']);
 });
 
@@ -141,4 +141,43 @@ test('CMS may omit the unused studio note without weakening other bilingual fiel
   const config=JSON.parse(await readFile(new URL('../.pages.yml',import.meta.url),'utf8'));
   const note=config.content[0].fields.find(field=>field.name==='site').fields.find(field=>field.name==='studioNote');
   assert.equal(note.hidden,true);assert.equal(note.list.min,0);assert.equal(note.list.max,2);
+});
+
+const extra=(id,updatedAt='2026-10-15',status='published')=>({id,...structuredClone(original.site.projects.form),updatedAt,status});
+test('recent works include at most three public projects in newest update order with deterministic ties',()=>{
+  const data=copy();data.site.additionalProjects=[extra('my-app'),extra('z-app'),extra('a-draft','2026-10-16','draft')];
+  const before=JSON.stringify(data);
+  assert.deepEqual(recentProjects(data.site).map(([id])=>id),['my-app','z-app','atlas']);
+  assert.equal(JSON.stringify(data),before);
+  data.site.projects.atlas.updatedAt='2026-10-17';assert.deepEqual(recentProjects(data.site).map(([id])=>id),['atlas','my-app','z-app']);
+  for(const p of Object.values(data.site.projects))delete p.updatedAt;
+  const normalized=validateContent(data);assert.equal(normalized.site.projects.atlas.updatedAt,'');
+  assert.deepEqual(recentProjects(normalized.site).map(([id])=>id),['my-app','z-app','atlas']);
+  assert.equal(recentProjects({projects:{one:{updatedAt:'2026-10-14'}}}).length,1);
+});
+
+test('additional apps publish without draft metadata and articles cannot link publicly to draft apps',()=>{
+  const data=copy();data.site.additionalProjects=[extra('my-app'),{...extra('hidden-app','2026-10-16','draft'),name:'DRAFT-APP-SENTINEL',tags:['DRAFT-APP-TAG-SENTINEL']}];
+  data.articles.push({...data.articles[0],id:'my-app-note',project:'my-app'});
+  let published=publicContent(data);assert.ok(!JSON.stringify(published).includes('SENTINEL'));
+  assert.equal(projectEntries(published.site).length,4);assert.equal(published.site.additionalProjects[0].id,'my-app');
+  data.articles.at(-1).project='hidden-app';assert.throws(()=>validateContent(data));
+  data.articles.at(-1).status='draft';assert.doesNotThrow(()=>validateContent(data));
+});
+
+test('additional app IDs, dates, counts and external links are bounded and validated',()=>{
+  for(const patch of [{id:'atlas'},{id:'constructor'},{id:'../secret'},{id:'x'.repeat(65)},{id:['coerced']},{updatedAt:'2026-02-31'},{updatedAt:''},{status:'hidden'},{demoUrl:'javascript:alert(1)'},{demoUrl:'https://user:pass@example.com/'},{demoUrl:'https://example.com/\n'},{repository:'https://github.com/a/b'},{repository:'a/b/extra'}]){
+    const data=copy();data.site.additionalProjects=[{...extra('my-app'),...patch}];assert.throws(()=>validateContent(data),JSON.stringify(patch));
+  }
+  const data=copy();data.site.additionalProjects=[extra('my-app'),extra('my-app')];assert.throws(()=>validateContent(data));
+  data.site.additionalProjects=Array.from({length:98},(_,i)=>extra(`app-${i}`));assert.throws(()=>validateContent(data));
+  data.site.additionalProjects=[{...extra('my-app'),demoUrl:'https://example.com/demo?mode=trial',repository:'devikuomidorikawa/makelog'}];assert.doesNotThrow(()=>validateContent(data));
+  assert.equal(httpsUrl('https://example.com/app'),'https://example.com/app');assert.equal(httpsUrl('http://example.com'),null);
+});
+
+test('CMS exposes date fields and addable apps using the same bounded schema',async()=>{
+  const config=JSON.parse(await readFile(new URL('../.pages.yml',import.meta.url),'utf8'));
+  const site=config.content[0].fields.find(f=>f.name==='site'),extra=site.fields.find(f=>f.name==='additionalProjects');
+  assert.equal(extra.list.max,97);assert.ok(extra.fields.find(f=>f.name==='updatedAt').required);assert.equal(extra.fields.find(f=>f.name==='status').default,'draft');
+  for(const p of site.fields.find(f=>f.name==='projects').fields)assert.ok(p.fields.find(f=>f.name==='updatedAt'));
 });

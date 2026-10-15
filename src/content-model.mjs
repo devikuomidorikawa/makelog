@@ -1,5 +1,23 @@
 export const MAX_CONTENT_BYTES = 1_000_000;
 export const PROJECT_IDS = ['atlas', 'form', 'flow'];
+export const MAX_PROJECTS = 100;
+export const PROJECT_ID_PATTERN = /^[a-z0-9][a-z0-9-]{0,63}$/;
+export function projectEntries(site) {
+  return [...Object.entries(site.projects),...(site.additionalProjects||[]).map(({id,...project})=>[id,project])];
+}
+export function recentProjects(site,limit=3) {
+  return projectEntries(site).filter(([,p])=>p.status!=='draft').sort(([a,p],[b,q])=>
+    (q.updatedAt||'').localeCompare(p.updatedAt||'')||(a<b?-1:a>b?1:0)).slice(0,limit);
+}
+export function httpsUrl(value) {
+  if(typeof value!=='string'||value.length>2048||!/^https:\/\//.test(value)||/[\s\u0000-\u001f\u007f]/.test(value))return null;
+  try{const url=new URL(value);return url.protocol==='https:'&&!url.username&&!url.password&&url.hostname?url.href:null;}catch{return null;}
+}
+function date(value,required=false) {
+  if(value===undefined||value===''){if(required)fail('作品の更新日を入力してください。');return '';}
+  if(typeof value!=='string'||!/^\d{4}-\d{2}-\d{2}$/.test(value)||Number.isNaN(Date.parse(value))||new Date(value).toISOString().slice(0,10)!==value)fail('作品の更新日を確認してください。');
+  return value;
+}
 export const PAIR_FIELDS = ['heroTitle','heroDescription','studioBody','studioNote','footer','about'];
 export const MAX_TAGS = 8;
 export const MAX_TAG_LENGTH = 32;
@@ -83,6 +101,7 @@ export function resolveContentTags(value) {
   const content=validateContent(value),catalog=content.tagCatalog||[];
   const resolve=item=>({...item,tags:validateTags([...new Set(item.tags.map(tag=>resolveTagName(tag,catalog)))])});
   content.site.projects=Object.fromEntries(Object.entries(content.site.projects).map(([id,item])=>[id,resolve(item)]));
+  content.site.additionalProjects=(content.site.additionalProjects||[]).map(resolve);
   content.articles=content.articles.map(resolve);
   // The catalog is authoring metadata; unused and draft-only names never enter the public bundle.
   delete content.tagCatalog;
@@ -99,7 +118,7 @@ export function validateContent(value) {
   if (new TextEncoder().encode(JSON.stringify(value)).length>MAX_CONTENT_BYTES) fail('編集データは1MB以内にしてください。');
   object(value,['version','site','articles','tagCatalog','pages']);
   if(value.version!==1) fail('対応していない編集データの版です。');
-  const s=value.site;object(s,['brand','tagline',...PAIR_FIELDS,'colors','projects']);
+  const s=value.site;object(s,['brand','tagline',...PAIR_FIELDS,'colors','projects','additionalProjects']);
   const site={brand:text(s.brand,60,true),tagline:text(s.tagline,100,true)};
   for(const field of PAIR_FIELDS){
     const value=field==='studioNote'&&(s[field]==null||(Array.isArray(s[field])&&s[field].length===0))?['','']:s[field];
@@ -116,10 +135,23 @@ export function validateContent(value) {
   }
   if(contrast('#ffffff',site.colors.accent)<4.5) fail('ボタンの色をもう少し濃くしてください。');
   object(s.projects,PROJECT_IDS);site.projects={};
-  for(const id of PROJECT_IDS) {
-    const p=s.projects[id];object(p,['name','category','title','short','description','tech','flow','tags']);
-    site.projects[id]={name:text(p.name,60,true),category:pair(p.category,160),title:pair(p.title,200),short:pair(p.short,200),description:pair(p.description,3000),tech:list(p.tech),flow:list(p.flow,6),tags:validateTagIds(p.tags)};
-  }
+  const project=p=>({name:text(p.name,60,true),category:pair(p.category,160),title:pair(p.title,200),short:pair(p.short,200),description:pair(p.description,3000),tech:list(p.tech),flow:list(p.flow,6),tags:validateTagIds(p.tags),updatedAt:date(p.updatedAt)});
+  const projectFields=['name','category','title','short','description','tech','flow','tags','updatedAt'];
+  for(const id of PROJECT_IDS) {const p=s.projects[id];object(p,projectFields);site.projects[id]=project(p);}
+  const extra=s.additionalProjects??[];
+  if(!Array.isArray(extra)||extra.length>MAX_PROJECTS-PROJECT_IDS.length)fail('作品は合計100件以内にしてください。');
+  const projectIds=new Set(PROJECT_IDS);
+  site.additionalProjects=extra.map(p=>{
+    object(p,[...projectFields,'id','status','demoUrl','repository']);
+    if(typeof p.id!=='string'||!PROJECT_ID_PATTERN.test(p.id)||projectIds.has(p.id)||['__proto__','constructor','prototype'].includes(p.id))fail('作品IDは重複のない半角英数字・ハイフンにしてください。');
+    projectIds.add(p.id);
+    const status=p.status??'published';if(!['draft','published'].includes(status))fail('作品の表示状態を確認してください。');
+    const result={id:p.id,...project(p),updatedAt:date(p.updatedAt,true),status};
+    if(p.demoUrl!==undefined&&p.demoUrl!==''){if(!httpsUrl(p.demoUrl))fail('デモURLは認証情報を含まないhttpsのURLにしてください。');result.demoUrl=p.demoUrl;}
+    if(p.repository!==undefined&&p.repository!==''){if(typeof p.repository!=='string'||!(/^[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,38})\/[a-zA-Z0-9][a-zA-Z0-9._-]{0,99}$/).test(p.repository))fail('GitHubはowner/repository形式で指定してください。');result.repository=p.repository;}
+    return result;
+  });
+  const draftProjects=new Set(site.additionalProjects.filter(p=>p.status==='draft').map(p=>p.id));
   if(!Array.isArray(value.articles)||value.articles.length>200) fail('記事は200件以内にしてください。');
   const ids=new Set();
   const articles=value.articles.map(a=>{
@@ -127,7 +159,7 @@ export function validateContent(value) {
     if(typeof a.id!=='string'||!/^[a-z0-9][a-z0-9-]{0,63}$/.test(a.id)||ids.has(a.id)) fail('記事IDは重複のない半角英数字・ハイフンにしてください。');
     ids.add(a.id);
     const project=a.project??'';
-    if(!['',...PROJECT_IDS].includes(project)||!['draft','published'].includes(a.status)) fail('記事の分類・状態を確認してください。');
+    if((project!==''&&!projectIds.has(project))||!['draft','published'].includes(a.status)||(a.status==='published'&&draftProjects.has(project))) fail('記事の分類・状態を確認してください。公開記事に下書きの作品は指定できません。');
     if(!/^\d{4}-\d{2}-\d{2}$/.test(a.date||'')||Number.isNaN(Date.parse(a.date))||new Date(a.date).toISOString().slice(0,10)!==a.date) fail('記事の日付を確認してください。');
     return {id:a.id,project,date:a.date,status:a.status,titleJa:text(a.titleJa??'',200,a.status==='published'),titleEn:text(a.titleEn??'',200),summaryJa:text(a.summaryJa??'',1000),summaryEn:text(a.summaryEn??'',1000),bodyJa:text(a.bodyJa??'',20000,a.status==='published'),bodyEn:text(a.bodyEn??'',20000),tags:validateTagIds(a.tags)};
   });
@@ -148,6 +180,7 @@ export function validateContent(value) {
 export function publicContent(value) {
   const content=validateContent(value);
   content.articles=content.articles.filter(a=>a.status==='published');
+  content.site.additionalProjects=content.site.additionalProjects.filter(p=>p.status==='published');
   return resolveContentTags(content);
 }
 export function localized(value,lang) { return value[lang==='en'?1:0]||value[0]||value[1]||''; }
