@@ -20,7 +20,7 @@
       "Start small. Reach further."
     ],
     "footer": [
-      "AIでつくり、コードでひらき、みんなで育てていく。",
+      "AIでつくり、コードでひらき、みんなで育てていく。オンライン編集の確認中。",
       "Made with AI. Opened through code. Grown together."
     ],
     "about": [
@@ -127,9 +127,9 @@
   "articles": [
     {
       "id": "atlas-build-note",
-      "project": "atlas",
       "date": "2026-10-14",
       "status": "published",
+      "project": "atlas",
       "titleJa": "学びの選択を、もっと豊かに。",
       "titleEn": "Find a place to grow.",
       "summaryJa": "散らばった情報を構造化し、比較を通して自分に合った選択ができるように。AIとデータ処理で、大学選びの情報を見やすく整理し、迷いを減らす体験をデザインしました。",
@@ -139,9 +139,9 @@
     },
     {
       "id": "form-build-note",
-      "project": "form",
       "date": "2026-10-13",
       "status": "published",
+      "project": "form",
       "titleJa": "書類の整理を、自動化する。",
       "titleEn": "Make document sorting effortless.",
       "summaryJa": "バラバラなPDFファイルを、ルールに沿って一括リネーム。小さな手作業を減らしながら、確認とやり直しができる業務の道具をつくりました。",
@@ -151,15 +151,24 @@
     },
     {
       "id": "flow-build-note",
-      "project": "flow",
       "date": "2026-10-12",
       "status": "published",
+      "project": "flow",
       "titleJa": "受付から承認までを、ひとつに。",
       "titleEn": "Connect requests with clear next steps.",
       "summaryJa": "見学・面談の予約管理を、わかりやすい一連の流れに。入力から内容確認、受付まで、迷わず進める業務体験を設計しました。",
       "summaryEn": "Bring requests, review, and reception into a single, understandable flow.",
       "bodyJa": "## 受付の前後をつなぐ\n依頼する側と受ける側の両方が、次の動きを理解できるように考えました。\n\n## 入力・確認・完了を分ける\n一度に求める判断を減らし、確認画面から戻っても内容が残るようにしています。\n\n## 境界を明確にする\nデモの完了と実際の予約を、わかりやすく区別します。",
       "bodyEn": "## Look beyond the form\nHelp both the requester and coordinator understand the next step.\n\n## Separate the three steps\nPreserve details when returning from review.\n\n## Make the outcome clear\nKeep a demo confirmation distinct from a real booking."
+    },
+    {
+      "id": "cms-verification-note",
+      "date": "2026-10-15",
+      "status": "draft",
+      "titleJa": "CMS保存の検証用下書き",
+      "titleEn": "CMS verification draft",
+      "bodyJa": "## オンライン編集の確認\nPages CMSから追加した、公開しない検証用の記事です。確認後に取り除きます。",
+      "bodyEn": "## Online editing check\nA temporary draft created in Pages CMS for verification."
     }
   ]
 }
