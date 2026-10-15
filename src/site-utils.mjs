@@ -1,6 +1,14 @@
 const projects = new Set(['atlas', 'form', 'flow']);
 const tabs = new Set(['overview', 'demo', 'process', 'tech', 'github', 'comments']);
 
+// Keep the parent section visible in navigation while viewing its detail pages.
+export function navigationCurrent(route, section) {
+  if (route?.type === section) return 'page';
+  if ((section === 'works' && route?.type === 'project') ||
+      (section === 'journal' && route?.type === 'article')) return 'location';
+  return undefined;
+}
+
 export function repositoryUrl(value) {
   if (typeof value !== 'string' || !/^[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,38})\/[a-zA-Z0-9][a-zA-Z0-9._-]{0,99}$/.test(value)) return null;
   return `https://github.com/${value}`;

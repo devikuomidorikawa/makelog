@@ -1,5 +1,6 @@
 import {readFileSync} from 'node:fs';
 import {publicContent} from '../src/content-model.mjs';
+import {readContentSource} from './content-store.mjs';
 
 const siteUrl='https://devikuomidorikawa.github.io/makelog/';
 const escape=value=>String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -22,7 +23,7 @@ export function staticPages(){return {
   name:'makelog-static-pages',
   generateBundle:{order:'post',handler(options,bundle){
     const index=bundle['index.html'];if(!index||typeof index.source!=='string')throw Error('Static HTML entry is missing');
-    const data=JSON.parse(readFileSync(new URL('../src/content/site.json',import.meta.url),'utf8'));
+    const data=readContentSource();
     const rows=pageEntries(data),original=index.source;
     this.emitFile({type:'asset',fileName:'assets/favicon.svg',source:readFileSync(new URL('../public/assets/favicon.svg',import.meta.url))});
     for(const page of rows){
