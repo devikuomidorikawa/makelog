@@ -1,6 +1,8 @@
 # MAKELOG 無料運用・公開手順
 
-推奨は **GitHub Freeの公開リポジトリ + GitHub Pagesの標準ドメイン**です。作品一覧・制作記録・技術構成・3つの操作デモは静的ファイルだけで動き、サーバー、データベース、AI APIの契約は不要です。公開先とアカウントは未設定です。
+**GitHub Freeの公開リポジトリ + GitHub Pagesの標準ドメイン**で公開しました。作品一覧・制作記録・技術構成・3つの操作デモは静的ファイルだけで動き、サーバー、データベース、AI APIの契約は不要です。
+
+公開サイト：[MAKELOG](https://devikuomidorikawa.github.io/makelog/)。公開元：[devikuomidorikawa/makelog](https://github.com/devikuomidorikawa/makelog)、公開ブランチは `main`。GitHub Actionsからの初回公開を確認済みです。Pages CMSは対象リポジトリだけへのGitHub Appインストール、本人ログイン、`makelog/main` の表示、実保存後の自動公開まで確認しました（2026-10-15）。文章変更の公開ページへの反映と、追加した下書き記事の非掲載も確認済みです。
 
 ## 運用費とホスティングの選択
 
@@ -18,16 +20,16 @@
 
 ## GitHub Pagesへ公開
 
-1. 公開先リポジトリを決め、ソースZIPの中身をルートへ配置します。`package.json` と `.github` がルートにある構成です。私用の元資料や作業フォルダー全体はアップロードしません。
-2. GitHubの `Settings → Pages → Build and deployment → Source` を **GitHub Actions** に設定します。
+1. 公開先 `devikuomidorikawa/makelog` に公開用ソースを配置済みです。`package.json` と `.github` がルートにある構成です。私用の元資料や作業フォルダー全体はアップロードしません。
+2. GitHubの `Settings → Pages → Build and deployment → Source` は **GitHub Actions** に設定済みです。
 3. `main` に反映するとテスト・ビルド・公開が自動実行されます。Actionsの「Publish MAKELOG」から手動実行も可能です。主ブランチが異なる場合は `.github/workflows/pages.yml` の2か所の `main` を変更します。
-4. Actions完了後、Pagesに表示されたURLで確認します。初回の外部公開・GitHub側設定はまだ実施していません。
+4. Actions完了後、[公開サイト](https://devikuomidorikawa.github.io/makelog/)で更新を確認します。初回公開は成功しました。更新ごとに公開workflowの成功と実際のページへの反映を確認します。
 
 個人アクセストークンやAPIキーは不要です。GitHub標準の短期トークンを利用します。公開先の権限・ブランチ保護は、選定したリポジトリで確認します。
 
 ## 日々の更新
 
-- GUI編集：サイト下部の「サイトを編集」から記事・サイトの文章・作品・配色を編集できます。元ファイルへの保存は `pnpm studio`。公開後は無料のPages CMSと同梱 `.pages.yml` を利用します。詳しくは `EDITOR-GUIDE.md`。
+- GUI編集：公開サイト下部の「サイトを編集」から[Pages CMSのmakelog/main](https://app.pagescms.org/devikuomidorikawa/makelog/main)を開き、記事・サイトの文章・作品・配色を編集します。この端末の開発版は既存の編集スタジオを開きます。端末の元ファイルへの保存は `pnpm studio`。公開版の `#editor` はブラウザー内の下書きだけを保存します。詳しくは `EDITOR-GUIDE.md`。
 - 文章・記事・技術説明：`src/content/site.json` へ分離。GUI保存先と公開ビルドの入力は同一です。下書きは公開画面・配布JavaScriptから除外しますが、公開GitHubリポジトリの元ファイルは閲覧可能です。
 - 作品画像：`public/assets/` の対象画像を置換。公開する画像は `vite.config.mjs` の許可リスト5枚だけです。検討中のデザイン画像は公開ビルドから除外します。
 - GitHubリンク：`src/site.config.json` の `repositories` に、各作品の公開 `owner/repository` を記入。README・Releases・Issuesへ移動できます。空欄は公開準備中の表示です。
