@@ -93,7 +93,10 @@ export function validateContent(value) {
   if(value.version!==1) fail('対応していない編集データの版です。');
   const s=value.site;object(s,['brand','tagline',...PAIR_FIELDS,'colors','projects']);
   const site={brand:text(s.brand,60,true),tagline:text(s.tagline,100,true)};
-  for(const field of PAIR_FIELDS) site[field]=pair(s[field],field==='heroTitle'?200:3000);
+  for(const field of PAIR_FIELDS){
+    const value=field==='studioNote'&&(s[field]==null||(Array.isArray(s[field])&&s[field].length===0))?['','']:s[field];
+    site[field]=pair(value,field==='heroTitle'?200:3000);
+  }
   object(s.colors,['canvas','surface','stone','ink','accent']);
   site.colors={};
   for(const key of ['canvas','surface','stone','ink','accent']) {

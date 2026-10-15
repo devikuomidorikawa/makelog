@@ -121,3 +121,15 @@ test('CMS online management exposes catalog rename/merge and bounded information
   const catalog=fields.find(field=>field.name==='tagCatalog');assert.equal(catalog.type,'object');assert.equal(catalog.list.max,100);assert.deepEqual(catalog.fields.map(field=>field.name),['id','name','mergeInto']);assert.equal(catalog.fields.find(field=>field.name==='mergeInto').options.maxlength,32);
   const pages=fields.find(field=>field.name==='pages');assert.equal(pages.list.max,3);assert.equal(pages.fields.find(field=>field.name==='bodyJa').options.maxlength,10000);assert.deepEqual(pages.fields.find(field=>field.name==='id').options.values.map(option=>option.name),['privacy','guide','contact']);
 });
+
+test('CMS may omit the unused studio note without weakening other bilingual fields',async()=>{
+  for(const note of [undefined,null,[],['','']]){
+    const data=copy();if(note===undefined)delete data.site.studioNote;else data.site.studioNote=note;
+    assert.deepEqual(validateContent(data).site.studioNote,['','']);
+  }
+  for(const note of [['one'],'wrong',false,{}]){const data=copy();data.site.studioNote=note;assert.throws(()=>validateContent(data));}
+  for(const title of [undefined,null,[],['one']]){const data=copy();data.site.heroTitle=title;assert.throws(()=>validateContent(data));}
+  const config=JSON.parse(await readFile(new URL('../.pages.yml',import.meta.url),'utf8'));
+  const note=config.content[0].fields.find(field=>field.name==='site').fields.find(field=>field.name==='studioNote');
+  assert.equal(note.hidden,true);assert.equal(note.list.min,0);assert.equal(note.list.max,2);
+});

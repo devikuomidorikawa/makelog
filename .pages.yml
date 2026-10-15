@@ -122,12 +122,13 @@
               "label": "短いメッセージ（1:日本語 / 2:英語）",
               "type": "text",
               "list": {
-                "min": 2,
+                "min": 0,
                 "max": 2
               },
               "options": {
                 "maxlength": 3000
-              }
+              },
+              "hidden": true
             },
             {
               "name": "footer",
