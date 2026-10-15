@@ -5,7 +5,7 @@ This is a static portfolio with fictional demo data. The deployed package contai
 ## Boundaries
 
 - Visitors control local search, sample naming rules, sample booking fields and URL fragments. React renders text; project and tab routes use fixed allowlists. No input is sent to an AI service or backend.
-- Sample comments exist in the current page only. When explicitly configured, giscus replaces them with public GitHub Discussions. Authentication, storage and moderation are delegated to GitHub/giscus. The external script runs only on the comments tab and only with a complete enabled configuration. Loading this tab then contacts those services. Do not post private information.
+- Sample comments exist in the current page only. When explicitly configured, giscus replaces them with public GitHub Discussions. Authentication, storage and moderation are delegated to GitHub/giscus. The external script runs only when the comments disclosure is expanded and only with a complete enabled configuration. Opening the overview with comments collapsed does not load it. A legacy comments URL opens the disclosure directly. Do not post private information.
 - Repository links accept only `owner/repository` identifiers and are constructed for `https://github.com/`. External tabs use `noopener noreferrer`.
 - CSV exports escape quotes and neutralize spreadsheet formula prefixes. No real document is uploaded, renamed or parsed.
 - GitHub Actions builds trusted `main` branch code. Deployment uses a short-lived GitHub token with Pages/OIDC permissions only in the deploy job. No personal token is required. Repository owners should protect `main` and the `github-pages` environment according to their collaboration needs.

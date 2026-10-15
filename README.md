@@ -3,7 +3,7 @@
 AIとコードでつくったものと、その制作過程を共有する独立ブランド型ポートフォリオ。日本語主体・英語対応。MAKELOGは仮称です。
 
 - 公開サイト: https://devikuomidorikawa.github.io/makelog/
-- オンライン編集: https://app.pagescms.org/
+- オンライン編集: https://app.pagescms.org/devikuomidorikawa/makelog/main
 - この記事・サイトの正本: `src/content/site.json`
 - 手動編集: [操作ガイド](EDITOR-GUIDE.md)
 - ChatGPT Work・AIへの依頼: [AI編集ガイド](AI-EDITING.md)
@@ -43,6 +43,10 @@ pnpm check:pages
 PRでは公開権限なしの検査を行います。mainへの更新はGitHub Pagesへ公開します。GitHubのSettings → Pages → SourceはGitHub Actionsです。
 
 ## 構成
+
+作品は「概要・デモ・制作記録」の3タブ。技術構成は制作記録にまとめ、公開コードがある作品だけ概要にGitHubリンクを表示します。コメント体験版は概要内で開けます。従来の技術・GitHub・コメントURLも対応する表示に移動します。
+
+作品の概要・制作記録と記事末尾の「リンクをコピー」で共有できます。例 `#project/atlas/overview`、`#article/atlas-build-note`。記事末尾から関連作品のデモへ進めます。記録は同じJSONから読み込み、掲載サンプルは後から差し替えられます。
 
 | 対象 | ファイル |
 | --- | --- |

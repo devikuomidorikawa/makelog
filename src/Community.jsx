@@ -3,22 +3,13 @@ import { GithubLogo, ArrowUpRight } from '@phosphor-icons/react';
 import config from './site.config.json';
 import { repositoryUrl, validGiscus } from './site-utils.mjs';
 
+export const publicCommentsEnabled = validGiscus(config.giscus);
+
 export function Repository({ project, lang }) {
   const url = repositoryUrl(config.repositories[project]);
   const ja = lang === 'ja';
-  return <div className="github-panel">
-    <GithubLogo size={52} weight="light" aria-hidden="true" />
-    <p className="eyebrow">SOURCE & DEVELOPMENT</p>
-    <h3>{ja ? 'コードにも、つながる作品に。' : 'A window into the code, too.'}</h3>
-    <p>{url ? config.repositories[project] : ja ? '公開リポジトリの準備中です。' : 'The public repository is being prepared.'}</p>
-    {url ? <a className="primary external-link" href={url} target="_blank" rel="noopener noreferrer">{ja ? 'GitHubでコードを見る' : 'View code on GitHub'}<ArrowUpRight size={20} /></a> : <div className="connection-state"><span className="status-dot" />{ja ? '公開準備中' : 'Preparing for release'}</div>}
-    <div className="github-details">{[
-      ['', 'README', ja ? '作品概要・起動方法・デモの制約' : 'Overview, setup, and demo limitations'],
-      ['/releases', 'RELEASES', ja ? 'バージョンと更新内容' : 'Versions and release notes'],
-      ['/issues', 'ISSUES', ja ? '改善点や技術的な対話' : 'Ideas and technical discussion'],
-    ].map(([path, title, description]) => <p key={title}><strong>{url ? <a href={url + path} target="_blank" rel="noopener noreferrer">{title}<ArrowUpRight size={15} aria-hidden="true" /></a> : title}</strong><span>{description}</span></p>)}</div>
-    <p className="support-note">{ja ? '公開されたソース・更新記録へ直接つながります。非公開コードは掲載していません。' : 'Explore public source code and updates. Private code is not included.'}</p>
-  </div>;
+  return url ? <div className="source-note"><GithubLogo size={20} aria-hidden="true"/><a className="text-link" href={url} target="_blank" rel="noopener noreferrer">{ja ? '作品のコードを見る' : 'View project source'}<ArrowUpRight size={18} aria-hidden="true"/></a></div> : <p className="source-note"><GithubLogo size={19} aria-hidden="true"/>{ja ? 'サンプル作品です。作品単体の公開コードはありません。' : 'Sample project. No separate public repository.'}</p>;
+
 }
 
 export function Community({ project, lang, children }) {

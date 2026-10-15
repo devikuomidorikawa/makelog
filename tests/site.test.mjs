@@ -12,6 +12,8 @@ test('public comments require an explicit complete configuration', () => {
   for (const bad of [{...c,enabled:false},{...c,repo:'https://evil.test'},{...c,repoId:''},{...c,categoryId:'<bad>'},{...c,category:''}]) assert.equal(validGiscus(bad), false);
 });
 test('shared project URLs survive reload with a fixed allowlist', () => {
+  const overview = {type:'project',project:'atlas',tab:'overview'};
+  assert.deepEqual(readRoute(routeHash(overview)), overview);
   const route = {type:'project',project:'atlas',tab:'comments'};
   assert.deepEqual(readRoute(routeHash(route)), route);
   assert.deepEqual(readRoute('#journal'), {type:'journal'});
