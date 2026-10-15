@@ -20,7 +20,7 @@
       "Start small. Reach further."
     ],
     "footer": [
-      "AIでつくり、コードでひらき、みんなで育てていく。オンライン編集の確認中。",
+      "AIでつくり、コードでひらき、みんなで育てていく。は",
       "Made with AI. Opened through code. Grown together."
     ],
     "about": [
@@ -160,15 +160,6 @@
       "summaryEn": "Bring requests, review, and reception into a single, understandable flow.",
       "bodyJa": "## 受付の前後をつなぐ\n依頼する側と受ける側の両方が、次の動きを理解できるように考えました。\n\n## 入力・確認・完了を分ける\n一度に求める判断を減らし、確認画面から戻っても内容が残るようにしています。\n\n## 境界を明確にする\nデモの完了と実際の予約を、わかりやすく区別します。",
       "bodyEn": "## Look beyond the form\nHelp both the requester and coordinator understand the next step.\n\n## Separate the three steps\nPreserve details when returning from review.\n\n## Make the outcome clear\nKeep a demo confirmation distinct from a real booking."
-    },
-    {
-      "id": "cms-verification-note",
-      "date": "2026-10-15",
-      "status": "draft",
-      "titleJa": "CMS保存の検証用下書き",
-      "titleEn": "CMS verification draft",
-      "bodyJa": "## オンライン編集の確認\nPages CMSから追加した、公開しない検証用の記事です。確認後に取り除きます。",
-      "bodyEn": "## Online editing check\nA temporary draft created in Pages CMS for verification."
     }
   ]
 }
