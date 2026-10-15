@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import {publicContent} from '../src/content-model.mjs';
 import {pageEntries} from './static-pages.mjs';
+import {readContentSource} from './content-store.mjs';
 const root = fileURLToPath(new URL('../dist/client/', import.meta.url));
 assert.deepEqual(readdirSync(root).sort(), ['.nojekyll','404.html','THIRD-PARTY-NOTICES.txt','about','assets','contact','guide','index.html','notes','privacy','robots.txt','sitemap.xml','works']);
 const html = readFileSync(path.join(root, 'index.html'), 'utf8');
@@ -21,7 +22,7 @@ for (const file of readdirSync(path.join(root,'assets'))) {
 }
 const javascript=readdirSync(path.join(root,'assets')).filter(f=>f.endsWith('.js')).map(f=>readFileSync(path.join(root,'assets',f),'utf8')).join('\n');
 assert.ok(!javascript.includes('/__makelog/editor')&&!javascript.includes('__makelog/editor'),'Development write URLs must not ship');
-const source=JSON.parse(readFileSync(new URL('../src/content/site.json',import.meta.url),'utf8'));
+const source=readContentSource();
 for(const entry of pageEntries(source)){
   const folder=path.join(root,entry.path),file=path.join(folder,'index.html');
   assert.ok(existsSync(file),`Missing static page: ${entry.path}`);

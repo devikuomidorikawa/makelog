@@ -9,7 +9,7 @@
     "preview": "vite preview",
     "test:sites": "node --test tests/sites-worker.test.mjs",
     "build:pages": "vite build",
-    "test": "node --test tests/site.test.mjs tests/content.test.mjs",
+    "test": "node --test tests/site.test.mjs tests/content.test.mjs tests/catalog-store.test.mjs",
     "check:content": "node scripts/check-content.mjs",
     "check:pages": "node scripts/check-pages.mjs",
     "studio": "vite --host 127.0.0.1 --port 4173 --strictPort"

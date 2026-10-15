@@ -1,31 +1,5 @@
 {
   "version": 1,
-  "tagCatalog": [
-    {
-      "id": "Automation",
-      "name": "Automation"
-    },
-    {
-      "id": "Data",
-      "name": "Data"
-    },
-    {
-      "id": "Forms",
-      "name": "Forms"
-    },
-    {
-      "id": "JavaScript",
-      "name": "JavaScript"
-    },
-    {
-      "id": "React",
-      "name": "React"
-    },
-    {
-      "id": "UI/UX",
-      "name": "UI/UX"
-    }
-  ],
   "site": {
     "brand": "MAKELOG",
     "tagline": "AI & SOFTWARE STUDIO",
@@ -60,9 +34,9 @@
       "atlas": {
         "name": "ATLAS",
         "tags": [
-          "React",
-          "UI/UX",
-          "Data"
+          "7b1413e3-b76e-4fd7-8bbd-4ed9e2fbbe26",
+          "67a884c9-9368-41cf-b63f-3d48ba937057",
+          "5afc6474-78e3-4e0d-b1ad-e5e897f26642"
         ],
         "category": [
           "データ × 体験設計",
@@ -94,8 +68,8 @@
       "form": {
         "name": "FORM",
         "tags": [
-          "JavaScript",
-          "Automation"
+          "1891b822-a71b-45aa-b9f8-87fcb896d576",
+          "8e7cba59-115f-491d-8079-7871fdaa82da"
         ],
         "category": [
           "自動化 × 道具の設計",
@@ -127,9 +101,9 @@
       "flow": {
         "name": "FLOW",
         "tags": [
-          "React",
-          "UI/UX",
-          "Forms"
+          "7b1413e3-b76e-4fd7-8bbd-4ed9e2fbbe26",
+          "67a884c9-9368-41cf-b63f-3d48ba937057",
+          "824902cc-cb19-49f0-8527-d36016253a15"
         ],
         "category": [
           "業務設計 × オートメーション",
@@ -167,9 +141,9 @@
       "status": "published",
       "project": "atlas",
       "tags": [
-        "React",
-        "UI/UX",
-        "Data"
+        "7b1413e3-b76e-4fd7-8bbd-4ed9e2fbbe26",
+        "67a884c9-9368-41cf-b63f-3d48ba937057",
+        "5afc6474-78e3-4e0d-b1ad-e5e897f26642"
       ],
       "titleJa": "学校比較で、検索と選択を分けた理由",
       "titleEn": "Why search and selection are separate",
@@ -184,8 +158,8 @@
       "status": "published",
       "project": "form",
       "tags": [
-        "JavaScript",
-        "Automation"
+        "1891b822-a71b-45aa-b9f8-87fcb896d576",
+        "8e7cba59-115f-491d-8079-7871fdaa82da"
       ],
       "titleJa": "ファイル名は、変更前に並べて確認する",
       "titleEn": "Preview filenames before changing anything",
@@ -200,9 +174,9 @@
       "status": "published",
       "project": "flow",
       "tags": [
-        "React",
-        "UI/UX",
-        "Forms"
+        "7b1413e3-b76e-4fd7-8bbd-4ed9e2fbbe26",
+        "67a884c9-9368-41cf-b63f-3d48ba937057",
+        "824902cc-cb19-49f0-8527-d36016253a15"
       ],
       "titleJa": "確認画面から戻っても、入力を失わない",
       "titleEn": "Keep entered details when returning from review",

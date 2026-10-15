@@ -8,7 +8,12 @@ import {validateContent,validateTags,validateTagCatalog,publicContent,contrast,r
 import {collectTags,tagMatches,renameContentTag,collectTagOptions,addTagAssignment} from '../src/tag-utils.mjs';
 import {allowedLocalRequest,atomicSave,revision} from '../scripts/content-plugin.mjs';
 import {readRoute,routeHash} from '../src/site-utils.mjs';
+import {readContentSnapshot} from '../scripts/content-store.mjs';
 const original=JSON.parse(await readFile(new URL('../src/content/site.json',import.meta.url),'utf8'));
+// Keep these pure-model regression cases on legacy IDs; the catalog-store
+// suite exercises the real UUID-backed files and their migration separately.
+const snapshot=readContentSnapshot(),legacyIds=new Map(snapshot.files.map(entry=>[entry.row.id,entry.row.legacyId||entry.row.id]));
+for(const item of [...Object.values(original.site.projects),...original.articles])item.tags=item.tags.map(id=>legacyIds.get(id)||id);
 const copy=()=>structuredClone(original);
 
 test('publishing never embeds draft titles or bodies in the public content',()=>{
@@ -76,10 +81,10 @@ test('article share routes reject encoded paths, traversal and executable fragme
 });
 test('Pages CMS edits the same fixed file and bilingual schema as the local studio',async()=>{
   const config=JSON.parse(await readFile(new URL('../.pages.yml',import.meta.url),'utf8'));
-  assert.equal(config.content.length,1);assert.equal(config.content[0].path,'src/content/site.json');
+  assert.equal(config.content.length,2);assert.equal(config.content[0].path,'src/content/site.json');
   const fields=config.content[0].fields;assert.ok(fields.find(f=>f.name==='articles').fields.find(f=>f.name==='bodyEn'));
-  const tags=fields.find(f=>f.name==='articles').fields.find(f=>f.name==='tags');assert.equal(tags.type,'string');assert.equal(tags.list.max,8);assert.equal(tags.options.maxlength,32);
-  for(const project of fields.find(f=>f.name==='site').fields.find(f=>f.name==='projects').fields){const tag=project.fields.find(f=>f.name==='tags');assert.equal(tag.type,'string');assert.equal(tag.list.max,8);}
+  const tags=fields.find(f=>f.name==='articles').fields.find(f=>f.name==='tags');assert.equal(tags.type,'reference');assert.equal(tags.options.max,8);assert.equal(tags.options.collection,'tags');
+  for(const project of fields.find(f=>f.name==='site').fields.find(f=>f.name==='projects').fields){const tag=project.fields.find(f=>f.name==='tags');assert.equal(tag.type,'reference');assert.equal(tag.options.max,8);}
   assert.deepEqual(fields.find(f=>f.name==='site').fields.find(f=>f.name==='colors').fields.map(f=>f.name),Object.keys(original.site.colors));
 });
 
@@ -118,7 +123,11 @@ test('informational pages accept only fixed unique routes and bounded bilingual 
 
 test('CMS online management exposes catalog rename/merge and bounded informational pages',async()=>{
   const config=JSON.parse(await readFile(new URL('../.pages.yml',import.meta.url),'utf8')),fields=config.content[0].fields;
-  const catalog=fields.find(field=>field.name==='tagCatalog');assert.equal(catalog.type,'object');assert.equal(catalog.list.max,100);assert.deepEqual(catalog.fields.map(field=>field.name),['id','name','mergeInto']);assert.equal(catalog.fields.find(field=>field.name==='mergeInto').options.maxlength,32);
+  assert.equal(fields.some(field=>field.name==='tagCatalog'),false);
+  const catalog=config.content.find(entry=>entry.name==='tags');assert.equal(catalog.type,'collection');assert.equal(catalog.path,'src/content/tags');assert.equal(catalog.operations.delete,false);assert.equal(catalog.operations.rename,false);
+  const id=catalog.fields.find(field=>field.name==='id');assert.equal(id.type,'uuid');assert.equal(id.readonly,true);assert.equal(id.hidden,true);assert.equal(id.options.generate,false);
+  const merge=catalog.fields.find(field=>field.name==='mergeInto');assert.equal(merge.type,'reference');assert.equal(merge.options.collection,'tags');assert.equal(merge.options.value,'{fields.id}');assert.equal(merge.options.label,'{fields.name}');
+  const assignments=[];const visit=rows=>rows.forEach(field=>{if(field.name==='tags')assignments.push(field);if(field.fields)visit(field.fields);});visit(fields);assert.equal(assignments.length,4);for(const field of assignments){assert.equal(field.type,'reference');assert.equal(field.options.multiple,true);assert.equal(field.options.max,8);assert.equal(field.options.label,'{fields.name}');}
   const pages=fields.find(field=>field.name==='pages');assert.equal(pages.list.max,3);assert.equal(pages.fields.find(field=>field.name==='bodyJa').options.maxlength,10000);assert.deepEqual(pages.fields.find(field=>field.name==='id').options.values.map(option=>option.name),['privacy','guide','contact']);
 });
 

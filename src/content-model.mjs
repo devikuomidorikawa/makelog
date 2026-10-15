@@ -4,6 +4,7 @@ export const PAIR_FIELDS = ['heroTitle','heroDescription','studioBody','studioNo
 export const MAX_TAGS = 8;
 export const MAX_TAG_LENGTH = 32;
 export const MAX_TAG_CATALOG = 100;
+export const TAG_UUID_PATTERN = /^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/;
 export const PAGE_IDS = ['privacy','guide','contact'];
 
 function fail(message) { throw new Error(message); }
@@ -38,10 +39,10 @@ export function validateTagCatalog(value=[]) {
   const ids=new Set();
   const catalog=value.map(entry=>{
     object(entry,['id','name','mergeInto']);
-    const [id]=validateTags([entry.id]),[name]=validateTags([entry.name]);
+    const [id]=validateTagIds([entry.id]),[name]=validateTags([entry.name]);
     if(ids.has(id)) fail('タグIDが重複しています。');
     ids.add(id);
-    const mergeInto=entry.mergeInto===''||entry.mergeInto===undefined?'':validateTags([entry.mergeInto])[0];
+    const mergeInto=entry.mergeInto===''||entry.mergeInto===undefined?'':validateTagIds([entry.mergeInto])[0];
     return mergeInto?{id,name,mergeInto}:{id,name};
   });
   const byId=new Map(catalog.map(entry=>[entry.id,entry]));
@@ -56,6 +57,13 @@ export function validateTagCatalog(value=[]) {
     }
   }
   return catalog;
+}
+// Authoring references may be immutable UUIDs; reader-visible labels remain 1–32 characters.
+export function validateTagIds(value=[]) {
+  if(!Array.isArray(value)||value.length>MAX_TAGS) fail(`タグは${MAX_TAGS}件以内にしてください。`);
+  const ids=value.map(id=>typeof id==='string'&&TAG_UUID_PATTERN.test(id)?id:validateTags([id])[0]);
+  if(new Set(ids).size!==ids.length)fail('同じタグを重複して追加しないでください。');
+  return ids;
 }
 export function resolveTagId(tag,catalog=[]) {
   const byId=new Map(catalog.map(entry=>[entry.id,entry]));
@@ -73,7 +81,7 @@ export function resolveTagName(tag,catalog=[]) {
 }
 export function resolveContentTags(value) {
   const content=validateContent(value),catalog=content.tagCatalog||[];
-  const resolve=item=>({...item,tags:[...new Set(item.tags.map(tag=>resolveTagName(tag,catalog)))]});
+  const resolve=item=>({...item,tags:validateTags([...new Set(item.tags.map(tag=>resolveTagName(tag,catalog)))])});
   content.site.projects=Object.fromEntries(Object.entries(content.site.projects).map(([id,item])=>[id,resolve(item)]));
   content.articles=content.articles.map(resolve);
   // The catalog is authoring metadata; unused and draft-only names never enter the public bundle.
@@ -110,7 +118,7 @@ export function validateContent(value) {
   object(s.projects,PROJECT_IDS);site.projects={};
   for(const id of PROJECT_IDS) {
     const p=s.projects[id];object(p,['name','category','title','short','description','tech','flow','tags']);
-    site.projects[id]={name:text(p.name,60,true),category:pair(p.category,160),title:pair(p.title,200),short:pair(p.short,200),description:pair(p.description,3000),tech:list(p.tech),flow:list(p.flow,6),tags:validateTags(p.tags)};
+    site.projects[id]={name:text(p.name,60,true),category:pair(p.category,160),title:pair(p.title,200),short:pair(p.short,200),description:pair(p.description,3000),tech:list(p.tech),flow:list(p.flow,6),tags:validateTagIds(p.tags)};
   }
   if(!Array.isArray(value.articles)||value.articles.length>200) fail('記事は200件以内にしてください。');
   const ids=new Set();
@@ -121,7 +129,7 @@ export function validateContent(value) {
     const project=a.project??'';
     if(!['',...PROJECT_IDS].includes(project)||!['draft','published'].includes(a.status)) fail('記事の分類・状態を確認してください。');
     if(!/^\d{4}-\d{2}-\d{2}$/.test(a.date||'')||Number.isNaN(Date.parse(a.date))||new Date(a.date).toISOString().slice(0,10)!==a.date) fail('記事の日付を確認してください。');
-    return {id:a.id,project,date:a.date,status:a.status,titleJa:text(a.titleJa??'',200,a.status==='published'),titleEn:text(a.titleEn??'',200),summaryJa:text(a.summaryJa??'',1000),summaryEn:text(a.summaryEn??'',1000),bodyJa:text(a.bodyJa??'',20000,a.status==='published'),bodyEn:text(a.bodyEn??'',20000),tags:validateTags(a.tags)};
+    return {id:a.id,project,date:a.date,status:a.status,titleJa:text(a.titleJa??'',200,a.status==='published'),titleEn:text(a.titleEn??'',200),summaryJa:text(a.summaryJa??'',1000),summaryEn:text(a.summaryEn??'',1000),bodyJa:text(a.bodyJa??'',20000,a.status==='published'),bodyEn:text(a.bodyEn??'',20000),tags:validateTagIds(a.tags)};
   });
   const content={version:1,site,articles,pages:[]};
   if(value.tagCatalog!==undefined)content.tagCatalog=validateTagCatalog(value.tagCatalog);

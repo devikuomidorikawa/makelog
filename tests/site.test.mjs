@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { repositoryUrl, validGiscus, readRoute, routeHash, readPage, routePath, csvCell } from '../src/site-utils.mjs';
+import { repositoryUrl, validGiscus, readRoute, routeHash, readPage, routePath, csvCell, navigationCurrent } from '../src/site-utils.mjs';
 import {renderPageHtml} from '../scripts/static-pages.mjs';
 
 test('only GitHub owner/repository identifiers can become outbound links', () => {
@@ -40,6 +40,20 @@ test('article-to-demo return context round-trips without accepting injected path
   assert.deepEqual(readRoute(routeHash(route)),route);
   for(const hash of ['#project/atlas/demo?from=../secret','#project/atlas/demo?from=%3Cscript%3E','#project/atlas/demo?from=a&next=editor','#project/atlas/demo?next=editor'])assert.equal(readRoute(hash),null);
   assert.equal(routeHash({...route,from:'javascript:alert(1)'}),'#project/atlas/demo');
+});
+
+test('navigation distinguishes the exact page from its parent section after direct and legacy navigation', () => {
+  const base='/makelog/';
+  const current=route=>['works','journal','about'].map(section=>navigationCurrent(route,section));
+  assert.deepEqual(current(readPage('/makelog/works/','','',base)),['page',undefined,undefined]);
+  for(const url of ['/makelog/works/atlas/','/makelog/works/form/demo/','/makelog/works/flow/process/'])
+    assert.deepEqual(current(readPage(url,'','',base)),['location',undefined,undefined]);
+  assert.deepEqual(current(readPage('/makelog/notes/atlas-build-note/','','',base)),[undefined,'location',undefined]);
+  assert.deepEqual(current(readPage('/makelog/','','#article/atlas-build-note',base)),[undefined,'location',undefined]);
+  assert.deepEqual(current(readPage('/makelog/notes/','','',base)),[undefined,'page',undefined]);
+  assert.deepEqual(current(readPage('/makelog/about/','','',base)),[undefined,undefined,'page']);
+  for(const route of [null,{type:'privacy'},{type:'missing'}])
+    assert.deepEqual(current(route),[undefined,undefined,undefined]);
 });
 test('CSV filenames are quoted and formula prefixes remain text', () => {
   assert.equal(csvCell('sample-A.pdf'), '"sample-A.pdf"');

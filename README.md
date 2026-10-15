@@ -4,7 +4,7 @@ AIとコードでつくったものと、その制作過程を共有する独立
 
 - 公開サイト: https://devikuomidorikawa.github.io/makelog/
 - オンライン編集: https://app.pagescms.org/devikuomidorikawa/makelog/main
-- この記事・サイトの正本: `src/content/site.json`
+- 記事・サイトの正本: `src/content/site.json`／タグの正本: `src/content/tags/*.json`
 - 手動編集: [操作ガイド](EDITOR-GUIDE.md)
 - ChatGPT Work・AIへの依頼: [AI編集ガイド](AI-EDITING.md)
 
@@ -12,7 +12,7 @@ AIとコードでつくったものと、その制作過程を共有する独立
 
 ## 手動とAIで同じ内容を編集
 
-Pages CMS・端末GUI・AIは、同じJSONを更新します。Pages CMSの保存はGitHubのコミットとして記録され、mainの更新で検査・ビルド・GitHub Pages公開が実行されます。保存と公開完了は別で、Actionsの成功後に公開サイトを確認してください。
+Pages CMS・端末GUI・AIは、同じ記事JSONとタグファイルを更新します。Pages CMSの保存はGitHubのコミットとして記録され、mainの更新で検査・ビルド・GitHub Pages公開が実行されます。保存と公開完了は別で、Actionsの成功後に公開サイトを確認してください。
 
 ChatGPT Workには、このリポジトリURLと変更したい記事ID・項目を伝えます。AIは最新版を読み、指定した箇所だけを変更し、PRで差分を提示します。Work側の書込・実行はその接続権限に依存します。
 
@@ -46,7 +46,7 @@ PRでは公開権限なしの検査を行います。mainへの更新はGitHub P
 
 ホームは「01 FEATURED CASE」で代表作を紹介します。作品一覧 `/works/`、制作ノート `/notes/`、ブランド紹介 `/about/` は浮き出る画面ではなく通常のページです。各作品と記事も直接URLで開ける静的HTMLを生成します。作品は「概要・デモ・制作記録」の3タブ。制作記録は技術の要点と記事リンク、記事画面は本文です。パンくずからホーム・作品・記事一覧へ移動できます。作品と記事にタグフィルターがあります。
 
-Pages CMSの「タグ管理」で表示名を変更すれば全作品・記事へ一括反映、統合先IDを指定すれば表示と絞り込みを統合できます。ローカルGUI・AIも同じJSONと辞書を編集します。詳しい手順は `EDITOR-GUIDE.md` を参照してください。
+Pages CMSの独立した「タグ管理」で、タグ名の一括変更と名前から選ぶ統合ができます。記事・作品のタグも名前から選べます。管理IDは自動生成して固定し、入力しません。端末GUI・AIも同じタグファイルを編集します。詳しい手順は `EDITOR-GUIDE.md` を参照してください。
 
 最低限の案内として `/privacy/`、`/guide/`、`/contact/` を用意し、本文はCMSから編集できます。現在の連絡先は公開GitHub Issueのフォームです。個人用メールや制作受付を架空に追加していません。ページ別のタイトル・説明・共有メタ情報、ファビコン、サイトマップと404案内を生成します。
 
@@ -59,6 +59,7 @@ Pages CMSの「タグ管理」で表示名を変更すれば全作品・記事�
 | 対象 | ファイル |
 | --- | --- |
 | 記事・文章・配色・作品紹介 | `src/content/site.json` |
+| タグ名・統合先 | `src/content/tags/*.json` |
 | CMSフォーム | `.pages.yml` |
 | 共通の内容検証 | `src/content-model.mjs` |
 | GUI・読者プレビュー | `src/Editor.jsx` / `src/Content.jsx` |

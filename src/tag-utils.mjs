@@ -1,4 +1,4 @@
-import {validateContent,validateTags,validateTagCatalog,resolveContentTags,resolveTagName,resolveTagId} from './content-model.mjs';
+import {validateContent,validateTags,validateTagIds,validateTagCatalog,resolveContentTags,resolveTagName,resolveTagId} from './content-model.mjs';
 
 export function collectTags(items) {
   return [...new Set(items.flatMap(item=>item.tags||[]))].sort((a,b)=>a.localeCompare(b,'ja'));
@@ -45,14 +45,13 @@ export function collectTagOptions(content) {
 export function addTagAssignment(content,tags,name) {
   const [label]=validateTags([name]),catalog=validateTagCatalog(content.tagCatalog||[]),next={...content,...(content.tagCatalog?{tagCatalog:catalog}:{})};
   const match=collectTagOptions(next).find(option=>option.name===label);
-  let id=match?.id||label;
-  if(!match&&catalog.some(entry=>entry.id===id)){
-    const used=new Set([...catalog.map(entry=>entry.id),...Object.values(next.site.projects).flatMap(item=>item.tags),...next.articles.flatMap(item=>item.tags)]);
-    let n=1;while(used.has(`tag-${n}`))n++;id=`tag-${n}`;catalog.push({id,name:label});next.tagCatalog=catalog;
+  let id=match?.id;
+  if(!match){
+    id=globalThis.crypto.randomUUID();catalog.push({id,name:label});next.tagCatalog=catalog;
   }
   if(tags.some(tag=>resolveTagName(tag,catalog)===label))throw Error('同じタグを重複して追加しないでください。');
   if(next.tagCatalog)next.tagCatalog=validateTagCatalog(next.tagCatalog);
-  return {tags:validateTags([...tags,id]),tagCatalog:next.tagCatalog};
+  return {tags:validateTagIds([...tags,id]),tagCatalog:next.tagCatalog};
 }
 
 export {resolveContentTags,resolveTagName,resolveTagId};

@@ -132,7 +132,7 @@ button.tag-chip{min-height:36px}button.tag-chip:hover{background:var(--stone)}
 
 /* Ordinary document pages share the original paper, type and outline icon system. */
 main h1[tabindex="-1"]:focus{outline:none}
-.main-nav [aria-current=page]{text-decoration:underline;text-underline-offset:7px}
+.main-nav [aria-current]{text-decoration:underline;text-underline-offset:7px}
 .featured-label>h2{font-size:11px;letter-spacing:1.8px;font-weight:600}.featured-more{display:flex;justify-content:flex-end;border-top:1px solid var(--line);padding:16px 0}.featured-more .text-link{min-height:44px}
 .detail-page{padding-bottom:44px;min-height:62vh}.page-breadcrumb{padding:18px 0;margin-bottom:20px;border-block:1px solid var(--line)}.page-breadcrumb .breadcrumbs{font-size:12px}
 .detail-page .modal-content{max-height:none;overflow:visible;padding:36px 42px 42px}.detail-page.editorial-dialog{max-width:920px;margin-inline:auto}.detail-page.project-dialog{max-width:1160px;margin-inline:auto}.detail-page .project-heading h1{font-size:40px;line-height:1.25;letter-spacing:-1px;font-weight:700;margin:0}.detail-page .project-heading h1>span{display:block;font-size:16px;font-weight:450;line-height:1.7;letter-spacing:0;margin-top:14px}.detail-page .project-heading+.tag-list{margin-block:16px 10px}
