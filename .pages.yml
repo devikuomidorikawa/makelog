@@ -647,6 +647,86 @@
                   "description": "owner/repository形式。非公開リポジトリは登録しないでください。"
                 },
                 {
+                  "name": "download",
+                  "label": "ZIPダウンロード（任意）",
+                  "type": "object",
+                  "description": "公開済みGitHub Releasesを案内します。利用する場合はGitHub欄と以下の全項目を入力。解除はこの設定全体を空にします。英語も必須です。",
+                  "fields": [
+                    {
+                      "name": "tag",
+                      "label": "公開リリースのタグ",
+                      "type": "string",
+                      "required": true,
+                      "pattern": "^[a-zA-Z0-9][a-zA-Z0-9._-]{0,63}$",
+                      "options": {
+                        "maxlength": 64
+                      }
+                    },
+                    {
+                      "name": "file",
+                      "label": "配布ZIPのファイル名",
+                      "type": "string",
+                      "required": true,
+                      "pattern": "^[a-zA-Z0-9][a-zA-Z0-9._-]{0,155}\\.[zZ][iI][pP]$",
+                      "options": {
+                        "maxlength": 160
+                      }
+                    },
+                    {
+                      "name": "label",
+                      "label": "ダウンロードボタン（1:日本語 / 2:英語）",
+                      "type": "text",
+                      "required": true,
+                      "list": {
+                        "min": 2,
+                        "max": 2
+                      },
+                      "options": {
+                        "maxlength": 200
+                      }
+                    },
+                    {
+                      "name": "requirements",
+                      "label": "動作環境・料金（1:日本語 / 2:英語）",
+                      "type": "text",
+                      "required": true,
+                      "list": {
+                        "min": 2,
+                        "max": 2
+                      },
+                      "options": {
+                        "maxlength": 300
+                      }
+                    },
+                    {
+                      "name": "notice",
+                      "label": "利用前の注意（1:日本語 / 2:英語）",
+                      "type": "text",
+                      "required": true,
+                      "list": {
+                        "min": 2,
+                        "max": 2
+                      },
+                      "options": {
+                        "maxlength": 500
+                      }
+                    },
+                    {
+                      "name": "instructions",
+                      "label": "ダウンロード後の手順（1:日本語 / 2:英語）",
+                      "type": "text",
+                      "required": true,
+                      "list": {
+                        "min": 2,
+                        "max": 2
+                      },
+                      "options": {
+                        "maxlength": 1500
+                      }
+                    }
+                  ]
+                },
+                {
                   "name": "image",
                   "label": "作品画像（任意）",
                   "type": "select",

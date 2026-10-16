@@ -1,3 +1,5 @@
+import {normalizeProjectDownload} from './download-utils.mjs';
+
 export const MAX_CONTENT_BYTES = 1_000_000;
 export const PROJECT_IDS = ['atlas', 'form', 'flow'];
 // Content can select only reviewed, bundled filenames; never a URL or filesystem path.
@@ -144,7 +146,7 @@ export function validateContent(value) {
   if(!Array.isArray(extra)||extra.length>MAX_PROJECTS-PROJECT_IDS.length)fail('作品は合計100件以内にしてください。');
   const projectIds=new Set(PROJECT_IDS);
   site.additionalProjects=extra.map(p=>{
-    object(p,[...projectFields,'id','status','demoUrl','repository','image']);
+    object(p,[...projectFields,'id','status','demoUrl','repository','image','download']);
     if(typeof p.id!=='string'||!PROJECT_ID_PATTERN.test(p.id)||projectIds.has(p.id)||['__proto__','constructor','prototype'].includes(p.id))fail('作品IDは重複のない半角英数字・ハイフンにしてください。');
     projectIds.add(p.id);
     const status=p.status??'published';if(!['draft','published'].includes(status))fail('作品の表示状態を確認してください。');
@@ -152,6 +154,8 @@ export function validateContent(value) {
     if(p.image!==undefined&&p.image!==''){if(typeof p.image!=='string'||!PROJECT_IMAGE_FILES.includes(p.image))fail('作品画像は登録済みの公開用画像から選んでください。');result.image=p.image;}
     if(p.demoUrl!==undefined&&p.demoUrl!==''){if(!httpsUrl(p.demoUrl))fail('デモURLは認証情報を含まないhttpsのURLにしてください。');result.demoUrl=p.demoUrl;}
     if(p.repository!==undefined&&p.repository!==''){if(typeof p.repository!=='string'||!(/^[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,38})\/[a-zA-Z0-9][a-zA-Z0-9._-]{0,99}$/).test(p.repository))fail('GitHubはowner/repository形式で指定してください。');result.repository=p.repository;}
+    const download=normalizeProjectDownload(p.download,result.repository);
+    if(download)result.download=download;
     return result;
   });
   const draftProjects=new Set(site.additionalProjects.filter(p=>p.status==='draft').map(p=>p.id));

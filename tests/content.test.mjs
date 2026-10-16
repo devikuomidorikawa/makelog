@@ -9,6 +9,7 @@ import {collectTags,tagMatches,renameContentTag,collectTagOptions,addTagAssignme
 import {allowedLocalRequest,atomicSave,revision} from '../scripts/content-plugin.mjs';
 import {readRoute,routeHash} from '../src/site-utils.mjs';
 import {readContentSnapshot} from '../scripts/content-store.mjs';
+import {projectDownload,normalizeProjectDownload,DOWNLOAD_PAIR_LIMITS} from '../src/download-utils.mjs';
 const original=JSON.parse(await readFile(new URL('../src/content/site.json',import.meta.url),'utf8'));
 // Pure-model cases replace the extra-app set. Keep their sample articles local
 // to the built-ins; catalog-store tests still exercise the entire real source.
@@ -203,4 +204,58 @@ test('CMS image choices use the exact runtime allowlist without a free-form medi
   const extra=config.content[0].fields.find(f=>f.name==='site').fields.find(f=>f.name==='additionalProjects');
   const image=extra.fields.find(f=>f.name==='image');assert.equal(image.type,'select');
   assert.deepEqual(image.options.values.map(v=>v.name).filter(Boolean).sort(),[...PROJECT_IMAGE_FILES].sort());
+});
+
+const downloadFixture=()=>({tag:'v2.1.4',file:'NEST-2.1.4-ja.zip',label:['Windows版をダウンロード','Download for Windows'],requirements:['Windows 11・64bit／無料','Windows 11 · 64-bit / Free'],notice:['未署名のアプリです。','This application is unsigned.'],instructions:['ZIPを展開してNEST.exeを開きます。','Extract the ZIP and open NEST.exe.']});
+test('download metadata round-trips and constructs only fixed GitHub release and policy URLs',()=>{
+  const app={...extra('my-app'),repository:'devikuomidorikawa/nest',download:downloadFixture()};
+  const data=copy();data.site.additionalProjects=[app];
+  const validated=validateContent(data).site.additionalProjects[0];
+  assert.deepEqual(validated.download,app.download);
+  assert.deepEqual(projectDownload(validated),{
+    url:'https://github.com/devikuomidorikawa/nest/releases/download/v2.1.4/NEST-2.1.4-ja.zip',
+    releaseUrl:'https://github.com/devikuomidorikawa/nest/releases/tag/v2.1.4',
+    licenseUrl:'https://github.com/devikuomidorikawa/nest/blob/main/LICENSE.txt',
+    privacyUrl:'https://github.com/devikuomidorikawa/nest/blob/main/PRIVACY.txt'
+  });
+  assert.deepEqual(publicContent(data).site.additionalProjects[0].download,app.download);
+  assert.equal(normalizeProjectDownload({...downloadFixture(),file:'NEST.ZIP'},app.repository).file,'NEST.ZIP');
+});
+
+test('download settings reject unsafe paths, coercion, missing repositories and unrecognized fields',()=>{
+  const invalid=[null,[],{...downloadFixture(),extra:'https://evil.example/'},
+    ...['..','.','../v1','a/b','a%2fb','v1?x','v1#x','v1\n','v'.repeat(65),['v1'],42].map(tag=>({...downloadFixture(),tag})),
+    ...['../NEST.zip','a..zip','a/b.zip','a%2fb.zip','NEST.zip?x','NEST.zip#x','NEST.exe',' NEST.zip','x'.repeat(157)+'.zip',['NEST.zip']].map(file=>({...downloadFixture(),file}))];
+  for(const download of invalid){
+    const app={...extra('my-app'),repository:'devikuomidorikawa/nest',download},data=copy();data.site.additionalProjects=[app];
+    assert.throws(()=>validateContent(data),JSON.stringify(download));assert.equal(projectDownload(app),null,JSON.stringify(download));
+  }
+  for(const repository of [undefined,'','https://github.com/a/b','a/b/extra','evil.example/a/b','a/b?x','a/b#x',123,['a/b']]){
+    const app={...extra('my-app'),repository,download:downloadFixture()},data=copy();data.site.additionalProjects=[app];
+    assert.throws(()=>validateContent(data));assert.equal(projectDownload(app),null);
+  }
+});
+
+test('optional download forms normalize empty settings but refuse partial or excessive bilingual copy',()=>{
+  for(const download of [undefined,{}, {tag:'',file:'',label:['',''],requirements:['',''],notice:['',''],instructions:['','']}]){
+    const data=copy();data.site.additionalProjects=[{...extra('my-app'),download}];
+    assert.equal(validateContent(data).site.additionalProjects[0].download,undefined);assert.equal(projectDownload(data.site.additionalProjects[0]),null);
+  }
+  for(const [key,max] of Object.entries(DOWNLOAD_PAIR_LIMITS)){
+    for(const value of [undefined,'text',[],['only one'],['日本語',''],['', 'English'],['line\u202etext','English'],['x'.repeat(max+1),'English']]){
+      const app={...extra('my-app'),repository:'a/b',download:{...downloadFixture(),[key]:value}},data=copy();data.site.additionalProjects=[app];
+      assert.throws(()=>validateContent(data));assert.equal(projectDownload(app),null);
+    }
+  }
+  assert.equal(projectDownload(null),null);assert.equal(projectDownload({repository:'a/b'}),null);
+});
+
+test('online and local GUI expose optional release metadata with the same bounded bilingual fields',async()=>{
+  const config=JSON.parse(await readFile(new URL('../.pages.yml',import.meta.url),'utf8'));
+  const extra=config.content[0].fields.find(f=>f.name==='site').fields.find(f=>f.name==='additionalProjects');
+  const download=extra.fields.find(f=>f.name==='download');assert.equal(download.type,'object');assert.notEqual(download.required,true);
+  assert.deepEqual(download.fields.map(f=>f.name),['tag','file',...Object.keys(DOWNLOAD_PAIR_LIMITS)]);
+  for(const [key,max] of Object.entries(DOWNLOAD_PAIR_LIMITS)){
+    const field=download.fields.find(f=>f.name===key);assert.equal(field.required,true);assert.deepEqual(field.list,{min:2,max:2});assert.equal(field.options.maxlength,max);
+  }
 });

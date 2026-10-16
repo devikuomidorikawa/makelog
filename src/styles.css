@@ -160,3 +160,77 @@ main h1[tabindex="-1"]:focus{outline:none}
 .project-screenshot>img{display:block;width:100%;height:auto;max-height:620px;object-fit:contain}
 .project-screenshot>figcaption{padding:12px 18px;border-top:1px solid var(--line);color:var(--muted);font-size:11px;line-height:1.7}
 @media(max-width:640px){.project-screenshot{margin-bottom:24px}.project-screenshot>figcaption{padding:10px 12px;font-size:10px}}
+
+/* Project reading and download actions share the existing notebook palette. */
+.section-icon-title{display:flex;align-items:center;gap:10px;font-size:21px;line-height:1.5;margin:0 0 18px}
+.section-icon-title>svg,.article-icon-heading>svg{flex:none;color:var(--ink)}
+.download-panel{padding:22px 24px;border:1px solid var(--line);background:var(--surface);margin:24px 0}
+.download-main{display:flex;align-items:center;flex-wrap:wrap;gap:12px 18px}
+.download-main>.primary{min-height:49px;gap:10px;justify-content:center}
+.download-version{display:inline-flex;align-items:center;gap:6px;font-size:11px;white-space:nowrap}
+.download-requirements,.download-notice{display:flex;align-items:flex-start;gap:9px;font-size:12px;line-height:1.8;margin:13px 0 0}
+.download-requirements>svg,.download-notice>svg{flex:none;margin-top:3px}
+.download-notice{font-size:11px;margin-top:5px}
+.download-guide{margin-top:12px;font-size:12px}
+.download-guide>summary{cursor:pointer;min-height:44px;display:flex;align-items:center;gap:8px;width:fit-content;text-decoration:underline;text-underline-offset:4px}
+.download-guide>summary::after{content:'+';margin-left:10px;font-size:16px;text-decoration:none}
+.download-guide[open]>summary::after{content:'−'}
+.download-guide>div{border-top:1px solid var(--line);padding-top:14px}
+.download-guide>div>p{display:flex;align-items:flex-start;gap:10px;line-height:1.9;margin:0 0 12px;max-width:65ch}
+.download-guide>div>p>svg{flex:none;margin-top:3px}
+.download-guide nav{display:flex;flex-wrap:wrap;gap:8px 24px}
+.download-guide nav a{min-height:44px;font-size:11px;gap:7px}
+.project-screenshot{max-width:912px;margin-inline:auto}
+.screenshot-open{display:block;position:relative;width:100%;padding:0;border:0;background:transparent;cursor:zoom-in;color:var(--ink)}
+.screenshot-open>img{display:block;width:100%;height:auto}
+.screenshot-zoom{display:flex;align-items:center;gap:6px;position:absolute;bottom:12px;right:12px;padding:8px 10px;background:var(--surface);border:1px solid var(--line);font-size:11px;box-shadow:0 2px 8px #25113b12}
+.project-screenshot>figcaption{display:flex;align-items:center;gap:8px}
+.image-dialog{box-sizing:border-box;width:min(960px,calc(100vw - 28px));max-width:none;max-height:calc(100dvh - 32px);padding:18px;background:var(--surface);color:var(--ink);border:1px solid var(--line);overflow:hidden;box-shadow:0 22px 100px #25113b40}
+.image-dialog::backdrop{background:#1e123bb3}
+.image-dialog-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+.image-dialog-toolbar>span{display:flex;align-items:center;gap:9px;font-size:13px;font-weight:600}
+.image-dialog-toolbar>button{min-height:44px}
+.image-dialog-scroll{overflow:auto;max-height:calc(100dvh - 190px);overscroll-behavior:contain;background:var(--stone)}
+.image-dialog-scroll>img{display:block;width:912px;max-width:none;height:auto;margin:auto}
+.image-dialog>p{font-size:11px;line-height:1.7;margin:12px 0 0}
+.mechanism-flow{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);list-style:none;margin:22px 0 20px;padding:0;gap:28px}
+.mechanism-flow>li{position:relative;min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:12px;font-size:13px;line-height:1.8;overflow-wrap:break-word}
+.mechanism-number{font-size:10px;letter-spacing:1px}
+.mechanism-arrow{position:absolute;right:-24px;top:35px;width:16px}
+.technology-stack{display:flex;align-items:flex-start;gap:9px;border-top:1px solid var(--line);padding-top:16px;line-height:1.9}
+.technology-stack>svg{flex:none;margin-top:2px}
+.article-detail>.article-meta{display:flex;align-items:center;gap:7px;flex-wrap:wrap;line-height:1.8}
+.article-date{display:inline-flex;align-items:center;gap:7px;white-space:nowrap}
+.article-detail>.editorial-lead,.article-detail>.article-body{max-width:44em}
+.article-detail>.editorial-lead{margin-bottom:24px}
+.article-detail>.article-body{margin-top:0;padding-top:0}
+.article-detail>.article-body>p:first-child{margin-top:0}
+.article-detail .article-body h2{font-size:21px}
+.article-detail .article-body>p{line-height:1.95}
+.article-icon-heading{display:flex;align-items:flex-start;gap:11px}
+.article-icon-heading>svg{margin-top:3px}
+.article-detail>.download-panel{margin-top:32px}
+.article-detail>.download-panel+.article-next{margin-top:0;background:transparent;border-top:0;padding:12px 0}
+.related-note>h3{font-size:18px;line-height:1.6;margin:0 0 12px}
+@media(max-width:640px){
+ .download-panel{padding:18px 16px;margin:22px 0}
+ .download-main{align-items:flex-start;gap:10px}
+ .download-main>.primary{width:100%;padding-inline:14px;font-size:13px}
+ .download-version{font-size:10px}
+ .download-requirements{font-size:11px;margin-top:11px}
+ .download-notice{font-size:10px}
+ .download-guide>summary{font-size:11px}
+ .download-guide nav{gap:4px 18px}
+ .section-icon-title{font-size:19px;gap:9px}
+ .mechanism-flow{display:flex;flex-direction:column;gap:0;margin:12px 0 20px}
+ .mechanism-flow>li{display:grid;grid-template-columns:22px 28px minmax(0,1fr);align-items:center;gap:12px;min-height:72px;padding:16px 0;border-bottom:1px solid var(--line);font-size:13px}
+ .mechanism-flow>li:last-child{border-bottom:0}
+ .mechanism-arrow{display:none}
+ .mechanism-flow>li>svg:not(.mechanism-arrow){width:24px}
+ .screenshot-zoom{font-size:10px;padding:6px 8px;bottom:8px;right:8px}
+ .image-dialog{padding:12px}
+ .article-icon-heading{gap:9px}
+ .article-icon-heading>svg{width:21px;height:21px}
+ .article-detail>.editorial-lead{margin-bottom:22px}
+ .article-detail .article-body h2{font-size:20px}
+}
