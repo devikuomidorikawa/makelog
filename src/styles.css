@@ -155,3 +155,8 @@ main h1[tabindex="-1"]:focus{outline:none}
 @media(max-width:640px){.recent-work{margin-top:18px}.recent-work .work-row{grid-template-columns:minmax(78px,.38fr) minmax(0,1fr) 20px;gap:14px;padding-block:20px}.recent-work .work-name strong{font-size:16px;letter-spacing:.2px}.recent-work .work-name small{font-size:9px;margin-top:6px}.recent-work .work-summary>strong{font-size:13px}.recent-work .work-summary>.tag-list{gap:5px}.recent-work .work-summary .tag-chip{font-size:9px}.recent-work>.section-heading{min-height:49px}}
 @media(max-width:960px) and (min-width:641px){.hero-actions{grid-column:1/-1;margin-top:18px}}
 @media(max-width:640px){.hero-actions{order:5;display:flex;flex-direction:column;align-items:flex-start;gap:8px;margin:16px 0 18px}.hero-secondary{width:120px;max-width:100%;margin-left:0}.hero-secondary .text-link{min-height:44px}.hero-actions>.primary{min-height:49px}}
+.work-card-image>img.app-screenshot{object-fit:contain;object-position:center;background:var(--stone)}
+.project-screenshot{margin:0 0 30px;min-width:0;max-width:100%;border:1px solid var(--line);background:var(--stone)}
+.project-screenshot>img{display:block;width:100%;height:auto;max-height:620px;object-fit:contain}
+.project-screenshot>figcaption{padding:12px 18px;border-top:1px solid var(--line);color:var(--muted);font-size:11px;line-height:1.7}
+@media(max-width:640px){.project-screenshot{margin-bottom:24px}.project-screenshot>figcaption{padding:10px 12px;font-size:10px}}

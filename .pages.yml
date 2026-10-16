@@ -645,6 +645,44 @@
                   "label": "GitHub（任意）",
                   "type": "string",
                   "description": "owner/repository形式。非公開リポジトリは登録しないでください。"
+                },
+                {
+                  "name": "image",
+                  "label": "作品画像（任意）",
+                  "type": "select",
+                  "options": {
+                    "values": [
+                      {
+                        "name": "",
+                        "label": "線画アイコン"
+                      },
+                      {
+                        "name": "nest-preview.png",
+                        "label": "NEST — 公開用ダミーデータ"
+                      },
+                      {
+                        "name": "campus-main.png",
+                        "label": "大学のサンプル画像"
+                      },
+                      {
+                        "name": "campus-a.png",
+                        "label": "大学Aのサンプル画像"
+                      },
+                      {
+                        "name": "campus-b.png",
+                        "label": "大学Bのサンプル画像"
+                      },
+                      {
+                        "name": "form-preview.png",
+                        "label": "FORM — サンプル画面"
+                      },
+                      {
+                        "name": "flow-preview.png",
+                        "label": "FLOW — サンプル画面"
+                      }
+                    ]
+                  },
+                  "description": "公開確認済みの画像だけ選択できます。個人情報・実ファイル名を含む画像を登録しないでください。"
                 }
               ]
             }
