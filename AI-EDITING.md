@@ -12,6 +12,7 @@
 | 作品名・紹介・技術・流れ | `site.projects.atlas` / `form` / `flow` |
 | 新しく追加するアプリ | `site.additionalProjects[]`（固定IDを維持） |
 | 追加作品の公開用画像 | `site.additionalProjects[].image`（登録済みファイル名を選択。省略時は線画アイコン） |
+| 追加作品のZIP配布案内 | `site.additionalProjects[].download`（同じ `repository` のGitHub Releases） |
 | ホーム下部の表示順 | 各作品の `updatedAt`（掲載更新日）から公開作品の上位3件を自動選出 |
 | 記事追加・編集 | `articles` |
 | 作品・記事のタグID | `site.projects.<作品ID>.tags` / `articles[].tags` |
@@ -30,6 +31,8 @@
 追加作品の任意項目 `image` は `src/content-model.mjs` の `PROJECT_IMAGE_FILES` から、拡張子を含むファイル名だけを選びます。素材は `public/assets/` に配置し、URL・パス・HTMLは入力しません。新しい画像は個人情報や実ファイル名のない公開用データで撮影・確認したうえで、許可リストへ明示的に登録します。未登録ファイルは公開ビルドに含めません。画像を選ぶとホーム・作品一覧の線画を置き換え、概要ページにも表示します。NESTの画面には「実際のアプリ画面（公開用ダミーデータ）」と記載します。
 
 新しい記事は重複しない半角小文字英数字・ハイフンの `id`（64文字以内）、`date`（YYYY-MM-DD）、`status`（`draft` / `published`）、`project`（空欄 / `atlas` / `form` / `flow`）と日英の文章項目を追加します。掲載記事には日本語のタイトルと本文が必須です。本文は `#`〜`###` の見出し、`**太字**`、`- ` の箇条書きに対応します。HTML、画像、Markdownリンク、スクリプトは実行しません。
+
+追加作品の `download` は任意です。設定する場合は `repository` と `{ "tag": "v2.1.4", "file": "NEST-2.1.4-ja.zip", "label": ["Windows版をダウンロード", "Download for Windows"], "requirements": ["Windows 11・64bit／無料", "Windows 11 · 64-bit / Free"], "notice": ["利用前の注意", "Before using"], "instructions": ["展開後の手順", "Steps after extraction"] }` を指定します。日英両方が必須で、各言語の上限は順に200・300・500・1500文字。タグは先頭英数字、英数字・ピリオド・アンダースコア・ハイフンだけで64文字以内。ZIP名も同じ文字種で160文字以内、`..` を含まず `.zip` で終わる必要があります。URLは入力せず、確認済み公開リリースのタグ・添付ファイル名だけを使います。空の設定は省略扱い、部分入力は公開検査で拒否します。配布URL、リリース案内、同じリポジトリの `main/LICENSE.txt`・`main/PRIVACY.txt` は固定のGitHubホストから組み立てます。設定前に配布物・利用条件・プライバシー説明が実在することを確認し、配布権限・動作環境・署名状態を正確に記載してください。
 
 記事は200件、本文は各言語20,000文字、データ全体は1MB以内です。配色には6桁のカラーコードを指定します。文字と背景、ボタン文字のコントラスト検証があります。決定済みの薄いベージュと深紫のデザインを、文章変更だけの依頼で変更しないでください。
 

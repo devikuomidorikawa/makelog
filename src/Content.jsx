@@ -22,11 +22,13 @@ export function ContentProvider({children}){
 
 // Plain Markdown subset. Everything remains React text; HTML and links never execute.
 function Inline({text}){return text.split(/(\*\*[^*]+\*\*)/g).map((part,n)=>part.startsWith('**')&&part.endsWith('**')?<strong key={n}>{part.slice(2,-2)}</strong>:<React.Fragment key={n}>{part}</React.Fragment>);}
-export function ArticleBody({text}){
+export function ArticleBody({text,headingIcons=[]}){
   const blocks=text.replace(/\r\n?/g,'\n').replace(/^(#{1,3} .+)$/gm,'\n\n$1\n\n').split(/\n\s*\n/).map(v=>v.trim()).filter(Boolean);
+  let headingIndex=0;
   return <div className="article-body">{blocks.map((block,n)=>{
-    if(/^#{1,3} /.test(block)){const content=block.replace(/^#{1,3} /,'');return block.startsWith('# ')?<h2 key={n}><Inline text={content}/></h2>:<h3 key={n}><Inline text={content}/></h3>;}
+    if(/^#{1,3} /.test(block)){const content=block.replace(/^#{1,3} /,''),Heading=block.startsWith('### ')?'h3':'h2',Icon=headingIcons.length?headingIcons[headingIndex++%headingIcons.length]:null;return <Heading key={n} className={Icon?'article-icon-heading':undefined}>{Icon&&<Icon size={23} weight="light" aria-hidden="true"/>}<span><Inline text={content}/></span></Heading>;}
     if(block.split('\n').every(line=>line.startsWith('- ')))return <ul key={n}>{block.split('\n').map((line,k)=><li key={k}><Inline text={line.slice(2)}/></li>)}</ul>;
     return <p key={n}><Inline text={block}/></p>;
   })}</div>;
 }
+

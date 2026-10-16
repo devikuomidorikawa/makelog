@@ -164,8 +164,8 @@
           "JSON"
         ],
         "flow": [
-          "ファイルやリンクを登録 / Add files and links",
-          "パネルとタブで整理 / Organize panels and tabs",
+          "ファイルとリンクを登録 / Add files and links",
+          "パネルとタブで整理 / Organize with panels and tabs",
           "検索して開く / Search and open",
           "作業環境を切り替える / Switch workspaces"
         ],
@@ -177,7 +177,27 @@
         "updatedAt": "2026-10-16",
         "status": "published",
         "image": "nest-preview.png",
-        "repository": "devikuomidorikawa/nest"
+        "repository": "devikuomidorikawa/nest",
+        "download": {
+          "tag": "v2.1.4",
+          "file": "NEST-2.1.4-ja.zip",
+          "label": [
+            "Windows版をダウンロード",
+            "Download for Windows"
+          ],
+          "requirements": [
+            "Windows 11・64bit / .NET Framework 4.8以降",
+            "Windows 11 · 64-bit / .NET Framework 4.8+"
+          ],
+          "notice": [
+            "無料・未署名。端末の管理ルールに従ってご利用ください。",
+            "Free and unsigned. Follow your device’s security rules."
+          ],
+          "instructions": [
+            "ZIPをすべて展開し、書き込み可能なフォルダーからNEST.exeを開きます。iconsと同梱文書も一緒に保管してください。",
+            "Extract the entire ZIP, then open NEST.exe from a writable folder. Keep the icons folder and included documents together."
+          ]
+        }
       }
     ]
   },
@@ -239,10 +259,10 @@
       "status": "published",
       "titleJa": "NEST：ファイルを動かさず、作業場所を整える",
       "titleEn": "NEST: organize your workspace without moving files",
-      "summaryJa": "パネル・タブ・検索で、必要なものへ迷わず戻る。保守資料と実装から再構成した制作記録の仮稿です。",
-      "summaryEn": "Panels, tabs and search keep essential items within reach. A provisional note reconstructed from project documents and implementation.",
-      "bodyJa": "仮稿：保守資料・変更履歴・実装から再構成した制作記録です。元のChatGPT会話の引用ではありません。\n\n## 探す場所を、作業ごとにまとめる\nNESTは、よく使うファイル・フォルダー・Webリンクをデスクトップのパネルに集めるWindowsアプリです。パネルとタブで登録を分け、用途別のワークスペースで表示や配置を切り替えます。\n\n## 元ファイルを動かさず、登録を整理する\n整理するのはNEST側の登録です。表示名の変更や登録解除で元のファイル名・内容は変わりません。Folder Portalは実フォルダーを表示し、メモはNEST側に保存します。ファイルそのものと、作業のための並べ方を分けています。\n\n## 開く・探す・戻るをつなげる\n登録をダブルクリックして開く操作に加え、全パネルからの検索、配置履歴の復元、リンク先の点検を備えています。Folder Portalの親・下位への移動、戻る操作や狭い画面での配置は、2.1.3の操作性修正で扱われた項目です。\n\n## 今回の公開に向けて\n表示名と公開文書をNESTに統一しました。掲載画面は独立した撮影用設定で起動し、ダミーの登録だけを使います。普段の配置や実ファイル名は掲載しません。\n\nアプリはC#・WPF・.NET Framework 4.8で構成されています。Windows向けの配布物と利用条件は、作品ページのGitHubリンクから確認できます。ブラウザー内で動くデモではありません。",
-      "bodyEn": "Provisional note reconstructed from maintenance documents, change records and implementation. It does not quote the original ChatGPT conversation.\n\n## Group access around the task\nNEST is a Windows app that brings files, folders and web links into desktop panels. Panels and tabs organize registrations; workspaces switch the visible panels and their layout.\n\n## Organize references without moving originals\nRenaming or removing a registration does not rename or delete the original file. Folder Portal displays real folders, while notes are stored by NEST. The underlying files remain separate from the way a task is arranged.\n\n## Connect opening, searching and returning\nThe app supports opening items, search across panels, layout-history restoration and link checks. Parent/child navigation, returning and narrow-window layouts in Folder Portal were addressed by the 2.1.3 usability changes.\n\n## Preparing this publication\nThe visible app name and public documents are being standardized as NEST. Screenshots use an independent configuration containing dummy registrations only. Personal layouts and real file names are excluded.\n\nThe app is built with C#, WPF and .NET Framework 4.8. The Windows download and usage terms are available through the project page's GitHub link. This is a desktop application, not an in-browser demo.",
+      "summaryJa": "元ファイルと登録を分け、作業ごとの整理と戻りやすさを組み立てる。NESTの設計をたどります。",
+      "summaryEn": "Separate original files from their references, organize around tasks, and make returning easier. A look at NEST’s design.",
+      "bodyJa": "仮稿：保守資料・変更履歴・実装から再構成しています。元のChatGPT会話は参照できておらず、直接の引用ではありません。\n\n## 整理する単位を分ける\nパネルは手元に置くまとまり、タブはその中の分類、ワークスペースは表示や配置の切り替えを担います。すべてを一つの一覧に詰め込まず、必要な範囲だけを見渡せるよう、整理の単位が分かれています。作業が変わったときも、登録を一から並べ直す必要を減らせます。\n\n## 元ファイルと、登録を分ける\nNESTで整理するのは、ファイルやリンクへの登録です。表示名を変えたり登録を外したりしても、元のファイル名や内容は変わりません。保存場所を保ったまま、作業に合う並べ方を試せる構造です。Folder Portalで実フォルダーを表示する場合とは、扱う対象を分けています。\n\n## 探し直し、戻る手段を持つ\n置き場所を覚えていなくても全パネルから検索でき、配置は履歴から復元できます。分類から探す方法だけに頼らず、見失った項目や前の配置へ戻る入口を備えています。2.1.3の変更履歴でも、Folder Portalの親・下位への移動や戻る操作が見直されています。\n\n## 公開用の画面を切り離す\n掲載画像は実際のNESTを独立した撮影用設定で起動し、ダミーの登録だけで撮影しました。普段の配置や実ファイル名を出さず、アプリの見た目と整理の仕組みを伝えています。配布はWindows向けZIPで、利用条件と手順は作品ページから確認できます。",
+      "bodyEn": "Provisional note reconstructed from maintenance documents, change records and implementation. The original ChatGPT conversation was unavailable; this is not a direct quotation.\n\n## Use different units of organization\nPanels group items kept close at hand; tabs classify items within a panel; workspaces switch visible panels and their layout. These separate units keep everything from becoming a single long list and limit what needs to be visible at once. A change of task can then use another arrangement instead of rebuilding every registration.\n\n## Separate originals from references\nNEST organizes references to files and links. Renaming or removing a registration leaves the original file name and contents unchanged. This separates a task’s arrangement from its storage, so a different layout does not require moving the files. Folder Portal, which displays an actual folder, is a distinct kind of view.\n\n## Provide ways to find and return\nCross-panel search finds items without requiring the user to remember their location. Layout history can restore an earlier arrangement. These provide routes back alongside browsing by category. The 2.1.3 change records also describe revisions to parent/child navigation and returning in Folder Portal.\n\n## Separate the public capture\nThe screenshots show the actual NEST app running with an independent capture configuration and dummy registrations. They demonstrate the interface and organization without exposing personal layouts or real file names. NEST is distributed as a Windows ZIP; the project page provides its usage terms and setup steps.",
       "tags": [
         "356782af-c36c-4e7d-bc8a-74947edf8d25",
         "0b258eed-eec3-491e-af69-2c92ddeded7a",
