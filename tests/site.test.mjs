@@ -76,7 +76,7 @@ test('static metadata escapes HTML and treats replacement tokens as literal text
 
 test('new app routes require known validated IDs and do not synthesize sample demo pages',()=>{
   const data=readContentSource();
-  data.site.additionalProjects=[{id:'my-app-2',...structuredClone(data.site.projects.form),status:'published'},{id:'hidden-app',...structuredClone(data.site.projects.form),status:'draft'}];
+  data.site.additionalProjects=[...(data.site.additionalProjects||[]),{id:'my-app-2',...structuredClone(data.site.projects.form),status:'published'},{id:'hidden-app',...structuredClone(data.site.projects.form),status:'draft'}];
   const entries=pageEntries(data).map(p=>p.path);
   assert.ok(entries.includes('works/my-app-2'));assert.ok(entries.includes('works/my-app-2/process'));
   assert.ok(!entries.some(p=>p.startsWith('works/hidden-app')));assert.ok(!entries.includes('works/my-app-2/demo'));

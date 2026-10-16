@@ -1,6 +1,6 @@
 # Security model
 
-This is a static portfolio with fictional demo data. The deployed package contains only public HTML, JavaScript, CSS, fonts and five approved illustrations. Original private work, source documents, credentials and design drafts are excluded. Anything placed in `src/site.config.json` is public: never put a token there.
+This is a static portfolio with fictional demo data and approved public app listings. The deployed package contains only public HTML, JavaScript, CSS, fonts and explicitly allowlisted public images. Original private work, source documents, credentials and design drafts are excluded. Anything placed in `src/site.config.json` is public: never put a token there.
 
 ## Boundaries
 
@@ -17,6 +17,8 @@ GitHub Pages does not provide this application with a server, private datastore 
 Additional portfolio projects are data, not executable plugins. They use bounded unique lowercase IDs, validated calendar dates, at most 100 projects total and the same bilingual plain-text limits. Public content removes draft projects before resolving tags or generating static routes; published articles cannot point to a draft project. Only the original three sample IDs can select built-in demo implementations. Additional projects have an overview and production notes, plus optional validated HTTPS links without URL credentials and an optional GitHub owner/repository identifier. They never become arbitrary output paths or server-side requests. Existing link rendering uses React text and noopener/noreferrer. Dates select the latest three public listings; they do not grant publication or prove an app's development date. Skills and draft source are not included in the static package.
 
 ## GUI editing boundaries
+
+Optional additional-project images select an exact bundled filename from `PROJECT_IMAGE_FILES`; URLs, relative paths, suffixes and unregistered files are rejected. The build emits only that image allowlist, and package validation checks the exact PNG set. Images must be reviewed for private data before entering public source or history. The NEST screenshot uses dummy records and is identified as such in the overview; absent images retain the existing line icon. No media upload endpoint, external fetch or filesystem write target is derived from the field.
 
 Public text, colors and articles live in fixed `src/content/site.json`. Validate its allowlisted schema, byte/field/item limits, IDs, dates, statuses, exact color syntax and readable contrast at import, save and build. Plain Markdown renders as React text/headings/lists; raw HTML never executes. No user-controlled path selects a write target.
 

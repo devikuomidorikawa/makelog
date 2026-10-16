@@ -10,6 +10,10 @@ import {allowedLocalRequest,atomicSave,revision} from '../scripts/content-plugin
 import {readRoute,routeHash} from '../src/site-utils.mjs';
 import {readContentSnapshot} from '../scripts/content-store.mjs';
 const original=JSON.parse(await readFile(new URL('../src/content/site.json',import.meta.url),'utf8'));
+// Pure-model cases replace the extra-app set. Keep their sample articles local
+// to the built-ins; catalog-store tests still exercise the entire real source.
+original.site.additionalProjects=[];
+original.articles=original.articles.filter(article=>!article.project||Object.hasOwn(original.site.projects,article.project));
 // Keep these pure-model regression cases on legacy IDs; the catalog-store
 // suite exercises the real UUID-backed files and their migration separately.
 const snapshot=readContentSnapshot(),legacyIds=new Map(snapshot.files.map(entry=>[entry.row.id,entry.row.legacyId||entry.row.name]));
@@ -180,4 +184,23 @@ test('CMS exposes date fields and addable apps using the same bounded schema',as
   const site=config.content[0].fields.find(f=>f.name==='site'),extra=site.fields.find(f=>f.name==='additionalProjects');
   assert.equal(extra.list.max,97);assert.ok(extra.fields.find(f=>f.name==='updatedAt').required);assert.equal(extra.fields.find(f=>f.name==='status').default,'draft');
   for(const p of site.fields.find(f=>f.name==='projects').fields)assert.ok(p.fields.find(f=>f.name==='updatedAt'));
+});
+
+test('additional app images accept only bundled filenames and survive publication unchanged',()=>{
+  const data=copy();data.site.additionalProjects=[{...extra('screen-app'),image:'nest-preview.png'}];
+  assert.equal(validateContent(data).site.additionalProjects[0].image,'nest-preview.png');
+  assert.equal(publicContent(data).site.additionalProjects[0].image,'nest-preview.png');
+  for(const image of ['https://example.com/nest-preview.png','//example.com/nest-preview.png','../nest-preview.png','assets/nest-preview.png','nest-preview.png?token=secret','nest-preview.png#x','NEST-preview.png','nest-preview.svg','unknown.png',null,{},['nest-preview.png']]){
+    data.site.additionalProjects[0].image=image;assert.throws(()=>validateContent(data),JSON.stringify(image));
+  }
+  data.site.additionalProjects[0].image='';assert.equal(validateContent(data).site.additionalProjects[0].image,undefined);
+  delete data.site.additionalProjects[0].image;assert.doesNotThrow(()=>validateContent(data));
+});
+
+test('CMS image choices use the exact runtime allowlist without a free-form media URL',async()=>{
+  const {PROJECT_IMAGE_FILES}=await import('../src/content-model.mjs');
+  const config=JSON.parse(await readFile(new URL('../.pages.yml',import.meta.url),'utf8'));
+  const extra=config.content[0].fields.find(f=>f.name==='site').fields.find(f=>f.name==='additionalProjects');
+  const image=extra.fields.find(f=>f.name==='image');assert.equal(image.type,'select');
+  assert.deepEqual(image.options.values.map(v=>v.name).filter(Boolean).sort(),[...PROJECT_IMAGE_FILES].sort());
 });

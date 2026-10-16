@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
-import {publicContent} from '../src/content-model.mjs';
+import {publicContent,PROJECT_IMAGE_FILES} from '../src/content-model.mjs';
 import {pageEntries} from './static-pages.mjs';
 import {readContentSource} from './content-store.mjs';
 const root = fileURLToPath(new URL('../dist/client/', import.meta.url));
@@ -15,7 +15,7 @@ for (const [, url] of html.matchAll(/(?:src|href)="([^"]+)"/g)) {
   const page = new URL('https://example.github.io/portfolio/');
   assert.ok(new URL(url, page).pathname.startsWith('/portfolio/assets/'));
 }
-for (const file of ['campus-main.png','campus-a.png','campus-b.png','form-preview.png','flow-preview.png']) assert.ok(existsSync(path.join(root,'assets',file)));
+assert.deepEqual(readdirSync(path.join(root,'assets')).filter(file=>file.endsWith('.png')).sort(),[...PROJECT_IMAGE_FILES].sort(),'Only approved PNGs may ship');
 for (const file of readdirSync(path.join(root,'assets'))) {
   assert.ok(!file.endsWith('.map'), 'Source maps must stay out of the public package');
   if (file.endsWith('.css')) assert.ok(!readFileSync(path.join(root,'assets',file),'utf8').includes('/assets/notebook-gray.png'));
@@ -36,4 +36,4 @@ for(const entry of pageEntries(source)){
 publicContent(source); // The same schema and contrast requirements apply to the public build.
 for(const article of source.articles.filter(a=>a.status==='draft'))assert.ok(!javascript.includes(article.id),'Draft article IDs must not ship');
 assert.ok(!existsSync(path.join(root,'.pages.yml'))&&!existsSync(path.join(root,'src')),'CMS/source configuration stays outside the static site');
-console.log('Static package verified: real pages, nested assets, metadata, five approved illustrations, no drafts or write endpoints.');
+console.log('Static package verified: real pages, nested assets, metadata, approved public images, no drafts or write endpoints.');

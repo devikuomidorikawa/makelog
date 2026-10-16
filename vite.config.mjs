@@ -3,10 +3,11 @@ import react from "@vitejs/plugin-react";
 import { readFileSync } from "node:fs";
 import { contentPlugin } from './scripts/content-plugin.mjs';
 import {staticPages} from './scripts/static-pages.mjs';
+import {PROJECT_IMAGE_FILES} from './src/content-model.mjs';
 
-// Only the five public demo illustrations ship. Design drafts stay local.
+// Only explicitly reviewed public assets ship. Design drafts stay local.
 const frameHeaders = {'Content-Security-Policy':"frame-ancestors 'none'",'X-Frame-Options':'DENY'};
-const publicAssets = ['campus-main.png', 'campus-a.png', 'campus-b.png', 'form-preview.png', 'flow-preview.png'];
+const publicAssets = PROJECT_IMAGE_FILES;
 const staticAssets = {
   name: 'makelog-public-assets',
   generateBundle() {
