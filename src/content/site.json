@@ -153,8 +153,8 @@
           "A desktop organizer for files and links"
         ],
         "description": [
-          "よく使うファイル・フォルダー・Webリンクを、パネルとタブにまとめるWindowsアプリ。Folder Portalやメモ、横断検索、作業ごとの配置切り替えに対応し、元ファイルを動かさずに整理できます。",
-          "A Windows app that organizes frequently used files, folders and web links into panels and tabs. Folder Portal views, notes, cross-panel search and workspaces keep essential items close at hand without moving the original files."
+          "ファイルの保存場所と、普段使う場所を分けるWindowsアプリ。パネルやタブのエリア分け、フォルダーの色を手がかりに、保存先の迷いを減らし、必要なものへすぐ戻れる作業環境をつくります。",
+          "A Windows app that separates where files are stored from where you use them day to day. Panels, tabs and folder colors make the workspace easier to scan, helping you keep storage decisions consistent and everyday access convenient."
         ],
         "tech": [
           "C#",
@@ -174,7 +174,7 @@
           "0b258eed-eec3-491e-af69-2c92ddeded7a",
           "67a884c9-9368-41cf-b63f-3d48ba937057"
         ],
-        "updatedAt": "2026-10-16",
+        "updatedAt": "2026-10-19",
         "status": "published",
         "image": "nest-preview.png",
         "repository": "devikuomidorikawa/nest",
@@ -257,12 +257,12 @@
       "project": "nest",
       "date": "2026-10-16",
       "status": "published",
-      "titleJa": "NEST：ファイルを動かさず、作業場所を整える",
-      "titleEn": "NEST: organize your workspace without moving files",
-      "summaryJa": "元ファイルと登録を分け、作業ごとの整理と戻りやすさを組み立てる。NESTの設計をたどります。",
-      "summaryEn": "Separate original files from their references, organize around tasks, and make returning easier. A look at NEST’s design.",
-      "bodyJa": "仮稿：保守資料・変更履歴・実装から再構成しています。元のChatGPT会話は参照できておらず、直接の引用ではありません。\n\n## 整理する単位を分ける\nパネルは手元に置くまとまり、タブはその中の分類、ワークスペースは表示や配置の切り替えを担います。すべてを一つの一覧に詰め込まず、必要な範囲だけを見渡せるよう、整理の単位が分かれています。作業が変わったときも、登録を一から並べ直す必要を減らせます。\n\n## 元ファイルと、登録を分ける\nNESTで整理するのは、ファイルやリンクへの登録です。表示名を変えたり登録を外したりしても、元のファイル名や内容は変わりません。保存場所を保ったまま、作業に合う並べ方を試せる構造です。Folder Portalで実フォルダーを表示する場合とは、扱う対象を分けています。\n\n## 探し直し、戻る手段を持つ\n置き場所を覚えていなくても全パネルから検索でき、配置は履歴から復元できます。分類から探す方法だけに頼らず、見失った項目や前の配置へ戻る入口を備えています。2.1.3の変更履歴でも、Folder Portalの親・下位への移動や戻る操作が見直されています。\n\n## 公開用の画面を切り離す\n掲載画像は実際のNESTを独立した撮影用設定で起動し、ダミーの登録だけで撮影しました。普段の配置や実ファイル名を出さず、アプリの見た目と整理の仕組みを伝えています。配布はWindows向けZIPで、利用条件と手順は作品ページから確認できます。",
-      "bodyEn": "Provisional note reconstructed from maintenance documents, change records and implementation. The original ChatGPT conversation was unavailable; this is not a direct quotation.\n\n## Use different units of organization\nPanels group items kept close at hand; tabs classify items within a panel; workspaces switch visible panels and their layout. These separate units keep everything from becoming a single long list and limit what needs to be visible at once. A change of task can then use another arrangement instead of rebuilding every registration.\n\n## Separate originals from references\nNEST organizes references to files and links. Renaming or removing a registration leaves the original file name and contents unchanged. This separates a task’s arrangement from its storage, so a different layout does not require moving the files. Folder Portal, which displays an actual folder, is a distinct kind of view.\n\n## Provide ways to find and return\nCross-panel search finds items without requiring the user to remember their location. Layout history can restore an earlier arrangement. These provide routes back alongside browsing by category. The 2.1.3 change records also describe revisions to parent/child navigation and returning in Folder Portal.\n\n## Separate the public capture\nThe screenshots show the actual NEST app running with an independent capture configuration and dummy registrations. They demonstrate the interface and organization without exposing personal layouts or real file names. NEST is distributed as a Windows ZIP; the project page provides its usage terms and setup steps.",
+      "titleJa": "NEST：保存する場所と、使う場所を分ける",
+      "titleEn": "NEST: separate where you store files from where you use them",
+      "summaryJa": "保存先に迷わず、使うときにも迷わない。保管のルールと日々の使いやすさを、エリア分けと色でつなぐ設計思想。",
+      "summaryEn": "Know where to save a file and where to reach for it. The design philosophy behind separating storage from everyday access, with visual areas and color as cues.",
+      "bodyJa": "NESTが目指すのは、「どこに保存するか迷わない」ことと、「普段の使いやすさ」の両立です。ファイルを保管する場所と、日々の作業で触れる場所を分け、それぞれに合った整理のルールを持たせます。\n\n## 保存先は、迷わないルールで\nファイルを保存するたびに、後で使いやすい場所を考え直すのは小さな負担です。仕事の種類や案件など、保管のための基準を決めておけば、保存先を選ぶ判断を繰り返さずに済みます。保存場所には、日々の作業が変わっても揺らぎにくい、分かりやすい秩序を持たせたいと考えています。\n\n## 使う場所は、今の作業に合わせる\n一方、普段使うものの組み合わせは、作業ごとに変わります。NESTでは元の保存場所を保ったまま、必要なファイルやフォルダーへの入口を手元にまとめます。同じ保管ルールを守りながら、今使うものは近くに置ける。表示名や登録の整理を元ファイルと分けることで、保管と利用の都合を両立させます。\n\n## ショートカットを、見渡せるまとまりに\n標準のショートカットでも、保存先を変えずに入口をつくれます。NESTで重視しているのは、その入口が視覚的なエリアに分かれていることです。パネルやタブで仕事・資料・用途のまとまりをつくると、一つずつ名前を読む前に、どのあたりを探せばよいか見当をつけられます。置き場所そのものが、作業を再開するための手がかりになります。\n\n## 名前に、色の手がかりを添える\nフォルダーの色を簡単に変えられることも、この考え方につながります。たとえば「作業中」「参照用」「保管用」といった属性を色に割り当てれば、名前を読み込む前に大まかな役割を見分ける手がかりになります。色の意味は、自分の作業に合う少数のルールにそろえる。名前や配置も合わせて使うことで、迷いにくく、ひと目で見渡しやすい作業場所を目指しています。",
+      "bodyEn": "NEST aims to combine two things: knowing where to save a file and keeping everyday work convenient. It separates the place where files are stored from the place where you reach for them, giving each a clear organizing principle.\n\n## Give storage a consistent rule\nReconsidering the most convenient location every time you save a file adds a small decision to the task. A storage rule based on a project or type of work can reduce that repetition. The aim is a clear, lasting order that remains useful as daily tasks change.\n\n## Arrange access around the current task\nThe items you need together change from task to task. NEST keeps the original storage location while gathering access to the files and folders you currently need. Storage can follow a consistent rule while frequently used items stay close at hand. Keeping registrations and display names separate from originals allows storage and everyday access to serve different needs.\n\n## Make shortcuts a visible group\nStandard shortcuts can also provide access without changing where a file is stored. NEST emphasizes placing those entry points in distinct visual areas. Panels and tabs group them by task, resource or purpose, so their position suggests where to look before you read each name. The arrangement itself becomes a cue for returning to work.\n\n## Add color as a cue alongside names\nBeing able to change folder colors easily supports the same idea. For example, assigning colors to roles such as work in progress, reference material and storage can make those roles easier to recognize before reading every name. A small, consistent set of meanings keeps the colors useful. Together with names and position, these cues aim to make the workspace easier to scan and less confusing.",
       "tags": [
         "356782af-c36c-4e7d-bc8a-74947edf8d25",
         "0b258eed-eec3-491e-af69-2c92ddeded7a",
