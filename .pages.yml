@@ -145,24 +145,8 @@
           }
         },
         {
-          "name": "titleEn",
-          "label": "記事タイトル（英語）",
-          "type": "string",
-          "options": {
-            "maxlength": 200
-          }
-        },
-        {
           "name": "summaryJa",
           "label": "概要（日本語）",
-          "type": "text",
-          "options": {
-            "maxlength": 1000
-          }
-        },
-        {
-          "name": "summaryEn",
-          "label": "概要（英語）",
           "type": "text",
           "options": {
             "maxlength": 1000
@@ -177,14 +161,6 @@
           },
           "default": "## 課題\n\n解決したいことを書きます。\n\n## 設計思想\n\n選んだ方法と、その理由を書きます。\n\n## 使い方・確かめたこと\n\n実際にできることと、確認した内容を書きます。",
           "description": "見出し・太字・箇条書き・HTTPSリンク・コードブロックに対応。画像は下の「記事の画像」から追加します。"
-        },
-        {
-          "name": "bodyEn",
-          "label": "本文（英語）",
-          "type": "text",
-          "options": {
-            "maxlength": 20000
-          }
         },
         {
           "name": "images",
@@ -250,6 +226,30 @@
               }
             }
           ]
+        },
+        {
+          "name": "titleEn",
+          "label": "記事タイトル（英語）",
+          "type": "string",
+          "options": {
+            "maxlength": 200
+          }
+        },
+        {
+          "name": "summaryEn",
+          "label": "概要（英語）",
+          "type": "text",
+          "options": {
+            "maxlength": 1000
+          }
+        },
+        {
+          "name": "bodyEn",
+          "label": "本文（英語）",
+          "type": "text",
+          "options": {
+            "maxlength": 20000
+          }
         }
       ]
     },
