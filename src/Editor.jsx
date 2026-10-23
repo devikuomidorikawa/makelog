@@ -40,6 +40,7 @@ function TagManager({data,onChange}){
 }
 
 export function Editor(props){
+  if(!import.meta.env.DEV) return <main className="editor-shell editor-frame-warning"><NotePencil size={32}/><h1>オンラインで編集する</h1><p>記事・作品・サイトの設定は、Pages CMSで編集できます。</p><a className="primary" href="https://app.pagescms.org/devikuomidorikawa/makelog/main" target="_blank" rel="noopener noreferrer">Pages CMSを開く<ArrowUpRight size={18}/></a><button className="text-link" onClick={props.onClose}><ArrowLeft size={18}/>サイトに戻る</button></main>;
   if(window.self!==window.top) return <main className="editor-shell editor-frame-warning"><WarningCircle size={32}/><h1>編集画面を新しいタブで開いてください</h1><p>安全に編集するため、別のページに埋め込まれた画面では保存できません。</p><a className="primary" href={`${window.location.origin}${window.location.pathname}${window.location.search}#editor`} target="_blank" rel="noopener noreferrer">編集画面を開く<ArrowUpRight size={18}/></a></main>;
   return <EditorWorkspace {...props}/>;
 }
