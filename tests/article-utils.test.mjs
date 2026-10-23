@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {normalizeSearch,journalParams,journalQuery,searchArticles,paginateArticles,relatedArticles} from '../src/article-utils.mjs';
+import {normalizeSearch,journalParams,journalQuery,journalReturnContext,articleSearchExcerpt,searchArticles,paginateArticles,relatedArticles} from '../src/article-utils.mjs';
 const notes=Array.from({length:200},(_,n)=>({id:`note-${String(n).padStart(3,'0')}`,status:'published',date:`2026-10-${String(1+n%23).padStart(2,'0')}`,titleJa:`制作記録 ${n}`,titleEn:`Build note ${n}`,summaryJa:'設計の記録',summaryEn:'Design notes',project:n%2?'nest':'atlas',tags:n%3?['UI/UX']:['Automation'],bodyJa:n===199?'専用語 フォルダーを整理する':'実装の内容',bodyEn:''}));
 test('searches a 200-article corpus including body, excludes drafts and ranks title first',()=>{
  const corpus=[...notes,{...notes[0],id:'draft',status:'draft',titleJa:'専用語'}];
@@ -36,4 +36,31 @@ test('related articles require shared project or tag and prioritise same project
  const original={...notes[0],id:'source',project:'nest',tags:['Folders']};
  const related=relatedArticles(original,[original,{...notes[1],id:'tag',project:'atlas',tags:['Folders']},{...notes[2],id:'project',project:'nest',tags:[]},{...notes[3],id:'irrelevant',project:'atlas',tags:[]},{...notes[4],id:'draft',status:'draft',project:'nest'}]);
  assert.deepEqual(related.map(a=>a.id),['project','tag']);
+});
+test('return context preserves list filters and scroll without accepting an external URL',()=>{
+ const value={params:{q:'色 & 保存?',tag:'UI/UX',project:'nest',page:12,href:'https://evil.invalid'},scroll:527.5,articleId:'nest-build-note',url:'https://evil.invalid'};
+ assert.deepEqual(journalReturnContext(value),{params:{q:'色 & 保存?',tag:'UI/UX',project:'nest',page:12},scroll:527.5,articleId:'nest-build-note'});
+ assert.equal(journalReturnContext(null),null);
+ assert.equal(journalReturnContext({url:'https://evil.invalid'}),null);
+ assert.deepEqual(journalReturnContext({params:{page:-3},scroll:Infinity,articleId:'bad"] selector'}),{params:{q:'',tag:'',project:'',page:1},scroll:0,articleId:''});
+});
+test('excerpt reveals body-only matches, bounds surrounding copy and leaves unqueried summaries intact',()=>{
+ const article={summaryJa:'通常の概要です。',bodyJa:'前置き。'.repeat(150)+'ショートカットを視覚的に分ける。'+'後半。'.repeat(150)};
+ assert.deepEqual(articleSearchExcerpt(article),[{text:article.summaryJa,match:false}]);
+ const parts=articleSearchExcerpt(article,'ショートカット');
+ assert.deepEqual(parts.filter(p=>p.match).map(p=>p.text),['ショートカット']);
+ assert.ok(parts.map(p=>p.text).join('').length<=152);
+ assert.ok(parts[0].text.startsWith('…'));assert.ok(parts.at(-1).text.endsWith('…'));
+});
+test('excerpt highlights NFKC matches against original graphemes and overlapping words',()=>{
+ const article={summaryJa:'ＮＥＳＴでｶﾞｲﾄﾞとガイドを管理。ﬃ の例。',bodyJa:''};
+ assert.deepEqual(articleSearchExcerpt(article,'nest ガイド ffi').filter(p=>p.match).map(p=>p.text),['ＮＥＳＴ','ｶﾞｲﾄﾞ','ガイド','ﬃ']);
+ assert.deepEqual(articleSearchExcerpt({summaryJa:'NEST testing'},'test testing').filter(p=>p.match).map(p=>p.text),['testing']);
+});
+test('excerpt returns only literal text fragments for hostile HTML and queries',()=>{
+ const parts=articleSearchExcerpt({summaryJa:'<img src=x onerror=alert(1)> & <script>evil</script>'},'<script>');
+ assert.deepEqual(parts.filter(p=>p.match),[{text:'<script>',match:true}]);
+ assert.ok(parts.every(p=>Object.keys(p).sort().join(',')==='match,text'&&typeof p.text==='string'));
+ assert.equal(parts.map(p=>p.text).join(''),'<img src=x onerror=alert(1)> & <script>evil</script>');
+ assert.ok(articleSearchExcerpt({summaryJa:'概要',bodyEn:'Folder organization'},'organization','ja').some(p=>p.match&&p.text==='organization'));
 });

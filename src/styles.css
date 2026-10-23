@@ -193,6 +193,10 @@ main h1[tabindex="-1"]:focus{outline:none}
 .image-dialog-scroll{overflow:auto;max-height:calc(100dvh - 190px);overscroll-behavior:contain;background:var(--stone)}
 .image-dialog-scroll>img{display:block;width:912px;max-width:none;height:auto;margin:auto}
 .image-dialog>p{font-size:11px;line-height:1.7;margin:12px 0 0}
+.article-images .image-dialog-scroll>img{width:912px;max-width:none}
+.article-images figcaption{display:flex;align-items:flex-start;gap:8px}
+.article-images figcaption>svg{flex:none;margin-top:3px}
+.journal-list mark{color:var(--ink);background:color-mix(in srgb,var(--accent) 12%,var(--surface));box-decoration-break:clone;-webkit-box-decoration-break:clone;padding:0 2px;border-radius:2px}
 .mechanism-flow{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);list-style:none;margin:22px 0 20px;padding:0;gap:28px}
 .mechanism-flow>li{position:relative;min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:12px;font-size:13px;line-height:1.8;overflow-wrap:break-word}
 .mechanism-number{font-size:10px;letter-spacing:1px}

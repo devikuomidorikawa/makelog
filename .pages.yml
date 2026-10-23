@@ -43,105 +43,17 @@
       },
       "fields": [
         {
-          "name": "id",
-          "label": "記事URLのID（初回のみ設定）",
-          "type": "string",
-          "required": true,
-          "pattern": "^[a-z0-9][a-z0-9-]{0,63}$",
-          "description": "例 nest-usage。公開後は変更しないでください。ファイル名と一致しない変更は公開検査で止まります。"
-        },
-        {
-          "name": "date",
-          "label": "日付",
-          "type": "date",
-          "required": true,
-          "options": {
-            "format": "yyyy-MM-dd"
-          }
-        },
-        {
-          "name": "updatedAt",
-          "label": "記事の更新日（内容を更新したとき）",
-          "type": "date",
-          "default": "",
-          "options": {
-            "format": "yyyy-MM-dd"
-          }
-        },
-        {
-          "name": "translationStatus",
-          "label": "英訳の状態",
-          "type": "select",
-          "default": "missing",
-          "options": {
-            "values": [
-              {
-                "name": "missing",
-                "label": "未作成"
-              },
-              {
-                "name": "needs-update",
-                "label": "日本語を更新・英訳要更新"
-              },
-              {
-                "name": "current",
-                "label": "対応済み"
-              }
-            ]
-          }
-        },
-        {
-          "name": "status",
-          "label": "表示状態",
-          "type": "select",
-          "required": true,
-          "options": {
-            "values": [
-              {
-                "name": "draft",
-                "label": "下書き"
-              },
-              {
-                "name": "published",
-                "label": "サイトに表示"
-              }
-            ]
-          },
-          "default": "draft"
-        },
-        {
-          "name": "project",
-          "label": "関連する作品（任意）",
-          "type": "reference",
-          "options": {
-            "collection": "projects",
-            "search": "name",
-            "value": "{fields.id}",
-            "label": "{fields.name}",
-            "placeholder": "作品名で選択"
-          }
-        },
-        {
-          "name": "tags",
-          "label": "タグ",
-          "type": "reference",
-          "options": {
-            "collection": "tags",
-            "multiple": true,
-            "min": 0,
-            "max": 8,
-            "search": "name",
-            "value": "{fields.id}",
-            "label": "{fields.name}",
-            "placeholder": "タグを選択"
-          }
-        },
-        {
           "name": "titleJa",
           "label": "記事タイトル（日本語）",
           "type": "string",
           "options": {
             "maxlength": 200
+          },
+          "required": true,
+          "default": "無題の制作ノート",
+          "pattern": {
+            "regex": "\\S",
+            "message": "タイトルを入力してください。下書きは仮のタイトルで保存できます。"
           }
         },
         {
@@ -150,7 +62,8 @@
           "type": "text",
           "options": {
             "maxlength": 1000
-          }
+          },
+          "description": "一覧に出る短い紹介。何が分かる記事かを1〜2文で。"
         },
         {
           "name": "bodyJa",
@@ -160,7 +73,7 @@
             "maxlength": 20000
           },
           "default": "## 課題\n\n解決したいことを書きます。\n\n## 設計思想\n\n選んだ方法と、その理由を書きます。\n\n## 使い方・確かめたこと\n\n実際にできることと、確認した内容を書きます。",
-          "description": "見出し・太字・箇条書き・HTTPSリンク・コードブロックに対応。画像は下の「記事の画像」から追加します。"
+          "description": "見出しは ##、太字は **文字**、箇条書きは - 。本文は公開時に必須、下書きでは空欄にできます。画像は次の欄で追加します。"
         },
         {
           "name": "images",
@@ -228,6 +141,108 @@
           ]
         },
         {
+          "name": "project",
+          "label": "関連する作品（任意）",
+          "type": "reference",
+          "options": {
+            "collection": "projects",
+            "search": "name",
+            "value": "{fields.id}",
+            "label": "{fields.name}",
+            "placeholder": "作品名で選択"
+          }
+        },
+        {
+          "name": "tags",
+          "label": "タグ",
+          "type": "reference",
+          "options": {
+            "collection": "tags",
+            "multiple": true,
+            "min": 0,
+            "max": 8,
+            "search": "name",
+            "value": "{fields.id}",
+            "label": "{fields.name}",
+            "placeholder": "タグを選択"
+          }
+        },
+        {
+          "name": "id",
+          "label": "記事URLのID（初回のみ設定）",
+          "type": "string",
+          "required": true,
+          "pattern": {
+            "regex": "^[a-z0-9][a-z0-9-]{0,63}$",
+            "message": "半角小文字英数字とハイフンで64文字以内。先頭は英数字にしてください。"
+          },
+          "description": "新規記事だけ設定。例 nest-usage。登録後は変更せず、別の記事と重複させないでください。",
+          "options": {
+            "maxlength": 64
+          }
+        },
+        {
+          "name": "date",
+          "label": "公開日",
+          "type": "date",
+          "required": true,
+          "options": {
+            "format": "yyyy-MM-dd"
+          }
+        },
+        {
+          "name": "updatedAt",
+          "label": "更新日（修正したとき）",
+          "type": "date",
+          "default": "",
+          "options": {
+            "format": "yyyy-MM-dd"
+          }
+        },
+        {
+          "name": "status",
+          "label": "公開設定",
+          "type": "select",
+          "required": true,
+          "options": {
+            "values": [
+              {
+                "name": "draft",
+                "label": "下書き（サイトには出さない）"
+              },
+              {
+                "name": "published",
+                "label": "公開する（保存後に検査・反映）"
+              }
+            ]
+          },
+          "default": "draft",
+          "description": "公開前にタイトル・本文・公開日・画像の説明を確認。Saveは原稿の保存です。運営者向け編集の「公開状況」で反映完了を確認できます。"
+        },
+        {
+          "name": "translationStatus",
+          "label": "英訳の状態",
+          "type": "select",
+          "default": "missing",
+          "options": {
+            "values": [
+              {
+                "name": "missing",
+                "label": "未作成"
+              },
+              {
+                "name": "needs-update",
+                "label": "日本語を更新・英訳要更新"
+              },
+              {
+                "name": "current",
+                "label": "対応済み"
+              }
+            ]
+          },
+          "description": "日本語を直したら「英訳要更新」。英訳がなければ「未作成」。"
+        },
+        {
           "name": "titleEn",
           "label": "記事タイトル（英語）",
           "type": "string",
@@ -249,7 +264,8 @@
           "type": "text",
           "options": {
             "maxlength": 20000
-          }
+          },
+          "description": "英語が空欄なら日本語を表示します。書式と画像の扱いは日本語と同じです。"
         }
       ]
     },

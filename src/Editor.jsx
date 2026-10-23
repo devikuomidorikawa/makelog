@@ -3,6 +3,7 @@ import {ArrowLeft,ArrowUpRight,CaretDown,CheckCircle,CloudArrowUp,DownloadSimple
 import {useContent,ArticleBody,ArticleImages} from './Content.jsx';
 import {articleCopy,localized,validateContent,validateTags,MAX_CONTENT_BYTES,MAX_ARTICLES,PAIR_FIELDS,PROJECT_IDS,PROJECT_IMAGE_FILES,projectEntries} from './content-model.mjs';
 import {collectTagOptions,renameContentTag,resolveTagName,addTagAssignment} from './tag-utils.mjs';
+import {OnlineEditor} from './OnlineEditor.jsx';
 import {DOWNLOAD_PAIR_LIMITS} from './download-utils.mjs';
 
 const legacyDraftKey=`makelog-editor-draft-v1:${window.location.pathname}`;
@@ -40,7 +41,7 @@ function TagManager({data,onChange}){
 }
 
 export function Editor(props){
-  if(!import.meta.env.DEV) return <main className="editor-shell editor-frame-warning"><NotePencil size={32}/><h1>オンラインで編集する</h1><p>記事・作品・サイトの設定は、Pages CMSで編集できます。</p><a className="primary" href="https://app.pagescms.org/devikuomidorikawa/makelog/main" target="_blank" rel="noopener noreferrer">Pages CMSを開く<ArrowUpRight size={18}/></a><button className="text-link" onClick={props.onClose}><ArrowLeft size={18}/>サイトに戻る</button></main>;
+  if(!import.meta.env.DEV) return <OnlineEditor {...props}/>;
   if(window.self!==window.top) return <main className="editor-shell editor-frame-warning"><WarningCircle size={32}/><h1>編集画面を新しいタブで開いてください</h1><p>安全に編集するため、別のページに埋め込まれた画面では保存できません。</p><a className="primary" href={`${window.location.origin}${window.location.pathname}${window.location.search}#editor`} target="_blank" rel="noopener noreferrer">編集画面を開く<ArrowUpRight size={18}/></a></main>;
   return <EditorWorkspace {...props}/>;
 }
