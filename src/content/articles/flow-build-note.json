@@ -1,0 +1,21 @@
+{
+  "id": "flow-build-note",
+  "project": "flow",
+  "date": "2026-10-12",
+  "updatedAt": "2026-10-12",
+  "status": "published",
+  "translationStatus": "current",
+  "titleJa": "確認画面から戻っても、入力を失わない",
+  "titleEn": "Keep entered details when returning from review",
+  "summaryJa": "入力・確認・完了を3段階に分け、修正時のやり直しを減らす。個人情報を使わない架空の見学受付の設計例です。",
+  "summaryEn": "Three distinct steps make corrections easier. An illustrative visit-request flow that needs no personal information.",
+  "bodyJa": "## 課題：確認中に気づいた間違いを、直しやすく\nこれは架空の見学受付を使った制作記録のサンプルです。確認画面で日付や人数を直したくなったとき、入力を最初からやり直す必要がない流れを考えました。\n\n## 判断：段階と、入力内容を別に持つ\n画面の段階は入力・確認・完了の3つ。日付・目的・人数は段階とは別に保持します。「修正する」は入力画面に戻すだけなので、確認前に入力した値が残ります。\n\n- 入力内容 → 確認画面 → デモ完了\n- 確認画面 → 修正する → 入力内容を保持\n\n## デモで確認できること\n希望日と人数を変えて確認画面へ進み、「修正する」で戻ってください。同じ値が表示されるので、必要な項目だけ直せます。最後の画面にはデモ受付の完了と、実際の予約・通知を送信していないことを表示します。\n\n## 集める情報を必要な分だけに\n流れを体験するために氏名や連絡先は不要です。外部への予約送信、承認、通知は実装していません。実運用の受付にする段階で、本人確認や受付側の処理を改めて設計します。",
+  "bodyEn": "## Problem: corrections should be easy during review\nThis build note is an illustrative example of a fictional visit request. Changing a date or visitor count on the review screen should not require entering everything again.\n\n## Decision: keep step and input state separate\nThe screen has three steps: details, review, and completion. Date, purpose, and visitor count are stored independently of the current step. The Edit action returns to the first screen without clearing those values.\n\n- Entered details → review → sample completion\n- Review → edit → preserved details\n\n## What you can check in the demo\nChange the date and visitor count, continue to review, then choose Edit. The same values remain so you only need to correct what changed. The final screen explains both the sample completion and the absence of a real booking or notification.\n\n## Collect only what this experience needs\nNames and contact details are unnecessary for trying the flow. Submission, approval, and notifications are not implemented. A real reception service would need a separate design for identity and coordinator actions.",
+  "tags": [
+    "7b1413e3-b76e-4fd7-8bbd-4ed9e2fbbe26",
+    "67a884c9-9368-41cf-b63f-3d48ba937057",
+    "824902cc-cb19-49f0-8527-d36016253a15",
+    "cbf958ed-d65a-4171-9c1e-04ba9132efeb"
+  ],
+  "images": []
+}

@@ -26,7 +26,9 @@ description: "自作アプリをMAKELOGの作品・制作ノートとして掲�
 最新版の `main` と `AGENTS.md`、`AI-EDITING.md`、`SECURITY.md`、内容モデル、`.pages.yml` を読み、元コミットを記録する。実際のスキーマが以下と異なる場合は最新版を優先する。
 
 - 既存作品は同じIDの項目を更新する。名称・GitHubリポジトリ・既存記事との対応で重複掲載を確認する。
-- 新しいアプリは `src/content/site.json` の `site.additionalProjects` へ追加する。半角小文字英数字・ハイフンの固定IDを使い、既存の3サンプルを別アプリで上書きしない。掲載例と項目は [references/listing.md](references/listing.md) を読む。
+- 新しいアプリは `src/content/projects/<作品ID>.json`、制作ノートは `src/content/articles/<記事ID>.json` へ1件ずつ追加する。半角小文字英数字・ハイフンの固定IDと同名ファイルを使い、既存URLや3サンプルを変更しない。`site.json` はサイト共通設定だけの正本で、記事本文・作品配列を戻さない。掲載例と項目は [references/listing.md](references/listing.md) を読む。
+- 記事の公開日 `date` は維持し、実質的な変更日は `updatedAt` に記録する。日本語だけを更新したら `translationStatus` を `needs-update`、英訳なしは `missing`、日英確認済みは `current` にする。自動翻訳APIは不要。最大1000記事・集計20MB、記事1件256KiB・本文各言語20,000文字の範囲を守る。
+- 新しい画像は公開可能なダミー画面を `public/assets/media/` へ置き、作品 `image` または記事 `images` から `media/...` を参照する。PNG/JPEG/WebP/GIF/AVIFのみ。記事画像には日本語の代替文を必須とし、必要な説明と英訳を付ける。既存の登録画像名も維持できる。外部画像URL・SVG・任意HTML・私用パスを使わない。
 - `updatedAt` は掲載内容の更新日（YYYY-MM-DD）。新規掲載と実質的な内容変更時に、ユーザー指定日または現在の日本時間の日付を設定する。アプリ自体の開発日と混同せず、無関係な作品の日付を更新しない。ホームは公開作品を日付の新しい順で3件自動表示するので、表示順を手動で書き換えない。
 - タグは `src/content/tags/*.json` の既存表示名から選び、固定UUIDを参照する。足りない分類だけ新規追加する。既存タグのID、ファイル名、互換IDを変えず、改名・統合はタグ辞書で行う。
 - デモURLや公開GitHubがないアプリも、紹介だけで掲載できる。URLを捏造せず、外部デモは実際にアクセスでき、ユーザーが公開を認めたHTTPSのものだけ設定する。ローカルURLを公開デモとして設定しない。アプリ本体を無料の静的サイトで動かせるとは限らない。API鍵・課金・サーバーが必要な処理を、掲載だけのために新設しない。

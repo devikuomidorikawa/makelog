@@ -1,0 +1,21 @@
+{
+  "id": "form-build-note",
+  "project": "form",
+  "date": "2026-10-13",
+  "updatedAt": "2026-10-13",
+  "status": "published",
+  "translationStatus": "current",
+  "titleJa": "ファイル名は、変更前に並べて確認する",
+  "titleEn": "Preview filenames before changing anything",
+  "summaryJa": "日付と件名の順番を変え、3件の候補を見比べる。元ファイルを変更しない命名ルールデモの設計例です。",
+  "summaryEn": "Reorder dates and titles and compare three proposed filenames. An illustrative naming-rule demo that leaves original files untouched.",
+  "bodyJa": "## 課題：一括変更ほど、結果が見えにくい\nこれは3件の架空の書類情報を使った制作記録のサンプルです。名前を揃えたい一方で、ルールを間違えると一括変更の影響が大きくなります。まず結果を確かめられることを優先しました。\n\n## 判断：入力・ルール・候補を分ける\n入力は日付と件名のサンプルデータです。{date} と {title} を指定した命名ルールに置き換え、末尾に .pdf を付けます。使えない記号や置換項目のないルールは実行前に止めます。\n\n- 日付と件名 → 命名ルールを検証 → 候補名を生成\n- 元の名前と候補名 → 並べて確認 → CSVで保存\n\n## デモで確認できること\n{date}_{title} と {title}_{date} をそれぞれ試してください。日付を先頭にした場合と、件名を先頭にした場合の違いが3件まとめて見えます。ルールを変えると前の結果は解除され、もう一度確認できます。\n\n## 動く範囲を明確にする\n保存できるのは名前の対応表です。PDFの読み取り、実ファイルのリネーム、AIによる書類解析は行いません。実運用では、同名ファイルの衝突や取り消し方法を追加で検討する必要があります。",
+  "bodyEn": "## Problem: batch changes can hide their impact\nThis illustrative build note uses three fictional document records. A wrong naming rule can affect an entire batch, so reviewing the proposed names comes first.\n\n## Decision: separate records, rules, and proposed names\nInput consists of sample dates and titles. The rule replaces {date} and {title}, then adds the .pdf extension. Rules with invalid filename characters or no replacement field are rejected before running.\n\n- Date and title → validate naming rule → generate proposed names\n- Original and proposed names → review side by side → export CSV\n\n## What you can check in the demo\nTry {date}_{title} and {title}_{date}. Compare the three results for each order. Editing the rule clears the previous result so it can be reviewed again.\n\n## Make the scope clear\nThe download is a filename mapping. This demo does not read PDFs, rename actual files, or use AI to parse documents. Real deployment would also need collision handling and a way to undo changes.",
+  "tags": [
+    "1891b822-a71b-45aa-b9f8-87fcb896d576",
+    "8e7cba59-115f-491d-8079-7871fdaa82da",
+    "7c58568d-d515-446c-865a-e01812d8493e",
+    "cbf958ed-d65a-4171-9c1e-04ba9132efeb"
+  ],
+  "images": []
+}
