@@ -23,7 +23,9 @@ export function ContentProvider({children}){
   return <ContentContext.Provider value={{content:readable,source:content,saved,preview,apply,commit,reset}}>{children}</ContentContext.Provider>;
 }
 
-function baseUrl(){return import.meta.env.DEV?new URL('/',window.location.href):new URL(document.querySelector('meta[name=makelog-home]')?.getAttribute('content')||'./',window.location.href);}
+// Resolve the document base once, before client-side navigation changes its URL.
+const contentBaseUrl=import.meta.env.DEV?new URL('/',window.location.href):new URL(document.querySelector('meta[name=makelog-home]')?.getAttribute('content')||'./',window.location.href);
+function baseUrl(){return contentBaseUrl;}
 const articleCache=new Map();
 export function useArticle(metadata){
   const [state,setState]=useState({id:null,article:null,loading:false,error:false});
@@ -62,4 +64,3 @@ export function ArticleBody({text='',headingIcons=[],images=[],lang='ja'}){
     return <p key={n}><Inline text={block.text}/></p>;
   })}<ArticleImages images={images} lang={lang}/></div>;
 }
-
