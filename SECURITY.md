@@ -1,5 +1,13 @@
 # Security model
 
+## Article editing and discovery changes (2026-10-23)
+
+The public owner entry is a read-only navigation and search aid, not authentication or a write API. Opening it initially uses published metadata. Only an explicit owner action reads the fixed public repository's main commit and article directory from GitHub, then bounded JSON files from raw.githubusercontent.com pinned to that same SHA. At most four reads run concurrently, each file is limited to 256 KiB, with at most 1000 entries and 20 MiB total. Network requests omit credentials, reject redirects, and never use returned URLs as destinations. Only bounded metadata is retained in memory; source bodies, credentials and authentication state are not stored. GitHub's public API may rate-limit requests; CMS links remain usable. Draft source is already public in this repository; draft content remains excluded from the deployed reader assets and public search.
+
+CMS editing links are constructed from a fixed repository and validated article ID. Authentication, authorization, writes and conflict handling remain with GitHub/Pages CMS. No token entry, local-storage credential, new grant, backend, or paid API is introduced. Deployment success is reported only when the completed successful Pages workflow matches the main SHA read during that check; a previous successful build cannot label newer edits as published. The status is a point-in-time check, not a monitoring service.
+
+Reader return state only retains bounded internal list parameters, article IDs and scroll offsets in browser history. It cannot redirect to external destinations. Search excerpts are React text/mark nodes, never HTML. Image dialogs use previously validated raster paths and native dialog focus isolation; no new image source types are accepted.
+
 This is a static portfolio with fictional demo data and approved public app listings. The deployed package contains only public HTML, JavaScript, CSS, fonts and explicitly allowlisted public images. Original private work, source documents, credentials and design drafts are excluded. Anything placed in `src/site.config.json` is public: never put a token there.
 
 ## Boundaries

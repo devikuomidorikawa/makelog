@@ -6,7 +6,7 @@ import {publicContent,PROJECT_IMAGE_FILES} from '../src/content-model.mjs';
 import {pageEntries,articleAssets,referencedMedia} from './static-pages.mjs';
 import {escapeHtml} from '../src/article-render.mjs';
 import {readContentSource} from './content-store.mjs';
-const root = fileURLToPath(new URL('../dist/client/', import.meta.url));
+const root = process.argv[2]?path.resolve(process.argv[2]):fileURLToPath(new URL('../dist/client/', import.meta.url));
 assert.deepEqual(readdirSync(root).sort(), ['.nojekyll','404.html','THIRD-PARTY-NOTICES.txt','about','assets','contact','guide','index.html','notes','privacy','robots.txt','sitemap.xml','works']);
 const html = readFileSync(path.join(root, 'index.html'), 'utf8');
 for (const [, url] of html.matchAll(/(?:src|href)="([^"]+)"/g)) {
