@@ -1,0 +1,13 @@
+{
+  "id": "cms-scale-check",
+  "date": "2026-10-23",
+  "translationStatus": "missing",
+  "status": "draft",
+  "project": "nest",
+  "tags": [
+    "7c58568d-d515-446c-865a-e01812d8493e"
+  ],
+  "titleJa": "CMS動作確認用の下書き",
+  "summaryJa": "公開前の作業ブランチだけで使用する検証用データです。",
+  "bodyJa": "## 課題\n\n解決したいことを書きます。\n\n## 設計思想\n\n選んだ方法と、その理由を書きます。\n\n## 使い方・確かめたこと\n\n実際にできることと、確認した内容を書きます。"
+}
