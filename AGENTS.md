@@ -4,9 +4,11 @@
 
 ## 共通の編集先
 
-- 記事・文章・作品紹介・配色は `src/content/site.json`、タグ名・統合先は `src/content/tags/*.json`。Pages CMSと端末GUIも同じ正本を編集する。固定タグUUID・ファイル名・互換用legacyIdは維持する。
+- 記事は `src/content/articles/<記事ID>.json`、作品は `src/content/projects/<作品ID>.json`、サイト共通の文章・配色・案内ページは `src/content/site.json`、タグ名・統合先は `src/content/tags/*.json`。1件ずつ同じ正本をPages CMS・端末GUI・AIが編集する。固定ID・ファイル名・タグの互換用legacyIdは維持する。
 - 最初に `AI-EDITING.md` と最新版の `main` を読み、変更元のコミットSHAを記録する。指定項目だけを最小差分で変更し、他の記事・公開状態・色を維持する。
-- 既存記事・作品のIDを維持する。日本語・英語の順序、データの版1、既存の3サンプル、既存検証ルールを守る。新しいアプリは `site.additionalProjects` へ追加する。
+- 既存記事・作品のIDとURL、日本語・英語の順序、データの版1、既存の3サンプル、検証ルールを維持する。新しい記事・アプリは対応ディレクトリへ1ファイル追加し、site.jsonへ本文や作品一覧を戻さない。初期3作品は専用デモがあるためpublishedを維持する。
+- 記事には公開日・更新日・翻訳状態を持たせる。日本語だけを実質更新したら `translationStatus: "needs-update"`、英訳がなければ `missing`、日英を揃えたら `current`。本文は各言語20,000文字、記事1ファイル256KiB、最大1000記事・集計20MB。実測対象200件と上限1000件を混同しない。
+- 公開用画像は `public/assets/media/` に置き、記事の `images`（最大8件、代替文と説明）や作品の `image` から `media/...` を参照する。画像・ファイル名に個人情報を含めず、PNG/JPEG/WebP/GIF/AVIFだけを使う。既存の許可済み画像ファイル名も有効。外部画像URL、SVG、パス遡及を許可しない。
 - 公開リポジトリなので、下書きも元データとGit履歴から読める。機密情報や非公開実績を入れず、ダミーで代替する。認証情報をコード・JSON・ログに保存しない。
 
 ## 更新と公開

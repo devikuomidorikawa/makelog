@@ -2,10 +2,11 @@ import { readFile, writeFile, rename, unlink, lstat } from 'node:fs/promises';
 import { createHash, randomBytes, timingSafeEqual } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { validateContent, publicContent, MAX_CONTENT_BYTES } from '../src/content-model.mjs';
-import {CONTENT_FILE,CATALOG_DIRECTORY,readContentSnapshot,saveContentSource} from './content-store.mjs';
+import {CONTENT_FILE,CATALOG_DIRECTORY,ARTICLE_DIRECTORY,PROJECT_DIRECTORY,readContentSnapshot,saveContentSource} from './content-store.mjs';
 
 const moduleId='virtual:makelog-content', resolvedId='\0'+moduleId;
 export const revision = text => createHash('sha256').update(text).digest('hex');
+export function readerMetadata(data){const result=publicContent(data);result.articles=result.articles.map(({bodyJa,bodyEn,...article})=>article);return result;}
 export function allowedLocalRequest(request,port,write=false,token='') {
   const expected=`127.0.0.1:${port}`;
   if(request.headers.host!==expected||!['127.0.0.1','::ffff:127.0.0.1'].includes(request.socket.remoteAddress)) return false;
@@ -45,11 +46,11 @@ export function contentPlugin() {
       if(id!==resolvedId) return;
       this.addWatchFile(fileURLToPath(file));
       const snapshot=readContentSnapshot(file,directory),data=snapshot.content;
-      for(const entry of snapshot.files)this.addWatchFile(fileURLToPath(entry.url));
-      return `export default ${JSON.stringify(development?validateContent(data):publicContent(data))};`;
+      for(const entry of [...snapshot.files,...(snapshot.articleFiles||[]),...(snapshot.projectFiles||[])])this.addWatchFile(fileURLToPath(entry.url));
+      return `export default ${JSON.stringify(development?validateContent(data):readerMetadata(data))};`;
     },
     configureServer(server){
-      server.watcher.add(fileURLToPath(directory));
+      server.watcher.add([directory,ARTICLE_DIRECTORY,PROJECT_DIRECTORY].map(fileURLToPath));
       const token=randomBytes(32).toString('hex');let queue=Promise.resolve();
       // Vite development only. A production static site has no write endpoint.
       server.middlewares.use(async(req,res,next)=>{
@@ -61,7 +62,7 @@ export function contentPlugin() {
           if(req.method==='GET') {const {content,revision}=readContentSnapshot(file,directory);return send(200,{token,revision,content});}
           if(req.method!=='POST') return send(405,{error:'対応していない操作です。'});
           let size=0;const chunks=[];
-          for await(const chunk of req){size+=chunk.length;if(size>MAX_CONTENT_BYTES+1024)return send(413,{error:'編集データは1MB以内にしてください。'});chunks.push(chunk);}
+          for await(const chunk of req){size+=chunk.length;if(size>MAX_CONTENT_BYTES+1024)return send(413,{error:'編集データのサイズ上限を超えています。'});chunks.push(chunk);}
           const payload=JSON.parse(Buffer.concat(chunks).toString('utf8'));
           if(!payload||typeof payload.revision!=='string'||!/^\w{64}$/.test(payload.revision)) return send(400,{error:'保存元を確認してください。'});
           const operation=queue.then(()=>atomicSave(file,payload.revision,payload.content,directory));
@@ -73,7 +74,7 @@ export function contentPlugin() {
     },
     handleHotUpdate(ctx){
       const changed=ctx.file.replaceAll('\\','/');
-      if(changed===fileURLToPath(file).replaceAll('\\','/')||changed.startsWith(fileURLToPath(directory).replaceAll('\\','/'))) {
+      if(changed===fileURLToPath(file).replaceAll('\\','/')||[directory,ARTICLE_DIRECTORY,PROJECT_DIRECTORY].some(folder=>changed.startsWith(fileURLToPath(folder).replaceAll('\\','/')))) {
         const module=ctx.server.moduleGraph.getModuleById(resolvedId);
         if(module) ctx.server.moduleGraph.invalidateModule(module);
         return []; // The save response updates the current page; reload reads saved content.

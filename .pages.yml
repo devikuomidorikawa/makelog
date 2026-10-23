@@ -1,8 +1,545 @@
 {
   "content": [
     {
+      "name": "articles",
+      "label": "記事一覧",
+      "type": "collection",
+      "path": "src/content/articles",
+      "format": "json",
+      "filename": {
+        "template": "{fields.id}.json",
+        "field": false
+      },
+      "subfolders": false,
+      "operations": {
+        "create": true,
+        "rename": false,
+        "delete": false
+      },
+      "view": {
+        "primary": "titleJa",
+        "fields": [
+          "titleJa",
+          "date",
+          "status",
+          "project",
+          "translationStatus"
+        ],
+        "search": [
+          "titleJa",
+          "id",
+          "summaryJa",
+          "project"
+        ],
+        "sort": [
+          "date",
+          "titleJa",
+          "status"
+        ],
+        "default": {
+          "sort": "date",
+          "order": "desc"
+        }
+      },
+      "fields": [
+        {
+          "name": "id",
+          "label": "記事URLのID（初回のみ設定）",
+          "type": "string",
+          "required": true,
+          "pattern": "^[a-z0-9][a-z0-9-]{0,63}$",
+          "description": "例 nest-usage。公開後は変更しないでください。ファイル名と一致しない変更は公開検査で止まります。"
+        },
+        {
+          "name": "date",
+          "label": "日付",
+          "type": "date",
+          "required": true,
+          "options": {
+            "format": "yyyy-MM-dd"
+          }
+        },
+        {
+          "name": "updatedAt",
+          "label": "記事の更新日（内容を更新したとき）",
+          "type": "date",
+          "default": "",
+          "options": {
+            "format": "yyyy-MM-dd"
+          }
+        },
+        {
+          "name": "translationStatus",
+          "label": "英訳の状態",
+          "type": "select",
+          "default": "missing",
+          "options": {
+            "values": [
+              {
+                "name": "missing",
+                "label": "未作成"
+              },
+              {
+                "name": "needs-update",
+                "label": "日本語を更新・英訳要更新"
+              },
+              {
+                "name": "current",
+                "label": "対応済み"
+              }
+            ]
+          }
+        },
+        {
+          "name": "status",
+          "label": "表示状態",
+          "type": "select",
+          "required": true,
+          "options": {
+            "values": [
+              {
+                "name": "draft",
+                "label": "下書き"
+              },
+              {
+                "name": "published",
+                "label": "サイトに表示"
+              }
+            ]
+          },
+          "default": "draft"
+        },
+        {
+          "name": "project",
+          "label": "関連する作品（任意）",
+          "type": "reference",
+          "options": {
+            "collection": "projects",
+            "search": "name",
+            "value": "{fields.id}",
+            "label": "{fields.name}",
+            "placeholder": "作品名で選択"
+          }
+        },
+        {
+          "name": "tags",
+          "label": "タグ",
+          "type": "reference",
+          "options": {
+            "collection": "tags",
+            "multiple": true,
+            "min": 0,
+            "max": 8,
+            "search": "name",
+            "value": "{fields.id}",
+            "label": "{fields.name}",
+            "placeholder": "タグを選択"
+          }
+        },
+        {
+          "name": "titleJa",
+          "label": "記事タイトル（日本語）",
+          "type": "string",
+          "options": {
+            "maxlength": 200
+          }
+        },
+        {
+          "name": "summaryJa",
+          "label": "概要（日本語）",
+          "type": "text",
+          "options": {
+            "maxlength": 1000
+          }
+        },
+        {
+          "name": "bodyJa",
+          "label": "本文（日本語）",
+          "type": "text",
+          "options": {
+            "maxlength": 20000
+          },
+          "default": "## 課題\n\n解決したいことを書きます。\n\n## 設計思想\n\n選んだ方法と、その理由を書きます。\n\n## 使い方・確かめたこと\n\n実際にできることと、確認した内容を書きます。",
+          "description": "見出し・太字・箇条書き・HTTPSリンク・コードブロックに対応。画像は下の「記事の画像」から追加します。"
+        },
+        {
+          "name": "images",
+          "label": "記事の画像（任意）",
+          "type": "object",
+          "list": {
+            "max": 8,
+            "collapsible": {
+              "collapsed": true,
+              "summary": "{altJa}"
+            }
+          },
+          "fields": [
+            {
+              "name": "src",
+              "label": "画像",
+              "type": "image",
+              "required": true,
+              "options": {
+                "media": "article-images",
+                "extensions": [
+                  "png",
+                  "jpg",
+                  "jpeg",
+                  "webp",
+                  "gif",
+                  "avif"
+                ],
+                "rename": "random"
+              }
+            },
+            {
+              "name": "altJa",
+              "label": "画像の内容（日本語・必須）",
+              "type": "string",
+              "required": true,
+              "options": {
+                "maxlength": 300
+              }
+            },
+            {
+              "name": "captionJa",
+              "label": "説明（日本語）",
+              "type": "text",
+              "options": {
+                "maxlength": 500
+              }
+            },
+            {
+              "name": "altEn",
+              "label": "画像の内容（英語）",
+              "type": "string",
+              "options": {
+                "maxlength": 300
+              }
+            },
+            {
+              "name": "captionEn",
+              "label": "説明（英語）",
+              "type": "text",
+              "options": {
+                "maxlength": 500
+              }
+            }
+          ]
+        },
+        {
+          "name": "titleEn",
+          "label": "記事タイトル（英語）",
+          "type": "string",
+          "options": {
+            "maxlength": 200
+          }
+        },
+        {
+          "name": "summaryEn",
+          "label": "概要（英語）",
+          "type": "text",
+          "options": {
+            "maxlength": 1000
+          }
+        },
+        {
+          "name": "bodyEn",
+          "label": "本文（英語）",
+          "type": "text",
+          "options": {
+            "maxlength": 20000
+          }
+        }
+      ]
+    },
+    {
+      "name": "projects",
+      "label": "作品一覧",
+      "type": "collection",
+      "path": "src/content/projects",
+      "format": "json",
+      "filename": {
+        "template": "{fields.id}.json",
+        "field": false
+      },
+      "subfolders": false,
+      "operations": {
+        "create": true,
+        "rename": false,
+        "delete": false
+      },
+      "view": {
+        "primary": "name",
+        "fields": [
+          "name",
+          "updatedAt",
+          "status"
+        ],
+        "search": [
+          "name",
+          "id"
+        ],
+        "sort": [
+          "updatedAt",
+          "name",
+          "status"
+        ],
+        "default": {
+          "sort": "updatedAt",
+          "order": "desc"
+        }
+      },
+      "fields": [
+        {
+          "name": "id",
+          "label": "作品ID（登録後は変更しない）",
+          "type": "string",
+          "required": true,
+          "pattern": "^[a-z0-9][a-z0-9-]{0,63}$",
+          "description": "URLに使う半角英数字・ハイフン。既存の作品IDと重複させないでください。"
+        },
+        {
+          "name": "name",
+          "label": "作品名",
+          "type": "string",
+          "required": true,
+          "options": {
+            "maxlength": 60
+          }
+        },
+        {
+          "name": "status",
+          "label": "表示状態",
+          "type": "select",
+          "default": "draft",
+          "required": true,
+          "options": {
+            "values": [
+              {
+                "name": "draft",
+                "label": "下書き"
+              },
+              {
+                "name": "published",
+                "label": "サイトに表示"
+              }
+            ]
+          }
+        },
+        {
+          "name": "updatedAt",
+          "label": "更新日（ホームの新しい順に使用）",
+          "type": "date",
+          "description": "YYYY-MM-DD形式",
+          "required": true,
+          "options": {
+            "format": "yyyy-MM-dd"
+          }
+        },
+        {
+          "name": "tags",
+          "label": "タグ",
+          "type": "reference",
+          "options": {
+            "collection": "tags",
+            "multiple": true,
+            "min": 0,
+            "max": 8,
+            "search": "name",
+            "value": "{fields.id}",
+            "label": "{fields.name}",
+            "placeholder": "タグを選択"
+          }
+        },
+        {
+          "name": "category",
+          "label": "カテゴリ（1:日本語 / 2:英語）",
+          "type": "text",
+          "list": {
+            "min": 2,
+            "max": 2
+          },
+          "options": {
+            "maxlength": 160
+          }
+        },
+        {
+          "name": "title",
+          "label": "見出し（1:日本語 / 2:英語）",
+          "type": "text",
+          "list": {
+            "min": 2,
+            "max": 2
+          },
+          "options": {
+            "maxlength": 200
+          }
+        },
+        {
+          "name": "short",
+          "label": "短い紹介（1:日本語 / 2:英語）",
+          "type": "text",
+          "list": {
+            "min": 2,
+            "max": 2
+          },
+          "options": {
+            "maxlength": 200
+          }
+        },
+        {
+          "name": "description",
+          "label": "作品の説明（1:日本語 / 2:英語）",
+          "type": "text",
+          "list": {
+            "min": 2,
+            "max": 2
+          },
+          "options": {
+            "maxlength": 3000
+          }
+        },
+        {
+          "name": "tech",
+          "label": "技術構成",
+          "type": "string",
+          "list": {
+            "min": 1,
+            "max": 12
+          },
+          "options": {
+            "maxlength": 160
+          }
+        },
+        {
+          "name": "flow",
+          "label": "処理の流れ",
+          "type": "string",
+          "list": {
+            "min": 1,
+            "max": 6
+          },
+          "options": {
+            "maxlength": 160
+          }
+        },
+        {
+          "name": "demoUrl",
+          "label": "アプリ・デモのURL（任意）",
+          "type": "string",
+          "pattern": "^https://",
+          "description": "公開してよいHTTPSのURLだけ。入力がなければ紹介ページのみ表示します。"
+        },
+        {
+          "name": "repository",
+          "label": "GitHub（任意）",
+          "type": "string",
+          "description": "owner/repository形式。非公開リポジトリは登録しないでください。"
+        },
+        {
+          "name": "download",
+          "label": "ZIPダウンロード（任意）",
+          "type": "object",
+          "description": "公開済みGitHub Releasesを案内します。利用する場合はGitHub欄と以下の全項目を入力。解除はこの設定全体を空にします。英語も必須です。",
+          "fields": [
+            {
+              "name": "tag",
+              "label": "公開リリースのタグ",
+              "type": "string",
+              "required": true,
+              "pattern": "^[a-zA-Z0-9][a-zA-Z0-9._-]{0,63}$",
+              "options": {
+                "maxlength": 64
+              }
+            },
+            {
+              "name": "file",
+              "label": "配布ZIPのファイル名",
+              "type": "string",
+              "required": true,
+              "pattern": "^[a-zA-Z0-9][a-zA-Z0-9._-]{0,155}\\.[zZ][iI][pP]$",
+              "options": {
+                "maxlength": 160
+              }
+            },
+            {
+              "name": "label",
+              "label": "ダウンロードボタン（1:日本語 / 2:英語）",
+              "type": "text",
+              "required": true,
+              "list": {
+                "min": 2,
+                "max": 2
+              },
+              "options": {
+                "maxlength": 200
+              }
+            },
+            {
+              "name": "requirements",
+              "label": "動作環境・料金（1:日本語 / 2:英語）",
+              "type": "text",
+              "required": true,
+              "list": {
+                "min": 2,
+                "max": 2
+              },
+              "options": {
+                "maxlength": 300
+              }
+            },
+            {
+              "name": "notice",
+              "label": "利用前の注意（1:日本語 / 2:英語）",
+              "type": "text",
+              "required": true,
+              "list": {
+                "min": 2,
+                "max": 2
+              },
+              "options": {
+                "maxlength": 500
+              }
+            },
+            {
+              "name": "instructions",
+              "label": "ダウンロード後の手順（1:日本語 / 2:英語）",
+              "type": "text",
+              "required": true,
+              "list": {
+                "min": 2,
+                "max": 2
+              },
+              "options": {
+                "maxlength": 1500
+              }
+            }
+          ]
+        },
+        {
+          "name": "image",
+          "label": "作品画像（任意）",
+          "type": "image",
+          "options": {
+            "media": "article-images",
+            "extensions": [
+              "png",
+              "jpg",
+              "jpeg",
+              "webp",
+              "gif",
+              "avif"
+            ],
+            "rename": "random"
+          },
+          "description": "公開可能な実画面を選択。個人情報や実ファイル名はダミーに置き換えてください。"
+        }
+      ]
+    },
+    {
       "name": "makelog",
-      "label": "記事とサイトを編集",
+      "label": "サイト設定",
       "type": "file",
       "path": "src/content/site.json",
       "format": "json",
@@ -15,7 +552,7 @@
         },
         {
           "name": "site",
-          "label": "サイトの文章・作品・配色",
+          "label": "サイトの文章・配色",
           "type": "object",
           "fields": [
             {
@@ -35,6 +572,20 @@
               "options": {
                 "maxlength": 100
               }
+            },
+            {
+              "name": "featuredProject",
+              "label": "ホームの注目作品",
+              "type": "reference",
+              "options": {
+                "collection": "projects",
+                "search": "name",
+                "value": "{fields.id}",
+                "label": "{fields.name}",
+                "placeholder": "作品名で選択"
+              },
+              "required": true,
+              "default": "atlas"
             },
             {
               "name": "heroTitle",
@@ -151,737 +702,6 @@
                 }
               ],
               "description": "文字と背景のコントラストが不足すると公開用ビルドで停止します。"
-            },
-            {
-              "name": "projects",
-              "label": "作品",
-              "type": "object",
-              "fields": [
-                {
-                  "name": "atlas",
-                  "label": "ATLAS",
-                  "type": "object",
-                  "fields": [
-                    {
-                      "name": "name",
-                      "label": "作品名",
-                      "type": "string",
-                      "required": true,
-                      "options": {
-                        "maxlength": 60
-                      }
-                    },
-                    {
-                      "name": "updatedAt",
-                      "label": "更新日（ホームの新しい順に使用）",
-                      "type": "string",
-                      "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
-                      "description": "YYYY-MM-DD形式"
-                    },
-                    {
-                      "name": "tags",
-                      "label": "タグ",
-                      "type": "reference",
-                      "options": {
-                        "collection": "tags",
-                        "multiple": true,
-                        "min": 0,
-                        "max": 8,
-                        "search": "name",
-                        "value": "{fields.id}",
-                        "label": "{fields.name}",
-                        "placeholder": "タグを選択"
-                      }
-                    },
-                    {
-                      "name": "category",
-                      "label": "カテゴリ（1:日本語 / 2:英語）",
-                      "type": "text",
-                      "list": {
-                        "min": 2,
-                        "max": 2
-                      },
-                      "options": {
-                        "maxlength": 160
-                      }
-                    },
-                    {
-                      "name": "title",
-                      "label": "見出し（1:日本語 / 2:英語）",
-                      "type": "text",
-                      "list": {
-                        "min": 2,
-                        "max": 2
-                      },
-                      "options": {
-                        "maxlength": 200
-                      }
-                    },
-                    {
-                      "name": "short",
-                      "label": "短い紹介（1:日本語 / 2:英語）",
-                      "type": "text",
-                      "list": {
-                        "min": 2,
-                        "max": 2
-                      },
-                      "options": {
-                        "maxlength": 200
-                      }
-                    },
-                    {
-                      "name": "description",
-                      "label": "作品の説明（1:日本語 / 2:英語）",
-                      "type": "text",
-                      "list": {
-                        "min": 2,
-                        "max": 2
-                      },
-                      "options": {
-                        "maxlength": 3000
-                      }
-                    },
-                    {
-                      "name": "tech",
-                      "label": "技術構成",
-                      "type": "string",
-                      "list": {
-                        "min": 1,
-                        "max": 12
-                      },
-                      "options": {
-                        "maxlength": 160
-                      }
-                    },
-                    {
-                      "name": "flow",
-                      "label": "処理の流れ",
-                      "type": "string",
-                      "list": {
-                        "min": 1,
-                        "max": 6
-                      },
-                      "options": {
-                        "maxlength": 160
-                      }
-                    }
-                  ]
-                },
-                {
-                  "name": "form",
-                  "label": "FORM",
-                  "type": "object",
-                  "fields": [
-                    {
-                      "name": "name",
-                      "label": "作品名",
-                      "type": "string",
-                      "required": true,
-                      "options": {
-                        "maxlength": 60
-                      }
-                    },
-                    {
-                      "name": "updatedAt",
-                      "label": "更新日（ホームの新しい順に使用）",
-                      "type": "string",
-                      "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
-                      "description": "YYYY-MM-DD形式"
-                    },
-                    {
-                      "name": "tags",
-                      "label": "タグ",
-                      "type": "reference",
-                      "options": {
-                        "collection": "tags",
-                        "multiple": true,
-                        "min": 0,
-                        "max": 8,
-                        "search": "name",
-                        "value": "{fields.id}",
-                        "label": "{fields.name}",
-                        "placeholder": "タグを選択"
-                      }
-                    },
-                    {
-                      "name": "category",
-                      "label": "カテゴリ（1:日本語 / 2:英語）",
-                      "type": "text",
-                      "list": {
-                        "min": 2,
-                        "max": 2
-                      },
-                      "options": {
-                        "maxlength": 160
-                      }
-                    },
-                    {
-                      "name": "title",
-                      "label": "見出し（1:日本語 / 2:英語）",
-                      "type": "text",
-                      "list": {
-                        "min": 2,
-                        "max": 2
-                      },
-                      "options": {
-                        "maxlength": 200
-                      }
-                    },
-                    {
-                      "name": "short",
-                      "label": "短い紹介（1:日本語 / 2:英語）",
-                      "type": "text",
-                      "list": {
-                        "min": 2,
-                        "max": 2
-                      },
-                      "options": {
-                        "maxlength": 200
-                      }
-                    },
-                    {
-                      "name": "description",
-                      "label": "作品の説明（1:日本語 / 2:英語）",
-                      "type": "text",
-                      "list": {
-                        "min": 2,
-                        "max": 2
-                      },
-                      "options": {
-                        "maxlength": 3000
-                      }
-                    },
-                    {
-                      "name": "tech",
-                      "label": "技術構成",
-                      "type": "string",
-                      "list": {
-                        "min": 1,
-                        "max": 12
-                      },
-                      "options": {
-                        "maxlength": 160
-                      }
-                    },
-                    {
-                      "name": "flow",
-                      "label": "処理の流れ",
-                      "type": "string",
-                      "list": {
-                        "min": 1,
-                        "max": 6
-                      },
-                      "options": {
-                        "maxlength": 160
-                      }
-                    }
-                  ]
-                },
-                {
-                  "name": "flow",
-                  "label": "FLOW",
-                  "type": "object",
-                  "fields": [
-                    {
-                      "name": "name",
-                      "label": "作品名",
-                      "type": "string",
-                      "required": true,
-                      "options": {
-                        "maxlength": 60
-                      }
-                    },
-                    {
-                      "name": "updatedAt",
-                      "label": "更新日（ホームの新しい順に使用）",
-                      "type": "string",
-                      "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
-                      "description": "YYYY-MM-DD形式"
-                    },
-                    {
-                      "name": "tags",
-                      "label": "タグ",
-                      "type": "reference",
-                      "options": {
-                        "collection": "tags",
-                        "multiple": true,
-                        "min": 0,
-                        "max": 8,
-                        "search": "name",
-                        "value": "{fields.id}",
-                        "label": "{fields.name}",
-                        "placeholder": "タグを選択"
-                      }
-                    },
-                    {
-                      "name": "category",
-                      "label": "カテゴリ（1:日本語 / 2:英語）",
-                      "type": "text",
-                      "list": {
-                        "min": 2,
-                        "max": 2
-                      },
-                      "options": {
-                        "maxlength": 160
-                      }
-                    },
-                    {
-                      "name": "title",
-                      "label": "見出し（1:日本語 / 2:英語）",
-                      "type": "text",
-                      "list": {
-                        "min": 2,
-                        "max": 2
-                      },
-                      "options": {
-                        "maxlength": 200
-                      }
-                    },
-                    {
-                      "name": "short",
-                      "label": "短い紹介（1:日本語 / 2:英語）",
-                      "type": "text",
-                      "list": {
-                        "min": 2,
-                        "max": 2
-                      },
-                      "options": {
-                        "maxlength": 200
-                      }
-                    },
-                    {
-                      "name": "description",
-                      "label": "作品の説明（1:日本語 / 2:英語）",
-                      "type": "text",
-                      "list": {
-                        "min": 2,
-                        "max": 2
-                      },
-                      "options": {
-                        "maxlength": 3000
-                      }
-                    },
-                    {
-                      "name": "tech",
-                      "label": "技術構成",
-                      "type": "string",
-                      "list": {
-                        "min": 1,
-                        "max": 12
-                      },
-                      "options": {
-                        "maxlength": 160
-                      }
-                    },
-                    {
-                      "name": "flow",
-                      "label": "処理の流れ",
-                      "type": "string",
-                      "list": {
-                        "min": 1,
-                        "max": 6
-                      },
-                      "options": {
-                        "maxlength": 160
-                      }
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "name": "additionalProjects",
-              "label": "追加の作品",
-              "type": "object",
-              "list": {
-                "min": 0,
-                "max": 97,
-                "collapsible": {
-                  "collapsed": true,
-                  "summary": "{name} / {status}"
-                }
-              },
-              "fields": [
-                {
-                  "name": "id",
-                  "label": "作品ID（登録後は変更しない）",
-                  "type": "string",
-                  "required": true,
-                  "pattern": "^[a-z0-9][a-z0-9-]{0,63}$",
-                  "description": "URLに使う半角英数字・ハイフン。既存の作品IDと重複させないでください。"
-                },
-                {
-                  "name": "name",
-                  "label": "作品名",
-                  "type": "string",
-                  "required": true,
-                  "options": {
-                    "maxlength": 60
-                  }
-                },
-                {
-                  "name": "status",
-                  "label": "表示状態",
-                  "type": "select",
-                  "default": "draft",
-                  "required": true,
-                  "options": {
-                    "values": [
-                      {
-                        "name": "draft",
-                        "label": "下書き"
-                      },
-                      {
-                        "name": "published",
-                        "label": "サイトに表示"
-                      }
-                    ]
-                  }
-                },
-                {
-                  "name": "updatedAt",
-                  "label": "更新日（ホームの新しい順に使用）",
-                  "type": "string",
-                  "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
-                  "description": "YYYY-MM-DD形式",
-                  "required": true
-                },
-                {
-                  "name": "tags",
-                  "label": "タグ",
-                  "type": "reference",
-                  "options": {
-                    "collection": "tags",
-                    "multiple": true,
-                    "min": 0,
-                    "max": 8,
-                    "search": "name",
-                    "value": "{fields.id}",
-                    "label": "{fields.name}",
-                    "placeholder": "タグを選択"
-                  }
-                },
-                {
-                  "name": "category",
-                  "label": "カテゴリ（1:日本語 / 2:英語）",
-                  "type": "text",
-                  "list": {
-                    "min": 2,
-                    "max": 2
-                  },
-                  "options": {
-                    "maxlength": 160
-                  }
-                },
-                {
-                  "name": "title",
-                  "label": "見出し（1:日本語 / 2:英語）",
-                  "type": "text",
-                  "list": {
-                    "min": 2,
-                    "max": 2
-                  },
-                  "options": {
-                    "maxlength": 200
-                  }
-                },
-                {
-                  "name": "short",
-                  "label": "短い紹介（1:日本語 / 2:英語）",
-                  "type": "text",
-                  "list": {
-                    "min": 2,
-                    "max": 2
-                  },
-                  "options": {
-                    "maxlength": 200
-                  }
-                },
-                {
-                  "name": "description",
-                  "label": "作品の説明（1:日本語 / 2:英語）",
-                  "type": "text",
-                  "list": {
-                    "min": 2,
-                    "max": 2
-                  },
-                  "options": {
-                    "maxlength": 3000
-                  }
-                },
-                {
-                  "name": "tech",
-                  "label": "技術構成",
-                  "type": "string",
-                  "list": {
-                    "min": 1,
-                    "max": 12
-                  },
-                  "options": {
-                    "maxlength": 160
-                  }
-                },
-                {
-                  "name": "flow",
-                  "label": "処理の流れ",
-                  "type": "string",
-                  "list": {
-                    "min": 1,
-                    "max": 6
-                  },
-                  "options": {
-                    "maxlength": 160
-                  }
-                },
-                {
-                  "name": "demoUrl",
-                  "label": "アプリ・デモのURL（任意）",
-                  "type": "string",
-                  "pattern": "^https://",
-                  "description": "公開してよいHTTPSのURLだけ。入力がなければ紹介ページのみ表示します。"
-                },
-                {
-                  "name": "repository",
-                  "label": "GitHub（任意）",
-                  "type": "string",
-                  "description": "owner/repository形式。非公開リポジトリは登録しないでください。"
-                },
-                {
-                  "name": "download",
-                  "label": "ZIPダウンロード（任意）",
-                  "type": "object",
-                  "description": "公開済みGitHub Releasesを案内します。利用する場合はGitHub欄と以下の全項目を入力。解除はこの設定全体を空にします。英語も必須です。",
-                  "fields": [
-                    {
-                      "name": "tag",
-                      "label": "公開リリースのタグ",
-                      "type": "string",
-                      "required": true,
-                      "pattern": "^[a-zA-Z0-9][a-zA-Z0-9._-]{0,63}$",
-                      "options": {
-                        "maxlength": 64
-                      }
-                    },
-                    {
-                      "name": "file",
-                      "label": "配布ZIPのファイル名",
-                      "type": "string",
-                      "required": true,
-                      "pattern": "^[a-zA-Z0-9][a-zA-Z0-9._-]{0,155}\\.[zZ][iI][pP]$",
-                      "options": {
-                        "maxlength": 160
-                      }
-                    },
-                    {
-                      "name": "label",
-                      "label": "ダウンロードボタン（1:日本語 / 2:英語）",
-                      "type": "text",
-                      "required": true,
-                      "list": {
-                        "min": 2,
-                        "max": 2
-                      },
-                      "options": {
-                        "maxlength": 200
-                      }
-                    },
-                    {
-                      "name": "requirements",
-                      "label": "動作環境・料金（1:日本語 / 2:英語）",
-                      "type": "text",
-                      "required": true,
-                      "list": {
-                        "min": 2,
-                        "max": 2
-                      },
-                      "options": {
-                        "maxlength": 300
-                      }
-                    },
-                    {
-                      "name": "notice",
-                      "label": "利用前の注意（1:日本語 / 2:英語）",
-                      "type": "text",
-                      "required": true,
-                      "list": {
-                        "min": 2,
-                        "max": 2
-                      },
-                      "options": {
-                        "maxlength": 500
-                      }
-                    },
-                    {
-                      "name": "instructions",
-                      "label": "ダウンロード後の手順（1:日本語 / 2:英語）",
-                      "type": "text",
-                      "required": true,
-                      "list": {
-                        "min": 2,
-                        "max": 2
-                      },
-                      "options": {
-                        "maxlength": 1500
-                      }
-                    }
-                  ]
-                },
-                {
-                  "name": "image",
-                  "label": "作品画像（任意）",
-                  "type": "select",
-                  "options": {
-                    "values": [
-                      {
-                        "name": "",
-                        "label": "線画アイコン"
-                      },
-                      {
-                        "name": "nest-preview.png",
-                        "label": "NEST — 公開用ダミーデータ"
-                      },
-                      {
-                        "name": "campus-main.png",
-                        "label": "大学のサンプル画像"
-                      },
-                      {
-                        "name": "campus-a.png",
-                        "label": "大学Aのサンプル画像"
-                      },
-                      {
-                        "name": "campus-b.png",
-                        "label": "大学Bのサンプル画像"
-                      },
-                      {
-                        "name": "form-preview.png",
-                        "label": "FORM — サンプル画面"
-                      },
-                      {
-                        "name": "flow-preview.png",
-                        "label": "FLOW — サンプル画面"
-                      }
-                    ]
-                  },
-                  "description": "公開確認済みの画像だけ選択できます。個人情報・実ファイル名を含む画像を登録しないでください。"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "name": "articles",
-          "label": "記事（下書きもGitHubでは閲覧可能）",
-          "type": "object",
-          "list": {
-            "max": 200,
-            "collapsible": {
-              "collapsed": true,
-              "summary": "{titleJa} / {status}"
-            }
-          },
-          "fields": [
-            {
-              "name": "id",
-              "label": "記事ID",
-              "type": "string",
-              "required": true,
-              "pattern": "^[a-z0-9][a-z0-9-]{0,63}$",
-              "description": "重複しない半角英数字・ハイフン。共有URLに使います。"
-            },
-            {
-              "name": "date",
-              "label": "日付",
-              "type": "string",
-              "required": true,
-              "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
-              "description": "YYYY-MM-DD形式"
-            },
-            {
-              "name": "status",
-              "label": "表示状態",
-              "type": "select",
-              "required": true,
-              "options": {
-                "values": [
-                  {
-                    "name": "draft",
-                    "label": "下書き"
-                  },
-                  {
-                    "name": "published",
-                    "label": "サイトに表示"
-                  }
-                ]
-              }
-            },
-            {
-              "name": "project",
-              "label": "関連する作品ID（任意）",
-              "type": "string",
-              "description": "atlas / form / flow または追加作品のID。未指定なら独立した制作ノート。"
-            },
-            {
-              "name": "tags",
-              "label": "タグ",
-              "type": "reference",
-              "options": {
-                "collection": "tags",
-                "multiple": true,
-                "min": 0,
-                "max": 8,
-                "search": "name",
-                "value": "{fields.id}",
-                "label": "{fields.name}",
-                "placeholder": "タグを選択"
-              }
-            },
-            {
-              "name": "titleJa",
-              "label": "記事タイトル（日本語）",
-              "type": "string",
-              "options": {
-                "maxlength": 200
-              }
-            },
-            {
-              "name": "titleEn",
-              "label": "記事タイトル（英語）",
-              "type": "string",
-              "options": {
-                "maxlength": 200
-              }
-            },
-            {
-              "name": "summaryJa",
-              "label": "概要（日本語）",
-              "type": "text",
-              "options": {
-                "maxlength": 1000
-              }
-            },
-            {
-              "name": "summaryEn",
-              "label": "概要（英語）",
-              "type": "text",
-              "options": {
-                "maxlength": 1000
-              }
-            },
-            {
-              "name": "bodyJa",
-              "label": "本文（日本語）",
-              "type": "text",
-              "options": {
-                "maxlength": 20000
-              }
-            },
-            {
-              "name": "bodyEn",
-              "label": "本文（英語）",
-              "type": "text",
-              "options": {
-                "maxlength": 20000
-              }
             }
           ]
         },
@@ -1037,6 +857,23 @@
           },
           "description": "統合するときだけ選択。解除すると元のタグに戻ります。"
         }
+      ]
+    }
+  ],
+  "media": [
+    {
+      "name": "article-images",
+      "label": "記事・作品の画像",
+      "input": "public/assets/media",
+      "output": "media",
+      "rename": "random",
+      "extensions": [
+        "png",
+        "jpg",
+        "jpeg",
+        "webp",
+        "gif",
+        "avif"
       ]
     }
   ]

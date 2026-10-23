@@ -3,7 +3,8 @@ import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import {publicContent,PROJECT_IMAGE_FILES} from '../src/content-model.mjs';
-import {pageEntries} from './static-pages.mjs';
+import {pageEntries,articleAssets,referencedMedia} from './static-pages.mjs';
+import {escapeHtml} from '../src/article-render.mjs';
 import {readContentSource} from './content-store.mjs';
 const root = fileURLToPath(new URL('../dist/client/', import.meta.url));
 assert.deepEqual(readdirSync(root).sort(), ['.nojekyll','404.html','THIRD-PARTY-NOTICES.txt','about','assets','contact','guide','index.html','notes','privacy','robots.txt','sitemap.xml','works']);
@@ -15,7 +16,8 @@ for (const [, url] of html.matchAll(/(?:src|href)="([^"]+)"/g)) {
   const page = new URL('https://example.github.io/portfolio/');
   assert.ok(new URL(url, page).pathname.startsWith('/portfolio/assets/'));
 }
-assert.deepEqual(readdirSync(path.join(root,'assets')).filter(file=>file.endsWith('.png')).sort(),[...PROJECT_IMAGE_FILES].sort(),'Only approved PNGs may ship');
+assert.deepEqual(readdirSync(path.join(root,'assets')).filter(file=>file.endsWith('.png')).sort(),[...PROJECT_IMAGE_FILES].sort(),'Only approved root PNGs may ship');
+assert.deepEqual(readdirSync(path.join(root,'assets')).filter(file=>file.endsWith('.jpg')).sort(),['brand-share.jpg'],'Only approved brand JPEG may ship');
 for (const file of readdirSync(path.join(root,'assets'))) {
   assert.ok(!file.endsWith('.map'), 'Source maps must stay out of the public package');
   if (file.endsWith('.css')) assert.ok(!readFileSync(path.join(root,'assets',file),'utf8').includes('/assets/notebook-gray.png'));
@@ -23,6 +25,13 @@ for (const file of readdirSync(path.join(root,'assets'))) {
 const javascript=readdirSync(path.join(root,'assets')).filter(f=>f.endsWith('.js')).map(f=>readFileSync(path.join(root,'assets',f),'utf8')).join('\n');
 assert.ok(!javascript.includes('/__makelog/editor')&&!javascript.includes('__makelog/editor'),'Development write URLs must not ship');
 const source=readContentSource();
+const assets=articleAssets(source),published=publicContent(source).articles;
+assert.deepEqual(readdirSync(path.join(root,'assets/articles')).sort(),published.map(article=>article.id+'.json').sort(),'Only published article files ship');
+for(const asset of [...assets,...referencedMedia(source)])assert.equal(Buffer.compare(readFileSync(path.join(root,asset.fileName)),Buffer.from(asset.source)),0,`Published artifact differs: ${asset.fileName}`);
+for(const article of published){
+  assert.ok(!javascript.includes(JSON.stringify(article.bodyJa).slice(1,-1)),'Article body must not be bundled with the reader');
+  assert.ok(readFileSync(path.join(root,'notes',article.id,'index.html'),'utf8').includes(escapeHtml(article.titleJa)),'Article initial HTML contains its title');
+}
 for(const entry of pageEntries(source)){
   const folder=path.join(root,entry.path),file=path.join(folder,'index.html');
   assert.ok(existsSync(file),`Missing static page: ${entry.path}`);
@@ -36,4 +45,4 @@ for(const entry of pageEntries(source)){
 publicContent(source); // The same schema and contrast requirements apply to the public build.
 for(const article of source.articles.filter(a=>a.status==='draft'))assert.ok(!javascript.includes(article.id),'Draft article IDs must not ship');
 assert.ok(!existsSync(path.join(root,'.pages.yml'))&&!existsSync(path.join(root,'src')),'CMS/source configuration stays outside the static site');
-console.log('Static package verified: real pages, nested assets, metadata, approved public images, no drafts or write endpoints.');
+console.log('Static package verified: real article HTML, separate bodies/search, nested assets, metadata, approved public images, no drafts or write endpoints.');

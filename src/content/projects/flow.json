@@ -1,0 +1,38 @@
+{
+  "id": "flow",
+  "status": "published",
+  "name": "FLOW",
+  "category": [
+    "業務設計 × オートメーション",
+    "WORKFLOW × AUTOMATION"
+  ],
+  "title": [
+    "入力から確認まで、\n迷わず進める。",
+    "From request to review.\nOne clear step at a time."
+  ],
+  "short": [
+    "見学受付の流れを試すデモ",
+    "Visit request demo"
+  ],
+  "description": [
+    "入力・確認・完了を3段階に分け、修正時も内容を残す。個人情報を使わず、架空の見学受付を試せます。実際の予約は送信しません。",
+    "Three clear steps keep entered details when you return from review. Try a fictional visit request without personal information or a real booking."
+  ],
+  "tech": [
+    "React",
+    "フォーム設計 / Form design",
+    "段階と入力の状態管理 / Step & input state"
+  ],
+  "flow": [
+    "希望を入力する",
+    "内容を確認する",
+    "デモの完了を示す"
+  ],
+  "tags": [
+    "7b1413e3-b76e-4fd7-8bbd-4ed9e2fbbe26",
+    "67a884c9-9368-41cf-b63f-3d48ba937057",
+    "824902cc-cb19-49f0-8527-d36016253a15",
+    "cbf958ed-d65a-4171-9c1e-04ba9132efeb"
+  ],
+  "updatedAt": "2026-10-12"
+}

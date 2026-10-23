@@ -1,0 +1,30 @@
+{
+  "id": "nest-build-note",
+  "project": "nest",
+  "date": "2026-10-16",
+  "updatedAt": "2026-10-23",
+  "status": "published",
+  "translationStatus": "current",
+  "titleJa": "NEST：保存する場所と、使う場所を分ける",
+  "titleEn": "NEST: separate where you store files from where you use them",
+  "summaryJa": "保存先に迷わず、使うときにも迷わない。保管のルールと日々の使いやすさを、エリア分けと色でつなぐ設計思想。",
+  "summaryEn": "Know where to save a file and where to reach for it. The design philosophy behind separating storage from everyday access, with visual areas and color as cues.",
+  "bodyJa": "NESTが目指すのは、「どこに保存するか迷わない」ことと、「普段の使いやすさ」の両立です。ファイルを保管する場所と、日々の作業で触れる場所を分け、それぞれに合った整理のルールを持たせます。\n\n## 保存先は、迷わないルールで\nファイルを保存するたびに、後で使いやすい場所を考え直すのは小さな負担です。仕事の種類や案件など、保管のための基準を決めておけば、保存先を選ぶ判断を繰り返さずに済みます。保存場所には、日々の作業が変わっても揺らぎにくい、分かりやすい秩序を持たせたいと考えています。\n\n## 使う場所は、今の作業に合わせる\n一方、普段使うものの組み合わせは、作業ごとに変わります。NESTでは元の保存場所を保ったまま、必要なファイルやフォルダーへの入口を手元にまとめます。同じ保管ルールを守りながら、今使うものは近くに置ける。表示名や登録の整理を元ファイルと分けることで、保管と利用の都合を両立させます。\n\n## ショートカットを、見渡せるまとまりに\n標準のショートカットでも、保存先を変えずに入口をつくれます。NESTで重視しているのは、その入口が視覚的なエリアに分かれていることです。パネルやタブで仕事・資料・用途のまとまりをつくると、一つずつ名前を読む前に、どのあたりを探せばよいか見当をつけられます。置き場所そのものが、作業を再開するための手がかりになります。\n\n## 名前に、色の手がかりを添える\nフォルダーの色を簡単に変えられることも、この考え方につながります。たとえば「作業中」「参照用」「保管用」といった属性を色に割り当てれば、名前を読み込む前に大まかな役割を見分ける手がかりになります。色の意味は、自分の作業に合う少数のルールにそろえる。名前や配置も合わせて使うことで、迷いにくく、ひと目で見渡しやすい作業場所を目指しています。",
+  "bodyEn": "NEST aims to combine two things: knowing where to save a file and keeping everyday work convenient. It separates the place where files are stored from the place where you reach for them, giving each a clear organizing principle.\n\n## Give storage a consistent rule\nReconsidering the most convenient location every time you save a file adds a small decision to the task. A storage rule based on a project or type of work can reduce that repetition. The aim is a clear, lasting order that remains useful as daily tasks change.\n\n## Arrange access around the current task\nThe items you need together change from task to task. NEST keeps the original storage location while gathering access to the files and folders you currently need. Storage can follow a consistent rule while frequently used items stay close at hand. Keeping registrations and display names separate from originals allows storage and everyday access to serve different needs.\n\n## Make shortcuts a visible group\nStandard shortcuts can also provide access without changing where a file is stored. NEST emphasizes placing those entry points in distinct visual areas. Panels and tabs group them by task, resource or purpose, so their position suggests where to look before you read each name. The arrangement itself becomes a cue for returning to work.\n\n## Add color as a cue alongside names\nBeing able to change folder colors easily supports the same idea. For example, assigning colors to roles such as work in progress, reference material and storage can make those roles easier to recognize before reading every name. A small, consistent set of meanings keeps the colors useful. Together with names and position, these cues aim to make the workspace easier to scan and less confusing.",
+  "tags": [
+    "356782af-c36c-4e7d-bc8a-74947edf8d25",
+    "0b258eed-eec3-491e-af69-2c92ddeded7a",
+    "67a884c9-9368-41cf-b63f-3d48ba937057",
+    "7c58568d-d515-446c-865a-e01812d8493e",
+    "cbf958ed-d65a-4171-9c1e-04ba9132efeb"
+  ],
+  "images": [
+    {
+      "src": "nest-preview.png",
+      "altJa": "制作・資料・リンクのタブと、ダミーのフォルダーをまとめたNESTの画面",
+      "altEn": "NEST with Create, Resources and Links tabs and sample folders",
+      "captionJa": "実際のアプリ画面。個人情報を含まない公開用ダミーデータです。",
+      "captionEn": "Actual app screen using public demo data without personal information."
+    }
+  ]
+}

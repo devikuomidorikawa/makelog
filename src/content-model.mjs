@@ -1,9 +1,18 @@
 import {normalizeProjectDownload} from './download-utils.mjs';
 
-export const MAX_CONTENT_BYTES = 1_000_000;
+export const MAX_CONTENT_BYTES = 20_000_000;
+export const MAX_ARTICLES = 1000;
+export const MAX_ARTICLE_BYTES = 262144;
 export const PROJECT_IDS = ['atlas', 'form', 'flow'];
 // Content can select only reviewed, bundled filenames; never a URL or filesystem path.
 export const PROJECT_IMAGE_FILES = ['campus-main.png','campus-a.png','campus-b.png','form-preview.png','flow-preview.png','nest-preview.png'];
+// Media is served from a fixed local directory, never a remote URL or SVG.
+export function validateMediaPath(value) {
+  if(typeof value!=='string'||value.length>240)fail('画像は公開用メディアから選んでください。');
+  if(PROJECT_IMAGE_FILES.includes(value))return value;
+  if(!/^media\/(?:[a-zA-Z0-9][a-zA-Z0-9_-]*\/)*[a-zA-Z0-9][a-zA-Z0-9_.-]*\.(?:png|jpe?g|webp|gif|avif)$/.test(value)||value.includes('..'))fail('画像は公開用メディアから選んでください。');
+  return value;
+}
 export const MAX_PROJECTS = 100;
 export const PROJECT_ID_PATTERN = /^[a-z0-9][a-z0-9-]{0,63}$/;
 export function projectEntries(site) {
@@ -119,10 +128,10 @@ export function contrast(a,b) {
   const x=light(a),y=light(b);return (Math.max(x,y)+.05)/(Math.min(x,y)+.05);
 }
 export function validateContent(value) {
-  if (new TextEncoder().encode(JSON.stringify(value)).length>MAX_CONTENT_BYTES) fail('編集データは1MB以内にしてください。');
+  if (new TextEncoder().encode(JSON.stringify(value)).length>MAX_CONTENT_BYTES) fail('編集データは20MB以内にしてください。');
   object(value,['version','site','articles','tagCatalog','pages']);
   if(value.version!==1) fail('対応していない編集データの版です。');
-  const s=value.site;object(s,['brand','tagline',...PAIR_FIELDS,'colors','projects','additionalProjects']);
+  const s=value.site;object(s,['brand','tagline',...PAIR_FIELDS,'colors','projects','additionalProjects','featuredProject']);
   const site={brand:text(s.brand,60,true),tagline:text(s.tagline,100,true)};
   for(const field of PAIR_FIELDS){
     const value=field==='studioNote'&&(s[field]==null||(Array.isArray(s[field])&&s[field].length===0))?['','']:s[field];
@@ -141,7 +150,15 @@ export function validateContent(value) {
   object(s.projects,PROJECT_IDS);site.projects={};
   const project=p=>({name:text(p.name,60,true),category:pair(p.category,160),title:pair(p.title,200),short:pair(p.short,200),description:pair(p.description,3000),tech:list(p.tech),flow:list(p.flow,6),tags:validateTagIds(p.tags),updatedAt:date(p.updatedAt)});
   const projectFields=['name','category','title','short','description','tech','flow','tags','updatedAt'];
-  for(const id of PROJECT_IDS) {const p=s.projects[id];object(p,projectFields);site.projects[id]=project(p);}
+  const optionalProject=(p,result)=>{
+    if(p.image!==undefined&&p.image!=='')result.image=validateMediaPath(p.image);
+    if(p.demoUrl!==undefined&&p.demoUrl!==''){if(!httpsUrl(p.demoUrl))fail('デモURLは認証情報を含まないhttpsのURLにしてください。');result.demoUrl=p.demoUrl;}
+    if(p.repository!==undefined&&p.repository!==''){if(typeof p.repository!=='string'||!(/^[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,38})\/[a-zA-Z0-9][a-zA-Z0-9._-]{0,99}$/).test(p.repository))fail('GitHubはowner/repository形式で指定してください。');result.repository=p.repository;}
+    const download=normalizeProjectDownload(p.download,result.repository);
+    if(download)result.download=download;
+    return result;
+  };
+  for(const id of PROJECT_IDS) {const p=s.projects[id];object(p,[...projectFields,'status','image','demoUrl','repository','download']);if(p.status!==undefined&&p.status!=='published')fail('初期サンプル作品の表示状態はpublishedを維持してください。');site.projects[id]=optionalProject(p,{...project(p),status:'published'});}
   const extra=s.additionalProjects??[];
   if(!Array.isArray(extra)||extra.length>MAX_PROJECTS-PROJECT_IDS.length)fail('作品は合計100件以内にしてください。');
   const projectIds=new Set(PROJECT_IDS);
@@ -151,24 +168,28 @@ export function validateContent(value) {
     projectIds.add(p.id);
     const status=p.status??'published';if(!['draft','published'].includes(status))fail('作品の表示状態を確認してください。');
     const result={id:p.id,...project(p),updatedAt:date(p.updatedAt,true),status};
-    if(p.image!==undefined&&p.image!==''){if(typeof p.image!=='string'||!PROJECT_IMAGE_FILES.includes(p.image))fail('作品画像は登録済みの公開用画像から選んでください。');result.image=p.image;}
-    if(p.demoUrl!==undefined&&p.demoUrl!==''){if(!httpsUrl(p.demoUrl))fail('デモURLは認証情報を含まないhttpsのURLにしてください。');result.demoUrl=p.demoUrl;}
-    if(p.repository!==undefined&&p.repository!==''){if(typeof p.repository!=='string'||!(/^[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,38})\/[a-zA-Z0-9][a-zA-Z0-9._-]{0,99}$/).test(p.repository))fail('GitHubはowner/repository形式で指定してください。');result.repository=p.repository;}
-    const download=normalizeProjectDownload(p.download,result.repository);
-    if(download)result.download=download;
-    return result;
+    return optionalProject(p,result);
   });
   const draftProjects=new Set(site.additionalProjects.filter(p=>p.status==='draft').map(p=>p.id));
-  if(!Array.isArray(value.articles)||value.articles.length>200) fail('記事は200件以内にしてください。');
+  site.featuredProject=s.featuredProject||'atlas';
+  if(typeof site.featuredProject!=='string'||!projectIds.has(site.featuredProject)||draftProjects.has(site.featuredProject))fail('注目作品は公開中の作品から選んでください。');
+  if(!Array.isArray(value.articles)||value.articles.length>MAX_ARTICLES) fail('記事は1000件以内にしてください。');
   const ids=new Set();
   const articles=value.articles.map(a=>{
-    object(a,['id','project','date','status','titleJa','titleEn','summaryJa','summaryEn','bodyJa','bodyEn','tags']);
-    if(typeof a.id!=='string'||!/^[a-z0-9][a-z0-9-]{0,63}$/.test(a.id)||ids.has(a.id)) fail('記事IDは重複のない半角英数字・ハイフンにしてください。');
+    if(new TextEncoder().encode(JSON.stringify(a)).length>MAX_ARTICLE_BYTES)fail('記事1件は256KB以内にしてください。');
+    object(a,['id','project','date','status','titleJa','titleEn','summaryJa','summaryEn','bodyJa','bodyEn','tags','updatedAt','translationStatus','images']);
+    if(typeof a.id!=='string'||!PROJECT_ID_PATTERN.test(a.id)||ids.has(a.id)||['constructor','prototype','__proto__'].includes(a.id)) fail('記事IDは重複のない半角英数字・ハイフンにしてください。');
     ids.add(a.id);
     const project=a.project??'';
     if((project!==''&&!projectIds.has(project))||!['draft','published'].includes(a.status)||(a.status==='published'&&draftProjects.has(project))) fail('記事の分類・状態を確認してください。公開記事に下書きの作品は指定できません。');
     if(!/^\d{4}-\d{2}-\d{2}$/.test(a.date||'')||Number.isNaN(Date.parse(a.date))||new Date(a.date).toISOString().slice(0,10)!==a.date) fail('記事の日付を確認してください。');
-    return {id:a.id,project,date:a.date,status:a.status,titleJa:text(a.titleJa??'',200,a.status==='published'),titleEn:text(a.titleEn??'',200),summaryJa:text(a.summaryJa??'',1000),summaryEn:text(a.summaryEn??'',1000),bodyJa:text(a.bodyJa??'',20000,a.status==='published'),bodyEn:text(a.bodyEn??'',20000),tags:validateTagIds(a.tags)};
+    const updatedAt=date(a.updatedAt)||a.date;
+    const translationStatus=a.translationStatus||((a.titleEn?.trim()&&a.bodyEn?.trim())?'current':'missing');
+    if(!['current','missing','needs-update'].includes(translationStatus))fail('翻訳状態を確認してください。');
+    const images=a.images??[];
+    if(!Array.isArray(images)||images.length>8)fail('記事画像は8件以内にしてください。');
+    const validatedImages=images.map(image=>{object(image,['src','altJa','altEn','captionJa','captionEn']);return {src:validateMediaPath(image.src),altJa:text(image.altJa??'',300,true),altEn:text(image.altEn??'',300),captionJa:text(image.captionJa??'',500),captionEn:text(image.captionEn??'',500)};});
+    return {id:a.id,project,date:a.date,updatedAt,status:a.status,translationStatus,titleJa:text(a.titleJa??'',200,a.status==='published'),titleEn:text(a.titleEn??'',200),summaryJa:text(a.summaryJa??'',1000),summaryEn:text(a.summaryEn??'',1000),bodyJa:text(a.bodyJa??'',20000,a.status==='published'),bodyEn:text(a.bodyEn??'',20000),tags:validateTagIds(a.tags),images:validatedImages};
   });
   const content={version:1,site,articles,pages:[]};
   if(value.tagCatalog!==undefined)content.tagCatalog=validateTagCatalog(value.tagCatalog);

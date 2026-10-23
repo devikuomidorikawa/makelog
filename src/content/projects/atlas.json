@@ -1,0 +1,37 @@
+{
+  "id": "atlas",
+  "status": "published",
+  "name": "ATLAS",
+  "category": [
+    "データ × 体験設計",
+    "DATA × EXPERIENCE"
+  ],
+  "title": [
+    "大学選びを、\n比べる体験に。",
+    "School choices.\nSide by side."
+  ],
+  "short": [
+    "大学情報の比較デモ",
+    "School comparison demo"
+  ],
+  "description": [
+    "学び・通学・入試を、同じ項目で比較する。検索条件を変えても選んだ学校が残る設計を、3校の架空データで試せます。",
+    "Compare shared fields for study, commute, and admissions. Try three fictional schools: your selection stays in place when search filters change."
+  ],
+  "tech": [
+    "React",
+    "共通データ構造 / Shared data fields",
+    "検索と選択の状態管理 / Search & selection state"
+  ],
+  "flow": [
+    "学校データを揃える",
+    "検索と選択を分ける",
+    "選んだ学校を比較する"
+  ],
+  "tags": [
+    "7b1413e3-b76e-4fd7-8bbd-4ed9e2fbbe26",
+    "67a884c9-9368-41cf-b63f-3d48ba937057",
+    "5afc6474-78e3-4e0d-b1ad-e5e897f26642"
+  ],
+  "updatedAt": "2026-10-14"
+}

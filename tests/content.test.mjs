@@ -10,15 +10,15 @@ import {allowedLocalRequest,atomicSave,revision} from '../scripts/content-plugin
 import {readRoute,routeHash} from '../src/site-utils.mjs';
 import {readContentSnapshot} from '../scripts/content-store.mjs';
 import {projectDownload,normalizeProjectDownload,DOWNLOAD_PAIR_LIMITS} from '../src/download-utils.mjs';
-const original=JSON.parse(await readFile(new URL('../src/content/site.json',import.meta.url),'utf8'));
+const original=readContentSnapshot().content;
 // Pure-model cases replace the extra-app set. Keep their sample articles local
 // to the built-ins; catalog-store tests still exercise the entire real source.
-original.site.additionalProjects=[];
+original.site.additionalProjects=[];original.site.featuredProject='atlas';
 original.articles=original.articles.filter(article=>!article.project||Object.hasOwn(original.site.projects,article.project));
 // Keep these pure-model regression cases on legacy IDs; the catalog-store
 // suite exercises the real UUID-backed files and their migration separately.
 const snapshot=readContentSnapshot(),legacyIds=new Map(snapshot.files.map(entry=>[entry.row.id,entry.row.legacyId||entry.row.name]));
-for(const item of [...Object.values(original.site.projects),...(original.site.additionalProjects||[]),...original.articles])item.tags=item.tags.map(id=>legacyIds.get(id)||id);
+for(const item of [...Object.values(original.site.projects),...(original.site.additionalProjects||[]),...original.articles])item.tags=item.tags.map(id=>legacyIds.get(id)||id).filter(tag=>!['ファイル整理','業務効率化'].includes(tag));
 const copy=()=>structuredClone(original);
 
 test('publishing never embeds draft titles or bodies in the public content',()=>{
@@ -84,13 +84,14 @@ test('article share routes reject encoded paths, traversal and executable fragme
   assert.deepEqual(readRoute('#article/atlas-build-note'),{type:'article',id:'atlas-build-note'});assert.equal(routeHash({type:'editor'}),'#editor');
   for(const value of ['#article/../secret','#article/%2e%2e','#article/<script>','#article/a/b'])assert.equal(readRoute(value),null);
 });
-test('Pages CMS edits the same fixed file and bilingual schema as the local studio',async()=>{
+test('Pages CMS edits independent article and project collections with shared tag references',async()=>{
   const config=JSON.parse(await readFile(new URL('../.pages.yml',import.meta.url),'utf8'));
-  assert.equal(config.content.length,2);assert.equal(config.content[0].path,'src/content/site.json');
-  const fields=config.content[0].fields;assert.ok(fields.find(f=>f.name==='articles').fields.find(f=>f.name==='bodyEn'));
-  const tags=fields.find(f=>f.name==='articles').fields.find(f=>f.name==='tags');assert.equal(tags.type,'reference');assert.equal(tags.options.max,8);assert.equal(tags.options.collection,'tags');
-  for(const project of fields.find(f=>f.name==='site').fields.find(f=>f.name==='projects').fields){const tag=project.fields.find(f=>f.name==='tags');assert.equal(tag.type,'reference');assert.equal(tag.options.max,8);}
-  assert.deepEqual(fields.find(f=>f.name==='site').fields.find(f=>f.name==='colors').fields.map(f=>f.name),Object.keys(original.site.colors));
+  const article=config.content.find(c=>c.name==='articles'),project=config.content.find(c=>c.name==='projects'),site=config.content.find(c=>c.name==='makelog');
+  assert.equal(article.type,'collection');assert.equal(article.path,'src/content/articles');assert.equal(project.path,'src/content/projects');
+  assert.ok(article.fields.find(f=>f.name==='bodyEn'));assert.equal(article.fields.find(f=>f.name==='status').default,'draft');
+  for(const fields of [article.fields,project.fields]){const tags=fields.find(f=>f.name==='tags');assert.equal(tags.type,'reference');assert.equal(tags.options.max,8);assert.equal(tags.options.collection,'tags');}
+  assert.equal(article.fields.find(f=>f.name==='project').options.collection,'projects');
+  assert.deepEqual(site.fields.find(f=>f.name==='site').fields.find(f=>f.name==='colors').fields.map(f=>f.name),Object.keys(original.site.colors));
 });
 
 test('online catalog renames every stable reference and omits unused/draft metadata from publishing',()=>{
@@ -127,12 +128,12 @@ test('informational pages accept only fixed unique routes and bounded bilingual 
 });
 
 test('CMS online management exposes catalog rename/merge and bounded informational pages',async()=>{
-  const config=JSON.parse(await readFile(new URL('../.pages.yml',import.meta.url),'utf8')),fields=config.content[0].fields;
+  const config=JSON.parse(await readFile(new URL('../.pages.yml',import.meta.url),'utf8')),fields=config.content.find(c=>c.name==='makelog').fields;
   assert.equal(fields.some(field=>field.name==='tagCatalog'),false);
   const catalog=config.content.find(entry=>entry.name==='tags');assert.equal(catalog.type,'collection');assert.equal(catalog.path,'src/content/tags');assert.equal(catalog.operations.delete,false);assert.equal(catalog.operations.rename,false);
   const id=catalog.fields.find(field=>field.name==='id');assert.equal(id.type,'uuid');assert.equal(id.readonly,true);assert.equal(id.hidden,true);assert.equal(id.options.generate,false);
   const merge=catalog.fields.find(field=>field.name==='mergeInto');assert.equal(merge.type,'reference');assert.equal(merge.options.collection,'tags');assert.equal(merge.options.value,'{fields.id}');assert.equal(merge.options.label,'{fields.name}');
-  const assignments=[];const visit=rows=>rows.forEach(field=>{if(field.name==='tags')assignments.push(field);if(field.fields)visit(field.fields);});visit(fields);assert.equal(assignments.length,5);for(const field of assignments){assert.equal(field.type,'reference');assert.equal(field.options.multiple,true);assert.equal(field.options.max,8);assert.equal(field.options.label,'{fields.name}');}
+  const assignments=[];const visit=rows=>rows.forEach(field=>{if(field.name==='tags')assignments.push(field);if(field.fields)visit(field.fields);});for(const entry of config.content)visit(entry.fields);assert.equal(assignments.length,2);for(const field of assignments){assert.equal(field.type,'reference');assert.equal(field.options.multiple,true);assert.equal(field.options.max,8);assert.equal(field.options.label,'{fields.name}');}
   const pages=fields.find(field=>field.name==='pages');assert.equal(pages.list.max,3);assert.equal(pages.fields.find(field=>field.name==='bodyJa').options.maxlength,10000);assert.deepEqual(pages.fields.find(field=>field.name==='id').options.values.map(option=>option.name),['privacy','guide','contact']);
 });
 
@@ -144,7 +145,7 @@ test('CMS may omit the unused studio note without weakening other bilingual fiel
   for(const note of [['one'],'wrong',false,{}]){const data=copy();data.site.studioNote=note;assert.throws(()=>validateContent(data));}
   for(const title of [undefined,null,[],['one']]){const data=copy();data.site.heroTitle=title;assert.throws(()=>validateContent(data));}
   const config=JSON.parse(await readFile(new URL('../.pages.yml',import.meta.url),'utf8'));
-  const note=config.content[0].fields.find(field=>field.name==='site').fields.find(field=>field.name==='studioNote');
+  const note=config.content.find(c=>c.name==='makelog').fields.find(field=>field.name==='site').fields.find(field=>field.name==='studioNote');
   assert.equal(note.hidden,true);assert.equal(note.list.min,0);assert.equal(note.list.max,2);
 });
 
@@ -182,9 +183,9 @@ test('additional app IDs, dates, counts and external links are bounded and valid
 
 test('CMS exposes date fields and addable apps using the same bounded schema',async()=>{
   const config=JSON.parse(await readFile(new URL('../.pages.yml',import.meta.url),'utf8'));
-  const site=config.content[0].fields.find(f=>f.name==='site'),extra=site.fields.find(f=>f.name==='additionalProjects');
-  assert.equal(extra.list.max,97);assert.ok(extra.fields.find(f=>f.name==='updatedAt').required);assert.equal(extra.fields.find(f=>f.name==='status').default,'draft');
-  for(const p of site.fields.find(f=>f.name==='projects').fields)assert.ok(p.fields.find(f=>f.name==='updatedAt'));
+  const extra=config.content.find(c=>c.name==='projects');
+  assert.equal(extra.type,'collection');assert.ok(extra.fields.find(f=>f.name==='updatedAt').required);assert.equal(extra.fields.find(f=>f.name==='status').default,'draft');
+  assert.equal(extra.fields.find(f=>f.name==='updatedAt').type,'date');
 });
 
 test('additional app images accept only bundled filenames and survive publication unchanged',()=>{
@@ -198,12 +199,11 @@ test('additional app images accept only bundled filenames and survive publicatio
   delete data.site.additionalProjects[0].image;assert.doesNotThrow(()=>validateContent(data));
 });
 
-test('CMS image choices use the exact runtime allowlist without a free-form media URL',async()=>{
-  const {PROJECT_IMAGE_FILES}=await import('../src/content-model.mjs');
-  const config=JSON.parse(await readFile(new URL('../.pages.yml',import.meta.url),'utf8'));
-  const extra=config.content[0].fields.find(f=>f.name==='site').fields.find(f=>f.name==='additionalProjects');
-  const image=extra.fields.find(f=>f.name==='image');assert.equal(image.type,'select');
-  assert.deepEqual(image.options.values.map(v=>v.name).filter(Boolean).sort(),[...PROJECT_IMAGE_FILES].sort());
+test('CMS image uploads are restricted to the controlled raster media collection',async()=>{
+ const config=JSON.parse(await readFile(new URL('../.pages.yml',import.meta.url),'utf8'));
+ const field=config.content.find(c=>c.name==='projects').fields.find(f=>f.name==='image');
+ assert.equal(field.type,'image');assert.equal(field.options.media,'article-images');assert.ok(!field.options.extensions.includes('svg'));
+ assert.equal(config.media[0].input,'public/assets/media');assert.equal(config.media[0].output,'media');
 });
 
 const downloadFixture=()=>({tag:'v2.1.4',file:'NEST-2.1.4-ja.zip',label:['Windows版をダウンロード','Download for Windows'],requirements:['Windows 11・64bit／無料','Windows 11 · 64-bit / Free'],notice:['未署名のアプリです。','This application is unsigned.'],instructions:['ZIPを展開してNEST.exeを開きます。','Extract the ZIP and open NEST.exe.']});
@@ -252,7 +252,7 @@ test('optional download forms normalize empty settings but refuse partial or exc
 
 test('online and local GUI expose optional release metadata with the same bounded bilingual fields',async()=>{
   const config=JSON.parse(await readFile(new URL('../.pages.yml',import.meta.url),'utf8'));
-  const extra=config.content[0].fields.find(f=>f.name==='site').fields.find(f=>f.name==='additionalProjects');
+  const extra=config.content.find(c=>c.name==='projects');
   const download=extra.fields.find(f=>f.name==='download');assert.equal(download.type,'object');assert.notEqual(download.required,true);
   assert.deepEqual(download.fields.map(f=>f.name),['tag','file',...Object.keys(DOWNLOAD_PAIR_LIMITS)]);
   for(const [key,max] of Object.entries(DOWNLOAD_PAIR_LIMITS)){

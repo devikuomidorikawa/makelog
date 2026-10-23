@@ -1,6 +1,6 @@
 # AI・手動での編集方法
 
-記事・サイトの文章・作品紹介・配色は `src/content/site.json`、タグ名・統合先は `src/content/tags/*.json` が正本です。Pages CMSと端末GUIも同じ正本を更新します。指定された項目に対応するファイルだけを変更してください。公開ページの編集スタジオでの保存はブラウザー内の下書きです。オンラインで公開元を更新する場合は、接続済みPages CMSまたはGitHubを使います。
+記事は `src/content/articles/<記事ID>.json`、作品は `src/content/projects/<作品ID>.json` に1件ずつ保存します。共通の文章・配色・案内ページは `src/content/site.json`、タグ名・統合先は `src/content/tags/*.json` が正本です。Pages CMS・端末GUI・AIは同じファイルを更新します。指定された項目に対応するファイルだけを変更してください。公開ページの編集スタジオでの保存はブラウザー内の下書きです。オンラインで公開元を更新する場合は、接続済みPages CMSまたはGitHubを使います。
 
 ## 編集する場所
 
@@ -9,13 +9,14 @@
 | ブランド名・肩書き | `site.brand` / `site.tagline` |
 | トップの見出し・説明、スタジオ、紹介、フッター | `site.heroTitle` / `heroDescription` / `studioBody` / `studioNote` / `about` / `footer` |
 | 背景・文字・アクセント | `site.colors` |
-| 作品名・紹介・技術・流れ | `site.projects.atlas` / `form` / `flow` |
-| 新しく追加するアプリ | `site.additionalProjects[]`（固定IDを維持） |
-| 追加作品の公開用画像 | `site.additionalProjects[].image`（登録済みファイル名を選択。省略時は線画アイコン） |
-| 追加作品のZIP配布案内 | `site.additionalProjects[].download`（同じ `repository` のGitHub Releases） |
+| 作品名・紹介・技術・流れ、新しいアプリ | `src/content/projects/<固定作品ID>.json` |
+| 作品の公開用画像 | 作品ファイルの `image`（`media/...` または既存許可済みファイル名。省略時は線画アイコン） |
+| 作品のZIP配布案内 | 作品ファイルの `download`（同じ `repository` のGitHub Releases） |
+| ホームの注目作品 | `site.json` の `site.featuredProject`（公開中の作品ID） |
 | ホーム下部の表示順 | 各作品の `updatedAt`（掲載更新日）から公開作品の上位3件を自動選出 |
-| 記事追加・編集 | `articles` |
-| 作品・記事のタグID | `site.projects.<作品ID>.tags` / `articles[].tags` |
+| 記事追加・編集 | `src/content/articles/<固定記事ID>.json` |
+| 作品・記事のタグID | 各作品・記事ファイルの `tags` |
+| 記事画像 | 各記事の `images` と `public/assets/media/` |
 | タグの表示名・一括改名・統合 | `src/content/tags/<固定UUID>.json` の `name` / `mergeInto` |
 | プライバシー・使い方・お問い合わせの案内 | `pages[]`（IDは `privacy` / `guide` / `contact`） |
 | GitHub作品リンク・コメント設定 | `src/site.config.json`（公開識別子のみ） |
@@ -26,15 +27,17 @@
 
 初期の3作品・制作ノート・スタジオ紹介は公開用サンプルです。実際の内容へ差し替えるときは、紹介と記事のサンプル表記を対応する項目だけ更新してください。記事は「課題・設計判断・確認できる結果」を具体的に書き、デモで動く範囲と将来の構想を区別します。依頼のない実績・効果数値・運営者情報を補いません。
 
-新しい自作アプリの掲載には [.agents/skills/makelog-publish-app/SKILL.md](.agents/skills/makelog-publish-app/SKILL.md) を使います。追加作品は `site.additionalProjects` の配列で管理し、既存3サンプルの項目を流用しません。作品紹介を更新した日を `updatedAt` にYYYY-MM-DDで設定します。これはアプリの開発日ではなく掲載内容の更新日です。名称だけの整形などで全作品の日付を一括更新しません。公開URL・ソースのないアプリも紹介だけで掲載できます。非公開情報は下書きの元JSONにも保存しません。
+新しい自作アプリの掲載には [.agents/skills/makelog-publish-app/SKILL.md](.agents/skills/makelog-publish-app/SKILL.md) を使います。`src/content/projects/<固定作品ID>.json` を追加し、既存3サンプルを流用しません。各ファイルに `id` を含め、ファイル名と一致させます。作品紹介を更新した日を `updatedAt` にYYYY-MM-DDで設定します。これはアプリの開発日ではなく掲載内容の更新日です。名称だけの整形などで全作品の日付を一括更新しません。公開URL・ソースのないアプリも紹介だけで掲載できます。初期3サンプルは専用デモがあるため `status: "published"` を維持します。非公開情報は下書きの元JSONにも保存しません。
 
-追加作品の任意項目 `image` は `src/content-model.mjs` の `PROJECT_IMAGE_FILES` から、拡張子を含むファイル名だけを選びます。素材は `public/assets/` に配置し、URL・パス・HTMLは入力しません。新しい画像は個人情報や実ファイル名のない公開用データで撮影・確認したうえで、許可リストへ明示的に登録します。未登録ファイルは公開ビルドに含めません。画像を選ぶとホーム・作品一覧の線画を置き換え、概要ページにも表示します。NESTの画面には「実際のアプリ画面（公開用ダミーデータ）」と記載します。
+作品の任意項目 `image` と記事の `images[].src` は、既存の `PROJECT_IMAGE_FILES` のファイル名、または `media/<安全なファイル名>` を指定します。新しい画像は `public/assets/media/` に配置します。英数字・ハイフン・アンダースコアのフォルダー名と、英数字・ピリオド・ハイフン・アンダースコアのファイル名だけを使い、拡張子は小文字のpng/jpg/jpeg/webp/gif/avifにします。パス全体240文字以内、`..`、外部URL、SVG、HTMLは不可。個人情報・実ファイル名のない公開用画面を確認してから追加してください。GUIではCMSの「記事・作品の画像」からアップロードできます。記事画像は最大8件で、`src`、必須の `altJa`（300文字）、任意の `altEn`（300文字）、`captionJa` / `captionEn`（各500文字）を持ちます。
 
-新しい記事は重複しない半角小文字英数字・ハイフンの `id`（64文字以内）、`date`（YYYY-MM-DD）、`status`（`draft` / `published`）、`project`（空欄 / `atlas` / `form` / `flow`）と日英の文章項目を追加します。掲載記事には日本語のタイトルと本文が必須です。本文は `#`〜`###` の見出し、`**太字**`、`- ` の箇条書きに対応します。HTML、画像、Markdownリンク、スクリプトは実行しません。
+新しい記事は `src/content/articles/<記事ID>.json` に保存します。重複しない半角小文字英数字・ハイフンの `id`（64文字以内）とファイル名を一致させ、公開後は変更しません。`date`（公開日）、`updatedAt`（更新日）はYYYY-MM-DD、`status` は `draft` / `published`、`project` は空欄または登録済み作品ID。掲載記事には日本語のタイトルと本文が必須です。本文は見出し、太字、箇条書き、安全なHTTPSリンク、コードブロックに対応し、HTML・スクリプトは実行しません。画像は専用の `images` に保存します。
+
+`translationStatus` は `missing`（英訳なし）、`needs-update`（日本語を更新し英訳要更新）、`current`（対応済み）。日本語だけを変更したら必ず状態も更新し、日英を揃えたときに `current` に戻します。Pages CMSは文章の意味の一致を自動判定しないため、状態を手動で選びます。端末GUIは日本語変更時に更新が必要なことを示します。旧記事に項目がない場合、更新日は公開日、翻訳状態は英語タイトル・本文の有無から補います。
 
 追加作品の `download` は任意です。設定する場合は `repository` と `{ "tag": "v2.1.4", "file": "NEST-2.1.4-ja.zip", "label": ["Windows版をダウンロード", "Download for Windows"], "requirements": ["Windows 11・64bit／無料", "Windows 11 · 64-bit / Free"], "notice": ["利用前の注意", "Before using"], "instructions": ["展開後の手順", "Steps after extraction"] }` を指定します。日英両方が必須で、各言語の上限は順に200・300・500・1500文字。タグは先頭英数字、英数字・ピリオド・アンダースコア・ハイフンだけで64文字以内。ZIP名も同じ文字種で160文字以内、`..` を含まず `.zip` で終わる必要があります。URLは入力せず、確認済み公開リリースのタグ・添付ファイル名だけを使います。空の設定は省略扱い、部分入力は公開検査で拒否します。配布URL、リリース案内、同じリポジトリの `main/LICENSE.txt`・`main/PRIVACY.txt` は固定のGitHubホストから組み立てます。設定前に配布物・利用条件・プライバシー説明が実在することを確認し、配布権限・動作環境・署名状態を正確に記載してください。
 
-記事は200件、本文は各言語20,000文字、データ全体は1MB以内です。配色には6桁のカラーコードを指定します。文字と背景、ボタン文字のコントラスト検証があります。決定済みの薄いベージュと深紫のデザインを、文章変更だけの依頼で変更しないでください。
+記事は最大1000件、本文は各言語20,000文字、記事1ファイルは256KiB、記事・作品・タグ・サイト設定の集計は20MB以内です。上限1000件は1000件での実測性能保証ではありません。公開一覧は小さい索引とページ分割を使い、本文を記事ごとに読み込みます。本文検索用索引は検索時に読み込み、下書きは公開データに含めません。配色には6桁のカラーコードを指定し、既存のコントラスト検証と薄いベージュ・深紫を維持してください。
 
 タグは各記事・作品の `tags` に固定UUIDの配列として保存します。最大8件、表示名は1〜32文字です。新規タグはUUID v4を1つ生成し、同じIDの `src/content/tags/<UUID>.json` に `{ "id": "UUID", "name": "表示名" }` を保存します。最大100件。既存ファイル名と `id` は変更しません。`legacyId` があれば互換用の固定値として維持します。
 
@@ -48,7 +51,9 @@
 
 ## 手動で更新する
 
-Pages CMSで対象リポジトリ・公開ブランチを開き、同じ記事・サイトデータをフォームで編集します。Pages CMS保存→GitHubコミット→検査・ビルド→GitHub Pages公開完了の順に進みます。保存ボタンを押しただけでは公開完了ではありません。元ファイルへ保存する端末GUIは `pnpm studio` で起動する開発時だけの機能です。
+Pages CMSで対象リポジトリ・公開ブランチを開き、「記事一覧」「作品一覧」「サイト設定」「タグ管理」から対象を選びます。記事・作品は名前で検索して1件だけ編集します。関連記事の作品とタグ、ホームの注目作品は名前から選べます。新しい記事は下書き・本文雛形から作り、日付、固定ID、日本語、必要に応じ英訳と画像を入力します。Pages CMS保存→GitHubコミット→検査・ビルド→GitHub Pages公開完了の順です。保存ボタンを押しただけでは公開完了ではありません。元ファイルへ保存する端末GUIは `pnpm studio` で起動する開発時だけの機能です。
+
+内部では互換性のため `{version, site:{projects,additionalProjects,...}, articles,tagCatalog,pages}` に集計します。端末GUIの持ち運びJSONもこの形式です。元ファイルへ保存すると記事・作品・タグを各ファイルへ分けます。旧一括JSONの読込は互換用に維持しますが、新しい正本の `site.json` に記事配列や作品配列を戻さないでください。別画面の変更を検出すると保存を止めるため、最新版を再読込し対象項目だけ統合します。
 
 ## AIで更新する
 
